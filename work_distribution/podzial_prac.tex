@@ -1,0 +1,82 @@
+\documentclass[12pt] {article}
+
+%%% Preambuła %%%
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{lmodern}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\usepackage{geometry}
+
+\renewcommand{\arraystretch}{2}
+
+\geometry{a4paper, total={170mm,257mm}, left=20mm, top=20mm,}
+
+\makeatletter
+\setlength{\@fptop}{0pt}
+\makeatother
+
+%%% Strona tytułowa %%%
+\title {
+    \large Praca magisterska \\ Podział wykonanych prac }
+
+\author {Arkadiusz Kasprzak \and Jarosław Cierpich}
+\date{}
+
+
+\begin{document}
+
+
+%%% Strona tytułowa %%%
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+\section {Prace wykonane w ramach projektu}
+
+\begin{table*}[htbp]
+\centering
+\caption{Podział prac wykonanych w ramach projektu}
+\begin{tabularx}{\textwidth}{@{}XXX@{}}
+\toprule
+Zadanie & 
+Osoba odpowiedzialna & 
+Uwagi \\ 
+
+\midrule
+
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+
+\newpage
+
+\section {Prace wykonane w ramach manuskryptu}
+
+\begin{table*}[htbp]
+\centering
+\caption{Podział prac wykonanych w ramach manuskryptu}
+\begin{tabularx}{\textwidth}{@{}XXX@{}}
+\toprule
+Rozdział/sekcja & 
+Osoba odpowiedzialna & 
+Uwagi \\ 
+
+\midrule
+
+
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+
+\end{document}

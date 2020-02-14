@@ -1,0 +1,382 @@
+\documentclass[11pt]{aghdpl}
+
+\usepackage[english,polish]{babel}
+\usepackage{polski} % Użyj polskiego łamania wyrazów (zamiast domyślnego angielskiego).
+\usepackage[utf8]{inputenc}
+
+% dodatkowe pakiety
+\usepackage{afterpage}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{float} 
+\usepackage{realboxes}
+\usepackage{xpatch}
+\usepackage{lscape} % landscape
+\usepackage{pdfpages} % Do dodawnaie stron pdf jako część dokumentu (nie lstlisting)
+\usepackage{emptypage} % Paczka wyłącza pokazywanie numeru strony oraz nagłówków na pustych stronach
+\usepackage{siunitx}
+
+% Dzięki temu będzie się dało kopiować tekst który ma polskie literki
+% see: https://tex.stackexchange.com/questions/57915/cannot-copy-letters-with-diacritics-from-pdflatex-pdf
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{multicol}
+
+% Polskie literki w listingach:
+\lstset{
+    literate=
+    {ą}{{\k{a}}}1 {Ą}{{\k{A}}}1 
+    {ł}{{\l{}}}1 {Ł}{{\L{}}}1 
+    {ń}{{\'n}}1 {Ń}{{\'N}}1 
+    {ę}{{\k{e}}}1 {Ę}{{\k{E}}}1 
+    {ś}{{\'s}}1 {Ś}{{\'S}}1 
+    {ż}{{\.z}}1 {Ż}{{\.Z}}1 
+    {ó}{{\'o}}1 {Ó}{{\'O}}1 
+    {ź}{{\'z}}1 {Ź}{{\'Z}}1 
+    {ć}{{\'c}}1 {Ć}{{\'C}}1
+}
+
+
+% Definicja listingu dla Dockerfile
+% https://gordonlesti.com/custom-code-highlighting-in-latex/
+\lstdefinelanguage{Dockerfile}
+{
+  morekeywords={FROM, RUN, CMD, LABEL, MAINTAINER, EXPOSE, ENV, ADD, COPY,
+    ENTRYPOINT, VOLUME, USER, WORKDIR, ARG, ONBUILD, STOPSIGNAL, HEALTHCHECK,
+    SHELL},
+  morecomment=[l]{\#},
+  morestring=[b]"
+}
+
+% Definicja listingu dla CMAKE
+\lstdefinelanguage{cmake}
+{
+  morekeywords={set, cmake_minimum_required, project, add_executable, target_include_directories, include, target_link_libraries, file, add_library, set_target_properties, if, endif, list, foreach, endforeach, add_subdirectory, get_directory_property, get_filename_component, function, endfunction, execute_process, ExternalProject_Add, target_link_directories, message, else},
+  morecomment=[l]{\#},
+  morestring=[b]"
+}
+
+\lstdefinelanguage{Cmd}
+{
+    moredelim=[s][\color{red}\bfseries]{user@host}{\$},
+    morekeywords={}
+}
+
+\definecolor{darkgreenforcomments}{rgb}{0.0,0.26,0.15}
+
+\lstdefinelanguage{yaml}
+{
+  keywords={true,false,null,y,n},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{darkgreenforcomments}\ttfamily,
+  stringstyle={\color{blue}\mdseries},
+  moredelim=[l][\color{orange}]{\&},
+  moredelim=[l][\color{magenta}]{*},
+  moredelim=**[il][\color{red}{:}\color{blue}]{:},
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\definecolor{lgray}{gray}{0.96}
+\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\lstset{
+    framesep=2pt,
+    basicstyle=\ttfamily,
+    breaklines=true,
+    breakatwhitespace=true,
+    basicstyle=\footnotesize,
+    aboveskip={0.75\baselineskip},
+    columns=fixed,
+    showstringspaces=false,
+    breaklines=true,
+    prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+    frame=single,
+    rulecolor=\color{lgray},
+    showtabs=false,
+    showspaces=false,
+    showstringspaces=false,
+    backgroundcolor=\color{lgray},
+    identifierstyle=\ttfamily,
+    keywordstyle=\color[rgb]{0,0,1},
+    commentstyle=\color[rgb]{0.0,0.26,0.15},
+    stringstyle=\color[rgb]{0.627,0.126,0.941}
+}
+
+% Padding w podpisach do listingow i obrazkow
+% ustawiony na 0
+\captionsetup[lstlisting]{ margin=0pt}
+\captionsetup[figure]{ margin=0pt}
+\captionsetup[table]{ margin=0pt}
+
+
+
+\makeatletter
+\xpretocmd\lstinline{\Colorbox{lgray}\bgroup\appto\lst@DeInit{\egroup}}{}{}
+\makeatother
+
+\usepackage[hidelinks]{hyperref}
+
+% --- < bibliografia > ---
+%
+% TODO: Dla TeXstudio warto przeczytać poniższe!
+% UWAGA: Żeby bibliografia działała gdy używamy TeXstudio, to należy zmodyfikować quick build w opcjach, tak aby wykonywane były polecenia:
+% 	PdfLaTeX
+% 	BibTeX
+% 	PdfLaTeX
+% 	PdfLaTeX
+%
+% Więcej informacji na:
+% 	https://tex.stackexchange.com/a/216325
+%
+
+\usepackage[
+	backend=bibtex,
+	style=numeric,
+	sorting=none,
+	% Zastosuj styl wpisu bibliograficznego właściwy językowi publikacji.
+	language=autobib,
+	autolang=other,
+	% Zapisuj datę dostępu do strony WWW w formacie RRRR-MM-DD.
+	urldate=iso8601,
+	% Nie dodawaj numerów stron, na których występuje cytowanie.
+	backref=false,
+	% Podawaj ISBN.
+	isbn=true,
+	% Nie podawaj URL-i, o ile nie jest to konieczne.
+	url=false,
+	% Ustawienia związane z polskimi normami dla bibliografii.
+	maxnames=50,
+]{biblatex}
+
+\usepackage{csquotes}
+% Ponieważ `csquotes` nie posiada polskiego stylu, można skorzystać z mocno zbliżonego stylu chorwackiego.
+\DeclareQuoteAlias{croatian}{polish}
+
+% Bibliografia musi być uzupełniona w tym pliku:
+\addbibresource{bibliografia.bib}
+
+% Nie wyświetlaj wybranych pól.
+%\AtEveryBibitem{\clearfield{note}}
+
+
+% ------------------------
+% --- < listingi > ---
+
+% Użyj czcionki kroju Courier.
+\usepackage{courier}
+
+\lstloadlanguages{TeX}
+
+% Polskie literki:
+\lstset{
+	literate={ą}{{\k{a}}}1
+           {ć}{{\'c}}1
+           {ę}{{\k{e}}}1
+           {ó}{{\'o}}1
+           {ń}{{\'n}}1
+           {ł}{{\l{}}}1
+           {ś}{{\'s}}1
+           {ź}{{\'z}}1
+           {ż}{{\.z}}1
+           {Ą}{{\k{A}}}1
+           {Ć}{{\'C}}1
+           {Ę}{{\k{E}}}1
+           {Ó}{{\'O}}1
+           {Ń}{{\'N}}1
+           {Ł}{{\L{}}}1
+           {Ś}{{\'S}}1
+           {Ź}{{\'Z}}1
+           {Ż}{{\.Z}}1,
+	basicstyle=\footnotesize\ttfamily,
+}
+
+% ------------------------
+% Określamy nazwy 'table' oraz 'figure':
+\AtBeginDocument{
+	\renewcommand{\tablename}{Tabela}
+	\renewcommand{\figurename}{Rys.}
+}
+
+% ------------------------
+% --- < tabele > ---
+
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{float}
+
+% Brak odstępów między wypunktowaniami
+\usepackage[inline]{enumitem}
+\setlist{nosep}
+
+\setlength{\cftsecnumwidth}{10mm}
+
+%---------------------------------------------------------------------------
+\setcounter{secnumdepth}{4}
+
+\begin{document}
+
+
+% =====  STRONA TYTULOWA PRACY MAGISTERSKIEJKIEJ ====
+% ostatnia modyfikacja: 2009/07/01, K. Malarz
+
+\thispagestyle{empty}
+%% ------------------------ NAGLOWEK STRONY ---------------------------------
+\includegraphics[height=37.5mm]{res/agh_nzw_a_pl_1w_wbr_cmyk}\\
+\rule{30mm}{0pt}
+{\large \textsf{Wydział Fizyki i Informatyki Stosowanej}}\\
+\rule{\textwidth}{3pt}\\
+\rule[2ex]
+{\textwidth}{1pt}\\
+\vspace{7ex}
+\begin{center}
+{\LARGE \bf \textsf{Praca magisterska}}\\
+\vspace{13ex}
+% --------------------------- IMIE I NAZWISKO -------------------------------
+{\bf \Large \textsf{Jan Nowak}}\\
+\vspace{3ex}
+{\sf\small kierunek studiów:} {\bf\small \textsf{fizyka techniczna}}\\
+\vspace{1.5ex}
+{\sf\small specjalność:} {\bf\small \textsf{tylko na IS i FM}}\\
+\vspace{10ex}
+%% ------------------------ TYTUL PRACY --------------------------------------
+{\bf \huge \textsf{Jakiś długi i nie mieszczący się
+w~jednej linii tytuł
+pracy magisterskiej}}\\
+\vspace{14ex}
+%% ------------------------ OPIEKUN PRACY ------------------------------------
+{\Large Opiekun: \bf \textsf{prof. dr hab. Bądź Doktor}}\\
+\vspace{22ex}
+{\large \bf \textsf{Kraków, czerwiec 20??}}
+\end{center}
+%% =====  STRONA TYTUŁOWA PRACY MAGISTERSKIEJKIEJ ====
+
+\newpage
+
+%% =====  TYŁ STRONY TYTUŁOWEJ PRACY MAGISTERSKIEJKIEJ ====
+\begin{center}
+        {\bf\large\textsf{Oświadczenie studenta}}
+\end{center}
+
+
+{\sf Uprzedzony(-a) o odpowiedzialności karnej na podstawie art. 115 ust. 1 i 2 ustawy z dnia 4 lutego 1994 r. o prawie autorskim i prawach pokrewnych (t.j. Dz. U. z 2018 r. poz. 1191 z późn. zm.): ,,Kto przywłaszcza sobie autorstwo albo wprowadza w błąd co do autorstwa całości lub części cudzego utworu albo artystycznego wykonania, podlega grzywnie, karze ograniczenia wolności albo pozbawienia wolności do lat 3. Tej samej karze podlega, kto rozpowszechnia bez podania nazwiska lub pseudonimu twórcy cudzy utwór w wersji oryginalnej albo w postaci opracowania, artystyczne wykonanie albo publicznie zniekształca taki utwór, artystyczne wykonanie, fonogram, wideogram lub nadanie.'', a także uprzedzony(-a) o odpowiedzialności dyscyplinarnej na podstawie art. 307 ust. 1 ustawy z dnia 20 lipca 2018 r. Prawo o szkolnictwie wyższym i nauce (Dz. U. z 2018 r. poz. 1668 z późn. zm.) ,,Student podlega odpowiedzialności dyscyplinarnej za naruszenie przepisów obowiązujących w~uczelni oraz za czyn uchybiający godności studenta.'', oświadczam, że niniejszą pracę dyplomową wykonałem(-am) osobiście i samodzielnie i nie korzystałem(-am) ze źródeł innych niż wymienione w pracy.
+
+\bigskip
+
+Jednocześnie Uczelnia informuje, że zgodnie z art. 15a ww. ustawy o prawie autorskim i prawach pokrewnych Uczelni przysługuje pierwszeństwo w opublikowaniu pracy dyplomowej studenta. Jeżeli Uczelnia nie opublikowała pracy dyplomowej w terminie 6 miesięcy od dnia jej obrony, autor może ją opublikować, chyba że praca jest częścią utworu zbiorowego. Ponadto Uczelnia jako podmiot, o którym mowa w art. 7 ust. 1 pkt 1 ustawy z dnia 20 lipca 2018 r. --- Prawo o szkolnictwie wyższym i nauce (Dz. U. z 2018 r. poz. 1668 z późn. zm.), może korzystać bez wynagrodzenia i bez konieczności uzyskania zgody autora z utworu stworzonego przez studenta w wyniku wykonywania obowiązków związanych z odbywaniem studiów, udostępniać utwór ministrowi właściwemu do spraw szkolnictwa wyższego i~nauki oraz korzystać z utworów znajdujących się w prowadzonych przez niego bazach danych, w celu sprawdzania z wykorzystaniem systemu antyplagiatowego. Minister właściwy do spraw szkolnictwa wyższego i nauki może korzystać z prac dyplomowych znajdujących się w prowadzonych przez niego bazach danych w zakresie niezbędnym do zapewnienia prawidłowego utrzymania i rozwoju tych baz oraz współpracujących z nimi systemów informatycznych.}
+
+
+\vspace{14ex}
+
+\begin{center}
+\begin{tabular}{lr}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ &
+................................................................. \\
+~ & {\sf (czytelny podpis)}\\
+\end{tabular}
+\end{center}
+
+%% =====  TYL STRONY TYTULOWEJ PRACY MAGISTERSKIEJKIEJ ====
+
+\newpage
+\rightline{Kraków, ?? czerwca 20??}
+\begin{center}
+{\bf Tematyka pracy magisterskiej i praktyki dyplomowej
+Jana Nowaka,
+studenta drugiego roku studiów drugiego stopnia na kierunku fizyka techniczna, specjalności jeśli występuje}\\
+\end{center}
+
+Temat pracy magisterskiej:
+{\bf Tu wpisz temat pracy magisterskiej Temat pracy magisterskiej Temat pracy magisterskiej}\\
+
+\begin{tabular}{rl}
+
+Opiekun pracy:                  & prof. dr hab. Śmaki Owaki\\
+Recenzenci pracy:               & dr hab. inż. Owaki Śmaki\\
+Miejsce praktyki dyplomowej:    & WFiIS AGH, Kraków\\
+\end{tabular}
+
+\begin{center}
+{\bf Program pracy magisterskiej i praktyki dyplomowej}
+\end{center}
+
+\begin{enumerate}
+\item Omówienie realizacji pracy magisterskiej z opiekunem.
+\item Zebranie i opracowanie literatury dotyczącej tematu pracy.
+\item Praktyka dyplomowa:
+\begin{itemize}
+\item zapoznanie się z ideą...,
+\item uczestnictwo w eksperymentach/przygotwanie oprogramowania...,
+\item dyskusja i analiza wyników...
+\item sporządzenie sprawozdania z praktyki.
+\end{itemize}
+\item Kontynuacja obliczeń związanych z tematem pracy magisterskiej.
+\item Zebranie i opracowanie wyników obliczeń.
+\item Analiza wyników obliczeń numerycznych, ich omówienie i zatwierdzenie przez opiekuna.
+\item Opracowanie redakcyjne pracy.
+\end{enumerate}
+
+
+\noindent
+Termin oddania w dziekanacie: ?? czerwca 20??\\[1cm]
+
+\begin{center}
+\begin{tabular}{lcr}
+.............................................................. & ~~~ &
+.............................................................. \\
+(podpis kierownika katedry) & & (podpis opiekuna) \\
+\end{tabular}
+\end{center}
+
+\newpage
+
+\noindent
+Na kolejnych dwóch stronach proszę dołączyć kolejno recenzje pracy popełnione przez Opiekuna oraz Recenzenta (wydrukowane z systemu MISIO i podpisane przez odpowiednio Opiekuna i Recenzenta pracy). Papierową wersję pracy (zawierającą podpisane recenzje) proszę złożyć w dziekanacie celem rejestracji co najmniej na tydzień przed planowaną obroną.
+
+\linespread{1.3}
+\selectfont
+
+
+
+% Ponowne zdefiniowanie stylu `plain`, aby usunąć numer strony z pierwszej strony spisu treści i poszczególnych rozdziałów.
+\fancypagestyle{plain}
+{
+	% Usuń nagłówek i stopkę
+	\fancyhf{}
+	% Usuń linie.
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}
+} 
+
+
+% Recenzja nr 1
+% \includepdfset{pages=-,pagecommand=\thispagestyle{fancy}}
+% \includepdf[pages=1, scale=0.9,offset= 0.65cm -1.2cm, pagecommand={}]{res/rec1_op.pdf}
+
+\clearpage\mbox{}\clearpage
+
+% Recenzja nr 2
+% \includepdfset{pages=-,pagecommand=\thispagestyle{fancy}}
+% \includepdf[pages=1, scale=0.9,offset= 0.65cm -1.2cm, pagecommand={}]{res/rec1_or.pdf}
+
+\clearpage\mbox{}\clearpage
+
+\clearpage
+\setcounter{tocdepth}{2}
+\tableofcontents
+\clearpage
+
+\include{intro}
+\include{theory}
+\include{main}
+\include{summary}
+
+
+\printbibliography
+
+\end{document}
