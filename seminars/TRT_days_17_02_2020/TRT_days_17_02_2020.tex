@@ -16,8 +16,8 @@
 \newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
 
 
-\title{}
-\subtitle{\normalsize{Tasks undertaken as part of the engineering thesis}}
+\title{Status of work on the GGSS system}
+\subtitle{\normalsize{Tasks undertaken as part of the engineering and master's thesis}}
 \date{17\textsuperscript{th} February 2020}
 \author{\normalsize{Arkadiusz Kasprzak \newline \and Jarosław Cierpich \newline \and Grzegorz Podsiadło \newline \newline \and Supervisor: Bartosz Mindur}}
 
@@ -62,6 +62,14 @@
 \tableofcontents
 \end{frame}
 
+\section {Hardware tests}
+
+\begin{frame}{Hardware tests}
+
+\end{frame}
+
+\section {New project architecture and migration to GIT}
+
 \begin{frame}{New project architecture}
 Characteristics of the new project architecture:
 \begin{itemize}
@@ -79,12 +87,46 @@ Characteristics of the new project architecture:
 \end{figure}
 \end{frame}
 
+
 \begin{frame}{Migration to GIT}
 \begin{itemize}
 	\item Project has been migrated to GIT version control system. Every module has been divided into separate repository. Submodule feature has been used to achieve hierarchical structure and support fast setup of development environment.
-	\item \textbf{atlas-trt-dcs-ggss} group has been created within which 20 repositories has been created.
+	\item \textbf{atlas-trt-dcs-ggss} group has been created within which 20 repositories has been added.
 	\item Issues, Milestones and Kanban Board are being used to organize and track work throughout development.
 \end{itemize}
+\end{frame}
+
+
+\section {New building system}
+
+\begin{frame}{New building system}
+\begin{itemize}
+  \item New system based on CMake has been created.
+  \item Hierarchical, information about dependencies clearly visible.
+  \item Contains helper Python scripts - for example in top repository, where user can choose which version should be built.
+  \item System can easily be upgraded if some new requirements appear.
+\end{itemize}
+\end{frame}
+
+
+\section {Gitlab CI/CD}
+
+\begin{frame}{Gitlab CI/CD}
+\begin{minipage}{0.65\linewidth}
+\begin{itemize}
+  \item Continous Integration and Delivery environment has been created using Gitlab CI/CD.
+  \item Building process of applications (ggssrunner, mca-n957 etc.) has been automated. 
+  \item Versions: static debug, static release, dynamic debug and dynamic release. 
+  \item Product can be downloaded using artifacts system.
+\end{itemize}
+\end{minipage}
+\begin{minipage}{0.32\linewidth}
+\begin{figure}
+\centering
+\includegraphics[width=0.8\linewidth]{resources/runnerPipeline}
+\caption{Pipeline used for the GGSS runner repository}
+\end{figure}
+\end{minipage}
 \end{frame}
 
 \begin{frame}{Resources}
@@ -102,6 +144,32 @@ Characteristics of the new project architecture:
 		\includegraphics[width=\linewidth]{resources/buildComp}
 	\end{figure}
 \end{minipage}
+\end{frame}
+
+\section {Documentation}
+
+\begin{frame}{Documentation}
+\begin{itemize}
+  \item Documentation in english is being prepared.
+  \item Readme files.
+  \item Contains guidelines on how to build every component of the project.
+\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{resources/documentation}
+    \caption{Part of documentation that can be found in \textit{ggss-software-libs} repository}
+\end{figure}
+\end{frame}
+
+
+\section {Plans for future improvements}
+
+\begin{frame}{Plans for future improvements}
+\begin{itemize}
+\item Automated versioning (master branches version align)
+\item Code refactoring (for example include paths).
+\item Improvements in curve fitting algorithm.
+\end{itemize}
 \end{frame}
 
 
