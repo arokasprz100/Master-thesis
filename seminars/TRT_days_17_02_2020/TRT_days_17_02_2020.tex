@@ -161,6 +161,41 @@ Characteristics of the new project architecture:
 \end{figure}
 \end{frame}
 
+\section {GGSS Reader and WinCC OA project changes for GGSS}
+
+\begin{frame}{GGSS Reader}
+The GGSS Reader is a new tool that simplifies work on WinCC OA project development.
+Software allows to simulate the operation of GGSS using old measurements without the need for using hardware.
+GGSS Reader comes with the documentation and configured CI.
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{resources/ggss_reader}
+    \caption{Infractructure related to GGSS.}
+\end{figure}
+\end{frame}
+
+\begin{frame}{WinCC OA project changes for GGSS}
+A new spectrum plotting panel was created, which allowed to get rid of external dependencies (gnuplot).
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth} 
+      \centering
+      \includegraphics[height=1.6in]{resources/old_spectrum.png} 
+      \caption{Old version.} 
+  \end{subfigure}
+  ~~
+  \begin{subfigure}[t]{0.48\textwidth}
+      \centering
+      \includegraphics[height=1.6in]{resources/new_spectrum.jpg} 
+      \caption{Current version.} 
+  \end{subfigure}
+    
+  \caption{Comparison of spectrum plotting panels.}
+
+\end{figure}
+
+
+\end{frame}
 
 \section {Plans for future improvements}
 
@@ -169,8 +204,13 @@ Characteristics of the new project architecture:
 \item Automated versioning (master branches version align)
 \item Code refactoring (for example include paths).
 \item Improvements in curve fitting algorithm.
+\item More options for the GGSS Reader program and a graphical interface for easier data selection.
 \end{itemize}
 \end{frame}
+
+
+
+
 
 
 \begin{frame}
