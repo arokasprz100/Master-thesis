@@ -15,6 +15,7 @@
 \usepackage{xspace}
 \newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
 
+\definecolor{darkgreen}{rgb}{0.09, 0.45, 0.27}
 
 \title{Status of work on the GGSS system}
 \subtitle{\normalsize{Tasks undertaken as part of the engineering and master's thesis}}
@@ -62,12 +63,6 @@
 \tableofcontents
 \end{frame}
 
-\section {Hardware tests}
-
-\begin{frame}{Hardware tests}
-
-\end{frame}
-
 \section {New project architecture and migration to GIT}
 
 \begin{frame}{New project architecture}
@@ -91,7 +86,8 @@ Characteristics of the new project architecture:
 \begin{frame}{Migration to GIT}
 \begin{itemize}
 	\item Project has been migrated to GIT version control system. Every module has been divided into separate repository. Submodule feature has been used to achieve hierarchical structure and support fast setup of development environment.
-	\item \textbf{atlas-trt-dcs-ggss} group has been created within which 20 repositories has been added.
+	% Zostaly utworzone w ramach grupy, a nie dodane. Jakby byly dodane to by musialy być zewnetrzne repozytoria dodane do grupy...
+	\item \textbf{atlas-trt-dcs-ggss} group has been created within which 20 repositories has been created. 
 	\item Issues, Milestones and Kanban Board are being used to organize and track work throughout development.
 \end{itemize}
 \end{frame}
@@ -103,7 +99,7 @@ Characteristics of the new project architecture:
 \begin{itemize}
   \item New system based on CMake has been created.
   \item Hierarchical, information about dependencies clearly visible.
-  \item Contains helper Python scripts - for example in top repository, where user can choose which version should be built.
+  \item Contains helper Python scripts - for example, in top repository, where user can choose which version should be built.
   \item System can easily be upgraded if some new requirements appear.
 \end{itemize}
 \end{frame}
@@ -161,6 +157,16 @@ Characteristics of the new project architecture:
 \end{figure}
 \end{frame}
 
+\section {Hardware tests}
+
+\begin{frame}{GGSS and hardware tests}
+\begin{itemize}
+	\item GGSS project has been tested after changes to architecture and building system. Tests were \color{darkgreen}successful\color{black}
+	\item Python scripts were prepared to test each hardware separately (High Voltage PSU, Multiplexer). 
+	\item These scripts, together with application dedicated to Multi Channel Analyzer test, were used to test hardware connection with evaluation machine (pcatltrteval) both via USB Hub and directly. Tests were \color{darkgreen}successful\color{black}
+\end{itemize}
+\end{frame}
+
 \section {GGSS Reader and WinCC OA project changes for GGSS}
 
 \begin{frame}{GGSS Reader}
@@ -202,15 +208,13 @@ A new spectrum plotting panel was created, which allowed to get rid of external 
 \begin{frame}{Plans for future improvements}
 \begin{itemize}
 \item Automated versioning (master branches version align)
-\item Code refactoring (for example include paths).
+\item Possibility to reuse Continuous Delivery mechanism with debug builds (possibility to use different branch than master to build project)
+\item Code refactoring (for example, include paths).
+\item Extended GGSS responsiveness - system parameters updated on demand and at the beginning of execution.
 \item Improvements in curve fitting algorithm.
 \item More options for the GGSS Reader program and a graphical interface for easier data selection.
 \end{itemize}
 \end{frame}
-
-
-
-
 
 
 \begin{frame}
