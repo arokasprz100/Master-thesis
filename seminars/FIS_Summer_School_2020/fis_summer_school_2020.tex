@@ -90,7 +90,6 @@
     \end{itemize}
     \item CMake files refactoring
     \item creating tools for versioning and Git submodule handling
-    \item creating Python library and apps for hardware testing (in progress)
 \end{itemize}
 \end{frame}
 
@@ -232,7 +231,6 @@ endif()
 \end{lstlisting}
 \end{frame}
 
-
 \begin{frame}[fragile]
 \frametitle{CMake files refactoring}
 \begin{itemize}
@@ -252,6 +250,92 @@ ggss_build_library(
 \end{frame}
 
 
+\begin{frame}[fragile]
+\frametitle{Complex submodule struture handling - scripts}
+\begin{itemize}
+\item GGSS project tree contains a complex repository structure with many connections between components.
+\item To make it easy to properly initialize project structure git submodules are being used.
+\end{itemize}
+\begin{lstlisting}[language=c++, caption={Initialize project structure with one command.}]
+root@host:/# git clone ssh://git@gitlab.cern.ch:7999/atlas-trt-dcs-ggss/ggss-all.git && cd ggss-all && git submodule update --init --recursive
+Cloning into '/CERN/ggss-all/ggss-dim-cs'...
+Cloning into '/CERN/ggss-all/ggss-driver'...
+Cloning into '/CERN/ggss-all/ggss-oper'...
+Cloning into '/CERN/ggss-all/ggss-runner'...
+Cloning into '/CERN/ggss-all/ggss-spector'...
+Cloning into '/CERN/ggss-all/mca-n957'...
+Cloning into '/CERN/ggss-all/ggss-dim-cs/external-dim-lib'...
+Cloning into '/CERN/ggss-all/ggss-dim-cs/ggss-misc'...
+Cloning into '/CERN/ggss-all/ggss-driver/external-n957-lib'...
+Cloning into '/CERN/ggss-all/ggss-driver/ggss-misc'...
+...(13 lines truncated)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Complex submodule struture handling - scripts}
+\begin{itemize}
+\item Using submodules requires to take care of commit hashes that are being linked as a submodule.
+\item There may be a situation that "parent" repository is not using the latest version of "child" repository.
+\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/submodules_problem.pdf}
+    \caption{Version of submodule differs from version used by parent.}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Complex submodule struture handling - scripts}
+\begin{itemize}
+\item gitio script is responsible for updating all outdated links between parent and child repositories.
+\item The goal is achieved by creating dependency tree of all available repositories.
+\item Starting from the bottom of the tree submodules are being aligned (git commands: add, commit, push).
+\end{itemize}
+\begin{lstlisting}[language=c++, caption={Gitio in action.}]
+root@host:/# python gitio.py -p ./ggss-all/
+...(17 lines truncated)
+INFO - Aligning ./ggss-all/mca-n957 repository
+INFO - Aligning ./ggss-all/ggss-dim-cs repository
+INFO - Aligning ./ggss-all/ggss-runner repository
+INFO - Aligning ./ggss-all/ggss-spector repository
+INFO - Aligning ./ggss-all/ggss-oper repository
+INFO - Aligning ./ggss-all/ggss-driver repository
+INFO - Aligning ./ggss-all repository
+INFO - Aligning finished.
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Automated versioning}
+\begin{itemize}
+\item Automated versioning system has been prepared to keep consistent rpm and release versions throughout whole project.
+\item Every commit to main repository (ggss-all) is being analyzed. If commit message contains one of specified phrases, new release is being created.
+\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/commit.PNG}
+    \caption{New commit following eslint convention.}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/commit_message_analyze.PNG}
+    \caption{Commit message analysis.}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Automated versioning}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{resources/new_release.PNG}
+    \caption{Newly created release.}
+\end{figure}
+\end{frame}
+
 
 \section{Plans for future improvements}
 
@@ -262,8 +346,18 @@ ggss_build_library(
 \item Further code refactoring.
 \item Introducing new features, for example on-start and on-demand GGSS parameters update.
 \item Creating RPM package with whole project - easy deployment.
+\item Improving Python library and apps for hardware testing. E.g. yaml scenarios.
 \end{itemize}
 \end{frame}
 
+\begin{frame}[c]
+\hfill
+\begin{center}
+\large{
+	Thanks for Your attention.
+}
+\hfill
+\end{center}
+\end{frame}
 
 \end{document}
