@@ -1,14 +1,5 @@
-# Praca magisterska
+# Master's thesis
 
-
-## Autorzy
- * [Jarosław Cierpich](https://github.com/Loniowsky)
- * [Arkadiusz Kasprzak](https://github.com/arokasprz100)
-
-
-# Master-thesis
-
-
-## Authors
+## Contributors
  * [Jarosław Cierpich](https://github.com/Loniowsky)
  * [Arkadiusz Kasprzak](https://github.com/arokasprz100)
