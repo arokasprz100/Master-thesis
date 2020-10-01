@@ -135,7 +135,7 @@ std::deque<T>& getQueue () {
 \frametitle{Introducing Test Driven Development}
 \begin{itemize}
 \item For unit tests, we are using \lstinline[basicstyle=\ttfamily\normalsize]{Boost.Test}
-\item Component are tested during refactoring, we make sure that our changes do not introduce any new bugs.
+\item Components are tested during refactoring, we make sure that our changes do not introduce any new bugs.
 \item Each component can be tested separately.
 \end{itemize}
 \begin{lstlisting}[language=c++, caption={Unit test example}]
@@ -170,32 +170,8 @@ BOOST_AUTO_TEST_CASE(
 \begin{frame}[fragile]
 \frametitle{CMake files refactoring}
 \begin{itemize}
-\item GGSS uses CMake for managing the build process of the software.
-\item CMake is platform and compiler independent.
 \item CMake files have been slightly refactored to improve readability by using macros and functions.
-\end{itemize}
-\begin{lstlisting}[language=c++, caption={Old version of CMake used for building \emph{thread-lib}}]
-set(target_name "thread")
-if(NOT TARGET ${target_name})
-    set(CMAKE_MODULE_PATH "${GGSS_MISC_PATH}")
-    include(BuildLibrary)
-    include(FindLibraryBoost)
-    include(SetupDoxygen)
-    include(SetupTests)
-
-    # notice the need to set some variables before including the file
-    set(dependency_prefix "${CMAKE_CURRENT_SOURCE_DIR}/..")
-    set(dependencies "handle" "log")
-    include(BuildDependencies)
-endif() 
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{CMake files refactoring}
-\begin{itemize}
-\item Instead of including the CMake template files (which just pastes the code), we invoke \lstinline[basicstyle=\ttfamily\normalsize]{ggss_build_library} with named parameters.
-\item Unit tests and Doxygen support has been moved to \lstinline[basicstyle=\ttfamily\normalsize]{ggss_build_library} macro, because every library in the project uses them.
+\item Doxygen and unit testing support have been added.
 \end{itemize}
 \begin{lstlisting}[language=c++, caption={New version of CMake used for building \emph{thread-lib}}]
 set(CMAKE_MODULE_PATH "${GGSS_MISC_PATH}")
