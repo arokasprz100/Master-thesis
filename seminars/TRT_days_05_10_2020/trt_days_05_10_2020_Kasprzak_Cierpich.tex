@@ -47,50 +47,33 @@
 
 \titleframe[en]
 
-\begin{frame}
-\frametitle{Agenda}
-\tableofcontents
-\end{frame}
-
-\section {Overview of changes}
-
 
 \begin{frame}
 \frametitle{Overview of changes}
 \begin{itemize}
     \item C++ codebase refactoring: \begin{itemize}
-        \item migration to C++11/14 (range-for loops, uniform initialization etc)
-        \item removing old, unused code 
-        \item adding more comprehensive documentation
+        \item migration to C++11/14 (range-for loops, uniform initialization etc.)
+        \item conventions unification (code formatting, function naming etc.)
+        \item removing old, unused code
         \item introducing TDD (Test Driven Development)
+        \item adding more comprehensive documentation
     \end{itemize}
+    \item project structure refactoring (removing unused dependencies, renaming files and one library)
     \item CMake files refactoring
-    \item creating tools for versioning and Git submodule handling
+    \item creating tools for Git submodule handling
+    \item creating tools for versioning 
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}[fragile]
-\frametitle{Migration to C++11/14}
-Example of migration to C++11/14 - replacing iterator loop with range-for one. Below You can see the old code.
-\begin{lstlisting}[language=c++, caption={Example of old C++ code (before refactoring).}]
-for ( XMLTag::NestedTags::const_iterator j = tag.getNestedTags().begin()
-            ; j != tag.getNestedTags().end()
-            ; j++
-        )
-{
-    if((j->second->getName() == tagName)
-        &&(j->second->getAttributeValue("id") == idValue))
-        return j->second;
-    else
-        m_findTagById(*(j->second), tagName, idValue);		
-} // endfor
-\end{lstlisting}
-\end{frame}
-
-
-\begin{frame}[fragile]
-\frametitle{Migration to C++11/14}
+\frametitle{C++ codebase refactoring}
+\begin{itemize}
+    \item 12 out of 14 main libraries in the project received some kind of code refactoring
+    \item unified code and documentation convention has been applied in every library
+    \item some Boost features have been replaced with their C++11 counterparts
+    \item deprecated and not recommended parts of code have been modernized (using range-for loops, noexcept, uniform initialization etc.)
+\end{itemize}
 \begin{lstlisting}[language=c++, caption={Example of new C++ code (after refactoring).}]
 const XMLTag::NestedTags& nestedTags = startingTag.getNestedTags();
 for(const auto& nestedTag: nestedTags)
@@ -101,21 +84,16 @@ for(const auto& nestedTag: nestedTags)
     }
 }
 \end{lstlisting}
-\begin{itemize}
-    \item using range-for loop increases readability of the code
-    \item \lstinline[basicstyle=\ttfamily\normalsize]{else} clause has been removed - result of the recursive function call was never used
-    \item no need to use the \lstinline[basicstyle=\ttfamily\normalsize]{*} operator
-    \item \lstinline[basicstyle=\ttfamily\normalsize]{nestedTag} is a better name than \lstinline[basicstyle=\ttfamily\normalsize]{j}
-\end{itemize}
 \end{frame}
 
 
 \begin{frame}[fragile]
-\frametitle{Removing old, unused code}
+\frametitle{C++ codebase refactoring}
 \begin{itemize}
-\item The project contained a lot of code (functions/methods) that were never used.
-\item Some of them could even be harmful if used.
-\item Below example shows two methods that have been removed (why?) from \lstinline[basicstyle=\ttfamily\normalsize]{QueueLimited} class (a queue with size limit).
+    \item the project contained a lot of code (functions or even whole classes) that were never used
+    \item unreachable and commented out code has been removed
+    \item unused parts of code (for example else branches or unsafe methods) have been removed
+    \item below example shows two methods that have been removed from \lstinline[basicstyle=\ttfamily\normalsize]{QueueLimited} class (a queue with size limit).
 \end{itemize}
 \begin{lstlisting}[language=c++, caption={Example of removed code.}]
 // return the whole queue
@@ -154,14 +132,15 @@ BOOST_AUTO_TEST_CASE(
 \end{lstlisting}
 \end{frame}
 
+
 \begin{frame}[fragile]
-\frametitle{Continous Integration}
+\frametitle{Continous Integration and TDD}
 \begin{itemize}
 \item Unit tests have been integrated into out CI/CD infrastructure.
 \end{itemize}
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{resources/pipeline_example.png}
+\includegraphics[width=0.75\textwidth]{resources/pipeline_example.png}
 \caption{Example of CI pipeline used in the project.}
 \end{figure}
 \end{frame}
@@ -273,11 +252,14 @@ INFO - Aligning finished.
 \end{frame}
 
 
-\section{Work in progress}
-
-
 \begin{frame}[fragile]
 \frametitle{Work in progress}
+\begin{itemize}
+    \item Hardware testing scripts refactoring and upgrade (yaml based scenarios).
+    \item Gitio script improvements (interactive entry point, automated repository structure initialization).
+    \item Custom artifacts (RPM package, compiled code, documentation) attached to releases.
+    \item HV management commands refactoring (user-friendly format for SET and MON commands).
+\end{itemize}
 \end{frame}
 
 \begin{frame}[c]
