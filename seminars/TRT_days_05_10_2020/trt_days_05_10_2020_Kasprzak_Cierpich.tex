@@ -32,6 +32,7 @@
     stringstyle=\color[rgb]{0.627,0.126,0.941}
 }
 
+\setbeamertemplate{caption}[numbered]
 \setbeamersize{text margin left=5mm,text margin right=5mm}
 
 
@@ -90,10 +91,10 @@ for(const auto& nestedTag: nestedTags)
 \begin{frame}[fragile]
 \frametitle{C++ codebase refactoring}
 \begin{itemize}
-    \item the project contained a lot of code (functions or even whole classes) that were never used
+    \item the project contained a lot of code (functions or even whole classes) that was never used
     \item unreachable and commented out code has been removed
-    \item unused parts of code (for example else branches or unsafe methods) have been removed
-    \item below example shows two methods that have been removed from \lstinline[basicstyle=\ttfamily\normalsize]{QueueLimited} class (a queue with size limit).
+    \item unused parts of code (for example \lstinline[basicstyle=\ttfamily\normalsize]{else} branches or unsafe methods) have been removed
+    \item below example shows two methods that have been removed from \lstinline[basicstyle=\ttfamily\normalsize]{QueueLimited} class (a queue with size limit)
 \end{itemize}
 \begin{lstlisting}[language=c++, caption={Example of removed code.}]
 // return the whole queue
@@ -112,9 +113,9 @@ std::deque<T>& getQueue () {
 \begin{frame}[fragile]
 \frametitle{Introducing Test Driven Development}
 \begin{itemize}
-\item For unit tests, we are using \lstinline[basicstyle=\ttfamily\normalsize]{Boost.Test}
-\item Components are tested during refactoring, we make sure that our changes do not introduce any new bugs.
-\item Each component can be tested separately.
+\item for unit tests, we are using \lstinline[basicstyle=\ttfamily\normalsize]{Boost.Test}
+\item components are tested during refactoring, we make sure that our changes do not introduce any new bugs
+\item each component can be tested separately
 \end{itemize}
 \begin{lstlisting}[language=c++, caption={Unit test example}]
 /**
@@ -136,7 +137,7 @@ BOOST_AUTO_TEST_CASE(
 \begin{frame}[fragile]
 \frametitle{Continous Integration and TDD}
 \begin{itemize}
-\item Unit tests have been integrated into out CI/CD infrastructure.
+\item unit tests have been integrated into out CI/CD infrastructure
 \end{itemize}
 \begin{figure}
 \centering
@@ -149,8 +150,8 @@ BOOST_AUTO_TEST_CASE(
 \begin{frame}[fragile]
 \frametitle{CMake files refactoring}
 \begin{itemize}
-\item CMake files have been slightly refactored to improve readability by using macros and functions.
-\item Doxygen and unit testing support have been added.
+\item CMake files have been slightly refactored to improve readability by using macros and functions
+\item Doxygen and unit testing support have been added
 \end{itemize}
 \begin{lstlisting}[language=c++, caption={New version of CMake used for building \emph{thread-lib}}]
 set(CMAKE_MODULE_PATH "${GGSS_MISC_PATH}")
@@ -168,8 +169,8 @@ ggss_build_library(
 \begin{frame}[fragile]
 \frametitle{Complex submodule structure handling - scripts}
 \begin{itemize}
-\item GGSS project tree contains a complex repository structure with many connections between components.
-\item To make it easy to properly initialize project structure git submodules are being used.
+\item GGSS project tree contains a complex repository structure with many connections between components
+\item to make it easy to properly initialize project structure git submodules are being used
 \end{itemize}
 \begin{lstlisting}[language=c++, caption={Initialize project structure with one command.}]
 root@host:/# git clone ssh://git@gitlab.cern.ch:7999/atlas-trt-dcs-ggss/ggss-all.git && cd ggss-all && git submodule update --init --recursive
@@ -190,8 +191,8 @@ Cloning into '/CERN/ggss-all/ggss-driver/ggss-misc'...
 \begin{frame}[fragile]
 \frametitle{Complex submodule structure handling - scripts}
 \begin{itemize}
-\item Using submodules requires to take care of commit hashes that are being linked as a submodule.
-\item There may be a situation that "parent" repository is not using the latest version of "child" repository.
+\item using submodules requires to take care of commit hashes that are being linked as a submodule
+\item there may be a situation that "parent" repository is not using the latest version of "child" repository
 \end{itemize}
 \begin{figure}
     \centering
@@ -203,9 +204,9 @@ Cloning into '/CERN/ggss-all/ggss-driver/ggss-misc'...
 \begin{frame}[fragile]
 \frametitle{Complex submodule structure handling - scripts}
 \begin{itemize}
-\item gitio script is responsible for updating all outdated links between parent and child repositories.
-\item The goal is achieved by creating dependency tree of all available repositories.
-\item Starting from the bottom of the tree submodules are being aligned (git commands: add, commit, push).
+\item gitio script is responsible for updating all outdated links between parent and child repositories
+\item the goal is achieved by creating dependency tree of all available repositories
+\item starting from the bottom of the tree submodules are being aligned (git commands: add, commit, push)
 \end{itemize}
 \begin{lstlisting}[language=c++, caption={Gitio in action.}]
 root@host:/# python gitio.py -p ./ggss-all/
@@ -225,8 +226,8 @@ INFO - Aligning finished.
 \begin{frame}[fragile]
 \frametitle{Automated versioning}
 \begin{itemize}
-\item Automated versioning system has been prepared to keep consistent rpm and release versions throughout whole project.
-\item Every commit to main repository (ggss-all) is being analyzed. If commit message contains one of specified phrases, new release is being created.
+\item automated versioning system has been prepared to keep consistent rpm and release versions throughout whole project
+\item every commit to main repository (ggss-all) is being analyzed. If commit message contains one of specified phrases, new release is being created
 \end{itemize}
 \begin{figure}
     \centering
@@ -255,10 +256,10 @@ INFO - Aligning finished.
 \begin{frame}[fragile]
 \frametitle{Work in progress}
 \begin{itemize}
-    \item Hardware testing scripts refactoring and upgrade (yaml based scenarios).
-    \item Gitio script improvements (interactive entry point, automated repository structure initialization).
-    \item Custom artifacts (RPM package, compiled code, documentation) attached to releases.
-    \item HV management commands refactoring (user-friendly format for SET and MON commands).
+    \item hardware testing scripts refactoring and upgrade (yaml based scenarios)
+    \item gitio script improvements (interactive entry point, automated repository structure initialization)
+    \item custom artifacts (RPM package, compiled code, documentation) attached to releases
+    \item HV management commands refactoring (user-friendly format for SET and MON commands)
 \end{itemize}
 \end{frame}
 
