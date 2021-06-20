@@ -223,40 +223,42 @@
 
 
 % =====  STRONA TYTULOWA PRACY MAGISTERSKIEJKIEJ ====
-% ostatnia modyfikacja: 2009/07/01, K. Malarz
-
 \thispagestyle{empty}
-%% ------------------------ NAGLOWEK STRONY ---------------------------------
-\includegraphics[height=37.5mm]{res/agh_nzw_a_pl_1w_wbr_cmyk}\\
-\rule{30mm}{0pt}
-{\large \textsf{Wydział Fizyki i Informatyki Stosowanej}}\\
-\rule{\textwidth}{3pt}\\
-\rule[2ex]
-{\textwidth}{1pt}\\
-\vspace{7ex}
 \begin{center}
-{\LARGE \bf \textsf{Praca magisterska}}\\
-\vspace{13ex}
-% --------------------------- IMIE I NAZWISKO -------------------------------
-{\bf \Large \textsf{Jan Nowak}}\\
-\vspace{3ex}
-{\sf\small kierunek studiów:} {\bf\small \textsf{fizyka techniczna}}\\
-\vspace{1.5ex}
-{\sf\small specjalność:} {\bf\small \textsf{tylko na IS i FM}}\\
-\vspace{10ex}
+\includegraphics[scale=1.4]{res/agh_nzw_s_pl_1w_wbr_cmyk.pdf} \\[0.2cm]
+
+WYDZIAŁ FIZYKI I INFORMATYKI STOSOWANEJ \\[0.2cm]
+KATEDRA ODDZIAŁYWAŃ I DETEKCJI CZĄSTEK \\[1.2cm]
+\textbf{\huge Praca Dyplomowa} \\[1.2cm]
+
+
 %% ------------------------ TYTUL PRACY --------------------------------------
-{\bf \huge \textsf{Jakiś długi i nie mieszczący się
-w~jednej linii tytuł
-pracy magisterskiej}}\\
-\vspace{14ex}
-%% ------------------------ OPIEKUN PRACY ------------------------------------
-{\Large Opiekun: \bf \textsf{prof. dr hab. Bądź Doktor}}\\
-\vspace{22ex}
-{\large \bf \textsf{Kraków, czerwiec 20??}}
+
+{\LARGE Rozbudowa i uaktualnienie systemu GGSS detektora ATLAS TRT}\\[0.8cm]
+{\LARGE Update and upgrade of the GGSS system for ATLAS TRT detector}\\
+
+\vfill
+%% ------------------------ DANE PRACY ------------------------------------
+
+\begin{minipage}{\textwidth}
+\begin{flushleft}
+{
+    \large 
+    Autorzy: \hfill \textbf{Arkadiusz Kasprzak, Jarosław Cierpich} \\[0.1cm]
+    Kierunek studiów: \hfill \textbf{Informatyka Stosowana} \\[0.1cm]
+    Opiekun pracy: \hfill \textbf{dr hab. inż. Bartosz Mindur, prof. AGH} \\[0.1cm]
+}
+\end{flushleft}
+\end{minipage} \\[2cm]
+
+
+{\large \bf \textsf{Kraków, 2021}}
 \end{center}
 %% =====  STRONA TYTUŁOWA PRACY MAGISTERSKIEJKIEJ ====
 
 \newpage
+
+
 
 %% =====  TYŁ STRONY TYTUŁOWEJ PRACY MAGISTERSKIEJKIEJ ====
 \begin{center}
@@ -287,17 +289,17 @@ Jednocześnie Uczelnia informuje, że zgodnie z art. 15a ww. ustawy o prawie aut
 \rightline{Kraków, ?? czerwca 20??}
 \begin{center}
 {\bf Tematyka pracy magisterskiej i praktyki dyplomowej
-Jana Nowaka,
-studenta drugiego roku studiów drugiego stopnia na kierunku fizyka techniczna, specjalności jeśli występuje}\\
+Jarosława Cierpicha,
+studenta drugiego roku studiów drugiego stopnia na kierunku informatyka stosowana, specjalności modelowanie i analiza danych}\\
 \end{center}
 
 Temat pracy magisterskiej:
-{\bf Tu wpisz temat pracy magisterskiej Temat pracy magisterskiej Temat pracy magisterskiej}\\
+{\bf Rozbudowa i uaktualnienie systemu GGSS detektora ATLAS TRT}\\
 
 \begin{tabular}{rl}
 
-Opiekun pracy:                  & prof. dr hab. Śmaki Owaki\\
-Recenzenci pracy:               & dr hab. inż. Owaki Śmaki\\
+Opiekun pracy:                  & dr hab. inż. Bartosz Mindur, prof. AGH \\
+Recenzenci pracy:               & \\
 Miejsce praktyki dyplomowej:    & WFiIS AGH, Kraków\\
 \end{tabular}
 
@@ -310,14 +312,18 @@ Miejsce praktyki dyplomowej:    & WFiIS AGH, Kraków\\
 \item Zebranie i opracowanie literatury dotyczącej tematu pracy.
 \item Praktyka dyplomowa:
 \begin{itemize}
-\item zapoznanie się z ideą...,
-\item uczestnictwo w eksperymentach/przygotwanie oprogramowania...,
-\item dyskusja i analiza wyników...
-\item sporządzenie sprawozdania z praktyki.
+    \item udział w Krakow Applied Physics and Computer Science Summer School '20
+    \item zapoznanie z materiałami (wykłady i szkolenia praktyczne) obejmującymi zagadnienia z dziedziny fizyki cząstek, informatyki oraz detektorów i elektroniki
+    \item praca nad projektem GGSS w dwuosobowym zespole, obejmująca zmiany w oprogramowaniu i architekturze projektu
+    \item prezentacja rezultatów wykonanej pracy przed uczestnikami oraz opiekunami szkoły
+    \item prezentacja wykonanych prac podczas wydarzenia TRT Days
 \end{itemize}
-\item Kontynuacja obliczeń związanych z tematem pracy magisterskiej.
-\item Zebranie i opracowanie wyników obliczeń.
-\item Analiza wyników obliczeń numerycznych, ich omówienie i zatwierdzenie przez opiekuna.
+\item Kontynuacja prac nad projektem:
+\begin{itemize}
+    \item wykonanie dalszych zmian w oprogramowaniu systemu GGSS, w tym dodanie nowych funkcjonalności
+    \item przeprowadzanie okresowych testów działania systemu w środowisku docelowym
+    \item wykonanie prac nad infrastrukturą projektu
+\end{itemize}
 \item Opracowanie redakcyjne pracy.
 \end{enumerate}
 
@@ -371,10 +377,13 @@ Na kolejnych dwóch stronach proszę dołączyć kolejno recenzje pracy popełni
 \tableofcontents
 \clearpage
 
-\include{intro}
-\include{theory}
-\include{main}
-\include{summary}
+\include{components/intro}
+\include{components/ggss}
+\include{components/practices}
+\include{components/infra}
+\include{components/code}
+\include{components/tests}
+\include{components/summary}
 
 
 \printbibliography
