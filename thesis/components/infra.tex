@@ -1,9 +1,57 @@
 \chapter{Prace nad architekturą i infrastrukturą projektu}
 \label{cha:infra}
 
-% - aktualizacja struktury projektu
-% - automatyzacja pracy z submodułami
-% - zmiany w systemie budowania projektu
-% - automatyzacja i centralizacja wersjonowania projektu
-% - pakietowanie o rozlokowanie projektu
-% - zmiany w infrastrukturze do testowania (hardware apps)
+
+Niniejszy rozdział zawiera opis prac wykonanych przez autorów w ramach rozwoju architektury i infrastruktury systemu GGSS. Rozdział ten stanowi bezpośrednią kontynuację pracy inżynierskiej autorów, gdzie przygotowane zostały pierwsze wersje rozwijanych w ramach pracy magisterskiej rozwiązań. Przedstawione tu informację dotyczą szerokiego zakresu zagadnień związanych z inżynierią oprogramowania, takich jak: zarządzanie strukturą projektu oraz jego zależnościami, automatyzacja procesów towarzyszących wytwarzaniu oprogramowania czy przygotowanie infrastruktury ułatwiającej testy warstwy sprzętowej systemu. 
+
+\section{Zmiany w architekturze projektu}
+Przez zmiany w architekturze projektu autorzy rozumieją stopniowy rozwój rozwiązania przygotowanego w ramach napisanej przez nich pracy inżynierskiej. Wprowadzone po jej zakończeniu modyfikacje to przede wszystkim uproszczenie powstałej hierarchii zależności między poszczególnymi elementami warstwy oprogramowania (rozumianymi zarówno jako repozytoria, jak i biblioteki), uczynienie systemu bardziej przystępnym dla użytkownika (np. poprzez nadanie komponentom nazw dobrze oddających ich przeznaczenie) oraz przygotowanie systemu pozwalającego w prosty sposób odtworzyć kod źródłowy w wersji bez wprowadzonych w ramach pracy magisterskiej modyfikacji (jako rodzaj zabezpieczenia przed skutkami potencjalnych błędów, które mogły zostać wprowadzone do oprogramowania podczas prac nad nim). Znaczna część zmian opisanych w niniejszej części pracy była możliwa do wprowadzenia z uwagi na trwające jednocześnie prace nad kodem źródłowym systemu GGSS i zmiany zachodzące w ich czasie. 
+
+
+\subsection{Początkowa architektura projektu}
+Przeprowadzone przez autorów w ramach pracy inżynierskiej modyfikacje architektury systemu GGSS obejmowały przede wszystkim migrację projektu do systemu kontroli wersji Git, wprowadzenie spójnego nazewnictwa poszczególnych komponentów oraz zastosowanie funkcjonalności submodułów będącej częścią technologii Git do stworzenia hierarchicznej struktury repozytoriów (w odróżnieniu od pierwotnej, płaskiej architektury opartej o katalogi). Celem tych zmian było ułatwienie pracy nad pojedynczymi komponentami projektu oraz uczynienie struktury projektu przyjazną dla użytkownika, co zostało zdaniem autorów osiągnięte. 
+
+Architektura stanowiąca punkt wyjściowy zmian wykonanych w ramach niniejszej pracy przedstawiona została na rysunku \textbf{rysunek} (z pominięciem repozytoriów pomocniczych, zawierających np. dokumentację). Projekt składał się więc pierwotnie z 14 repozytoriów zawierających wchodzące w skład oprogramowania systemu GGSS biblioteki, aplikacje i skrypty. Przygotowane w ten sposób rozwiązanie charakteryzowało się jednak pewnymi wadami i ograniczeniami, z których najważniejsze to:
+\begin{itemize}
+    \item głęboka hierarchia zależności, mająca negatywny wpływ na wydajność działania mechanizmu submodułów
+    \item istnienie repozytorium \emph{ggss-misc}, zawierającego (poza szablonami CMake) elementy kodu źródłowego niepasujące do pozostałych bibliotek wchodzących w skład systemu: bazowe klasy wyjątków stosowanych w całym projekcie oraz flagi konfigurujące projekt w zależności od systemu operacyjnego (konieczność zastosowania tego typu zabiegu wynikła wprost z założenia o niemodyfikowaniu kodu źródłowego w czasie tworzenia pracy inżynierskiej)
+    \item zachowanie oryginalnych nazw bibliotek i aplikacji, dostosowując je jedynie do przyjętej konwencji. Jedną z bibliotek wchodzących w skład projektu była biblioteka statyczna \emph{handle-lib}, odpowiedzialna za implementację mechanizmu slotów i sygnałów (\textbf{pisownia}), na co, zdaniem autorów, jej nazwa nie wskazuje.
+    \item wnioskowanie o zależnościach pomiędzy bibliotekami na podstawie dyrektyw preprocesora \emph{include} zawartych w kodzie źródłowym, a nie wykorzystywanych funkcjonalności, co wynikało z niewielkiego doświadczenia i wiedzy autorów na temat systemu podczas tworzenia pracy inżynierskiej oraz wspomnianego już założenia o niemodyfikowaniu kodu źródłowego.
+    \item założenie o tworzeniu oddzielnego repozytorium dla każdej z występujących w projekcie aplikacji, niezależnie od jej rozmiarów, co ostatecznie znacznie skomplikowało powiązania pomiędzy repozytoriami (np. repozytoria \emph{external-caen-n957-demo} oraz \emph{mca-n957} charakteryzują się podobnymi zależnościami i oba zawierają niewielkie aplikacje, których zadaniem jest współpraca z wielokanałowym analizatorem amplitudy CAEN N957 - mogłoby być więc połączone w jedno repozytorium).
+    \item brak łatwego sposobu na odtworzenie pierwotnej postaci kodu źródłowego - mechanizm ten nie był potrzebny na etapie pracy inżynierskiej, ponieważ nie dokonywano wtedy modyfikacji we wspomnianym kodzie.
+\end{itemize}
+
+
+\subsection{Uproszczenie architektury projektu}
+Pierwszym podjętym przez autorów działaniem mającym na celu modyfikację struktury projektu była próba jej uproszczenia poprzez analizę zależności wewnętrzych systemu (tzn. zależności pomiędzy poszczególnymi bibliotekami). Należy tutaj zwrócić uwagę, że prac tych nie wykonywano przez pierwsze pół roku od rozpoczęcia przez autorów studiów magisterskich - skupienie się na użytkowaniu stworzonej architektury pozwoliło autorom zarówno na zapoznanie się lepiej z projektem, jak również na samodzielną obserwację jej zalet i wad. 
+
+
+
+% likwidacja zaleznosci tam, gdzie ich nie ma
+% migracja handle i thread do software
+% usuniecie modulu ggss-misc
+% zintegrowanie submodulow (zachowanie historii)
+
+
+
+\subsection{Dodanie możliwości odtworzenia pierwotnej wersji kodu źródłowego}
+% branche legacy, dokumentacja
+
+\subsection{Pomniejsze zmiany}
+% zmiana nazwy biblioteki
+% wydzielenie biblioteki na exceptions, 
+% przeniesienie compatibilityflags do utils-lib
+% przeniesienie skryptów z ggss-oper do ggss-all
+
+\subsection{Podsumowanie: ostateczna struktura projektu}
+
+
+
+
+
+\section{Automatyzacja pracy z submodułami}
+\section{Rozwój systemu budowania projektu}
+\section{Automatyzacja i centralizacja wersjonowania projektu}
+\section{Pakietowanie i rozlokowanie projektu}
+\section{Rozwój infrastruktury do testowania warstwy sprzętowej}
+
