@@ -7,12 +7,12 @@ Niniejszy rozdział zawiera ważne, z punktu widzenia przeprowadzonych prac, inf
 \section{Wysokopoziomowa architektura systemu GGSS}
 System GGSS składa się z kilku współpracujących ze sobą elementów, przedstawionych (wraz z występującymi między nimi interakcjami) na rysunku \ref{fig:high_level_architecture}. Znaczenie poszczególnych komponentów projektu jest następujące:
 \begin{itemize}
+    \item \textbf{urządzenia (ang. \emph{hardware})} - zestaw urządzeń elektronicznych (m.in. liczniki słomkowe, zasilacze wysokiego napięcia i multipleksery)
     \item \textbf{oprogramowanie GGSS} - zestaw aplikacji wraz z otaczającą je infrastrukturą, których zadaniem jest sterowanie urządzeniami wchodzącymi w skład systemu GGSS oraz przetwarzanie zbieranych za ich pomocą danych
-    \item \textbf{urządzenia (ang. \textit{hardware})} - zestaw urządzeń elektronicznych (m.in. liczniki słomkowe, zasilacze wysokiego napięcia i multipleksery)
-    \item \textbf{pliki konfiguracyjne} - proste pliki tekstowe w formacie XML \textbf{rozwin + cytowanie}, zawierające informacje o oczekiwanym sposobie działania systemu (np. maksymalna możliwa wartość napięcia, jakie może zostać ustawione na każdym z zasilaczy)
+    \item \textbf{pliki konfiguracyjne} - proste pliki tekstowe w formacie XML (\emph{Extensible Markup Language}) \textbf{cytowanie}, zawierające informacje o oczekiwanym sposobie działania systemu (np. maksymalna możliwa wartość napięcia, jakie może zostać ustawione na każdym z zasilaczy)
     \item \textbf{pliki wynikowe} - pliki tekstowe zawierające wyniki pomiarów wykonywanych przez system oraz rejestr zdarzeń 
-    \item \textbf{system WinCC OA} - \textbf{rozwin + cytowanie} - system typu SCADA \textbf{rozwin + cytowanie}, stanowiący część systemu kontroli detektora ATLAS (DCS), pozwalający na obserwację i kontrolę działania poszczególnych poddetektorów
-    \item \textbf{protokół DIM} - \textbf{rozwin + cytowanie} protokół komunikacyjny dla środowisk rozproszonych, oparty o architekturę klient-serwer, zapewniający komunikację między oprogramowaniem systemu GGSS a systemem WinCC OA
+    \item \emph{\textbf{SIMATIC WinCC Open Architecture}} - \textbf{cytowanie} - system typu SCADA (\emph{Supervisory Control And Data Acquisition}) \textbf{cytowanie}, stanowiący część systemu kontroli detektora ATLAS, pozwalający na obserwację i kontrolę działania poszczególnych poddetektorów
+    \item \emph{\textbf{Distributed Information Management System (DIM)}} - \textbf{cytowanie} protokół komunikacyjny dla środowisk rozproszonych, oparty o architekturę klient-serwer, zapewniający komunikację między oprogramowaniem systemu GGSS a systemem WinCC OA
 \end{itemize}
 
 \begin{figure}[H]
@@ -27,7 +27,7 @@ Szczegóły działania najważniejszych z punktu widzenia niniejszej pracy eleme
 
 
 \section{Urządzenia elektroniczne}
-Z punktu widzenia warstwy sprzętowej system GGSS składa się z zestawu tzw. słomkowych liczników proporcjonalnych, zasilanych za pomocą zasilaczy wysokiego napięcia. Sygnały generowane przez liczniki przetwarzane są przez wielokanałowy analizator amplitudy (MCA - \textbf{rozwinac}), natomiast wybór licznika słomkowego używanego do wykonania pomiarów następuje za pomocą multipleksera analogowego \textbf{cytowanie}. Urządzenia podłączone są do komputera PC, który steruje nimi za pomocą oprogramowania systemu GGSS. W tabeli \ref{tab:devices} zamieszczone zostało zestawienie informacji na temat wykorzystywanych przez projekt urządzeń. Sposób działania systemu (jego podstawa fizyczna oraz znaczenie przeprowadzanych pomiarów) wykracza poza zakres niniejszej pracy, został natomiast szczegółowo opisany w pracy \emph{Wybrane zagadnienia związane z pracą słomkowych liczników proporcjonalnych w detektorze TRT eksperymentu ATLAS}, której autorem jest dr hab. inż. Bartosz Mindur, prof. AGH \textbf{cytowanie}.
+Z punktu widzenia warstwy sprzętowej system GGSS składa się z zestawu tzw. słomkowych liczników proporcjonalnych, zasilanych za pomocą 4-kanałowych zasilaczy wysokiego napięcia. Sygnały generowane przez liczniki przetwarzane są przez wielokanałowy analizator amplitudy (MCA - \emph{Multi-Channel Analyzer}), natomiast wybór licznika słomkowego używanego do wykonania pomiarów następuje za pomocą 8-kanałowego multipleksera sygnałów analogowych \textbf{cytowanie}. Urządzenia podłączone są do komputera PC, który steruje nimi za pomocą oprogramowania systemu GGSS. W tabeli \ref{tab:devices} zamieszczone zostało zestawienie informacji na temat wykorzystywanych przez projekt urządzeń. Sposób działania systemu (jego podstawa fizyczna oraz znaczenie przeprowadzanych pomiarów) wykracza poza zakres niniejszej pracy, został natomiast szczegółowo opisany w pracy \emph{Wybrane zagadnienia związane z pracą słomkowych liczników proporcjonalnych w detektorze TRT eksperymentu ATLAS}, której autorem jest dr hab. inż. Bartosz Mindur, prof. AGH \textbf{cytowanie}.
 
 \clearpage
 
@@ -52,69 +52,56 @@ multiplekser sygnałów analogowych & urządzenie autorstwa Pana Pawła Zadrożn
 Poprzez warstwę oprogramowania systemu GGSS autorzy rozumieją zarówno zestaw aplikacji napisanych w języku C++ (standard 11), jak i otaczającą je infrastrukturę (pomocnicze skrypty, system budowania, testowania i tworzenia nowych wydań). 
 
 
-
-\subsection{Aplikacje wchodzące w skład GGSS}
 Trzon warstwy oprogramowania projektu GGSS stanowi aplikacja \emph{ggss-runner}, zawierająca logikę odpowiedzialną za komunikację z systemem za pomocą protokołu DIM, gromadzenie i walidację danych oraz sterowanie urządzeniami wchodzącymi w skład warstwy sprzętowej. W skład systemu wchodzi ponadto szereg pomniejszych aplikacji (niektóre z nich stanowią element dodany przez autorów niniejszej pracy, zostaną więc omówione ze szczegółami w dalszych jej częściach):
 \begin{itemize}
     \item \emph{ggss-spector} - aplikacja okienkowa służąca do wizualizacji zebranych przez system danych (zapisanych w plikach wynikowych)
     \item \emph{ggss-reader} - niezależna aplikacja przeznaczona do wykorzystywania na maszynach deweloperskich, pozwalająca na odtwarzanie działania oprogramowania sterującego GGSS, tzn. wysyłająca do systemu kontroli detektora archiwalne dane z pominięciem warstwy sprzętowej \textbf{cytowanie pracy grzeska}
-    \item \emph{ggss-dim-cs} - aplikacja pozwalająca na wysyłanie do systemu komend za pomocą protokołu DIM \textbf{tutaj cytowanie}
+    \item \emph{ggss-dim-cs} - aplikacja pozwalająca na prowadzenie interakcji z systemem poprzez udostępnienie możliwości wysyłania do niego komend za pomocą protokołu DIM
     \item zestaw aplikacji \emph{ggss-hardware-service-apps} - proste narzędzia pozwalające na wykonywanie operacji na wchodzących w skład systemu urządzaniach, w tym na wykonywanie testów ich działania. 
 \end{itemize}
 
 
-\subsection{Język C++}
-Zarówno aplikacja \emph{ggss-runner}, jak i wszystkie aplikacje pomocnicze, napisane zostały za pomocą języka C++. Jest to wydajny, wszechstronny język programowania ogólnego przeznaczenia, pozwalający programiście zarówno na wykorzystywanie wysokopoziomowych abstrakcji (programowanie obiektowe, generyczne i funkcyjne), jak i na wydajne wykonywanie niskopoziomowych operacji. W ciągu ostatnich dziesięciu lat język ten był intensywnie rozwijany - od 2011 roku pojawiły się cztery nowe standardy, w tym najnowszy w roku 2020, a kolejny przewidziany jest na rok 2023. Zmiany wprowadzane w nowych wydaniach języka mają na celu zarówno dodawanie do niego nowych funkcjonalności, jak równeż promowanie praktych pozwalających tworzyć prosty w utrzymaniu, czytelny kod. Niestety z uwagi na ograniczenia wynikające ze cech środowiska docelowego, w jakim działać ma system GGSS, w omawianym projekcie możliwe było wykorzystanie jedynie standardu C++11. 
+Projekt GGSS charakteryzuje się ponadto rozbudowaną infrastrukturą, w której skład wchodzą systemy odpowiedzialne za budowanie projektu, zarządzanie zależnościami zewnętrznymi oraz pomiędzy jego komponentami, automatyzację procesu testowania poszczególnych komponentów oraz automatyzację tworzenia i wersjonowania wydań. Projekt zawiera ponadto skrypty pomocnicze (napisane przy użyciu popularnych języków skryptowych), pozwalające na zarządzanie systemem w jego środowisku docelowym. Gruntowna przebudowa infrastruktury systemu GGSS stanowiła temat pracy inżynierskiej autorów (\textbf{cytat i tytul}). W dalszej części niniejszego manuskryptu omówione zostaną wprowadzone w ramach pracy magistersiej rozszerzenia. 
 
 
-\subsection{Biblioteki zewnętrzne}
-W projekcie wykorzystywane są ponadto biblioteki nie będące częścią standardu języka C++, dostarczające funkcjonalności niezbędnych do poprawnego działania systemu. Najważniejsze z nich to:
-\begin{itemize}
-    \item \emph{Boost} \textbf{cytowanie} - rozbudowany zestaw bibliotek dla języka C++, cieszący się znaczącą popularnością, m.in. ze względu na wysoką jakość i szeroki zakres wprowadzanych funkcjonalności (m.in. przetwarzanie argumentów linii poleceń, implementacja operacji na grafach, wsparcie dla programowania sieciowego, tworzenia testów jednostkowych czy zaawansowanego metaprogramowania). Ponadto niektóre z bibliotek wchodzących w skład \emph{Boost} były podstawą do implementacji funkcjonalności takich jak inteligentne wskaźniki (ang. smart pointers) czy obsługa wyrażeń regularnych w nowych standardach języka C++.
-    \item \emph{GNU Scientific Library (GSL)} \textbf{cytowanie} - biblioteka dla języków C i C++, dostarczająca implementacje popularnych algorytmów numerycznych
-    \item \emph{Qt} oraz \emph{Qwt} \textbf{cytowanie} - wieloplatformowy zestaw bibliotek i narzędzi pozwalających na tworzenie aplikacji okienkowych, wykorzystywany przez aplikacje \emph{ggss-spector} oraz \emph{ggss-reader}
-    \item \emph{DIM} \textbf{cytowanie} - dostarczona przez CERN biblioteka umożliwiająca wykorzystywanie protokołu DIM
-    \item \emph{CAEN-N957} \textbf{cytowanie} - dostarczona przez firmę CAEN biblioteka współdzielona napisana w języku C, służąca do obsługi analizatora wielokanałowego N957
-\end{itemize}
+% \subsection{Język C++}
+% Zarówno aplikacja \emph{ggss-runner}, jak i wszystkie aplikacje pomocnicze, napisane zostały za pomocą języka C++. Jest to wydajny, wszechstronny język programowania ogólnego przeznaczenia, pozwalający programiście zarówno na wykorzystywanie wysokopoziomowych abstrakcji (programowanie obiektowe, generyczne i funkcyjne), jak i na wydajne wykonywanie niskopoziomowych operacji. W ciągu ostatnich dziesięciu lat język ten był intensywnie rozwijany - od 2011 roku pojawiły się cztery nowe standardy, w tym najnowszy w roku 2020, a kolejny przewidziany jest na rok 2023. Zmiany wprowadzane w nowych wydaniach języka mają na celu zarówno dodawanie do niego nowych funkcjonalności, jak równeż promowanie praktych pozwalających tworzyć prosty w utrzymaniu, czytelny kod. Niestety z uwagi na ograniczenia wynikające ze cech środowiska docelowego, w jakim działać ma system GGSS, w omawianym projekcie możliwe było wykorzystanie jedynie standardu C++11. 
 
 
-\subsection{Infrastruktura projektu}
-Projekt GGSS charakteryzuje się rozbudowaną infrastrukturą, w której skład wchodzą systemy odpowiedzialne za budowanie projektu, zarządzanie zależnościami pomiędzy jego komponentami (również wewnątrz samego projektu), automatyzację procesu testowania poszczególnych komponentów oraz automatyzację tworzenia i wersjonowania wydań. Ponadto w jej skład wchodzą skrypty pomocnicze (napisane w językach Bash \textbf{cytat} i Python \textbf{cytat}), pozwalające na zarządzanie systemem w jego środowisku docelowym. Gruntowna przebudowa infrastruktury systemu GGSS stanowiła temat pracy inżynierskiej autorów (\textbf{cytat i tytul}). W dalszej części niniejszego manuskryptu omówione zostaną wprowadzone w ramach pracy magistersiej rozszerzenia. 
+% \subsection{Biblioteki zewnętrzne}
+% W projekcie wykorzystywane są ponadto biblioteki nie będące częścią standardu języka C++, dostarczające funkcjonalności niezbędnych do poprawnego działania systemu. Najważniejsze z nich to:
+% \begin{itemize}
+%     \item \emph{Boost} \textbf{cytowanie} - rozbudowany zestaw bibliotek dla języka C++, cieszący się znaczącą popularnością, m.in. ze względu na wysoką jakość i szeroki zakres wprowadzanych funkcjonalności (m.in. przetwarzanie argumentów linii poleceń, implementacja operacji na grafach, wsparcie dla programowania sieciowego, tworzenia testów jednostkowych czy zaawansowanego metaprogramowania). Ponadto niektóre z bibliotek wchodzących w skład \emph{Boost} były podstawą do implementacji funkcjonalności takich jak inteligentne wskaźniki (ang. smart pointers) czy obsługa wyrażeń regularnych w nowych standardach języka C++.
+%     \item \emph{GNU Scientific Library (GSL)} \textbf{cytowanie} - biblioteka dla języków C i C++, dostarczająca implementacje popularnych algorytmów numerycznych
+%     \item \emph{Qt} oraz \emph{Qwt} \textbf{cytowanie} - wieloplatformowy zestaw bibliotek i narzędzi pozwalających na tworzenie aplikacji okienkowych, wykorzystywany przez aplikacje \emph{ggss-spector} oraz \emph{ggss-reader}
+%     \item \emph{DIM} \textbf{cytowanie} - dostarczona przez CERN biblioteka umożliwiająca wykorzystywanie protokołu DIM
+%     \item \emph{CAEN-N957} \textbf{cytowanie} - dostarczona przez firmę CAEN biblioteka współdzielona napisana w języku C, służąca do obsługi analizatora wielokanałowego N957
+% \end{itemize}
 
-Infrastruktura budowania projektu oparta jest o narzędzie CMake (\textbf{cytowanie}) (wersja 2.8) rozwijane przez firmę \emph{Kitware}. Zastosowanie go pozwala na generowanie pliku budującego projekt właściwego dla danej platformy docelowej (np. \emph{Makefile} dla systemów z rodziny UNIX), a co za tym idzie, pozwala na łatwe tworzenie aplikacji wieloplatformowych. Stosując narzędzie CMake, tworzenie systemu budowania projektu polega na przygotowaniu pliku (lub zestawu plików) \emph{CMakeLists.txt}, zawierającego polecenia pozwalające na określenie przez programistę informacji takich jak: standard języka C++, lokalizacja plików źródłowych i bibliotek zewnętrznych.
+% Infrastruktura budowania projektu oparta jest o narzędzie CMake (\textbf{cytowanie}) (wersja 2.8) rozwijane przez firmę \emph{Kitware}. Zastosowanie go pozwala na generowanie pliku budującego projekt właściwego dla danej platformy docelowej (np. \emph{Makefile} dla systemów z rodziny UNIX), a co za tym idzie, pozwala na łatwe tworzenie aplikacji wieloplatformowych. Stosując narzędzie CMake, tworzenie systemu budowania projektu polega na przygotowaniu pliku (lub zestawu plików) \emph{CMakeLists.txt}, zawierającego polecenia pozwalające na określenie przez programistę informacji takich jak: standard języka C++, lokalizacja plików źródłowych i bibliotek zewnętrznych.
 
 \section{Oprogramowanie WinCC OA}
-SIMATIC WinCC Open Architecture jest oprogramowaniem typu SCADA firmy SIEMENS służącym do wizualizacji i sterowania procesami produkcyjnymi. System ten stanowi trzon systemu kontroli detektora ATLAS (DCS) i pozwala na monitorowanie i sterowanie pracą wchodzących w jego skład podsystemów. WinCC OA pozwala m.in. na tworzenie specjalnych paneli, obrazujacych zebrane dane oraz procesy zachodzące w monitorowanym systemie - przykład tego typu panelu, obrazujący pracę liczników słomkowych wykorzystywanych przez GGSS, przedstawiony został na rysunku \ref{fig:winccoa_panel_example}.
-
-(https://new.siemens.com/global/en/products/automation/industry-software/automation-software/scada/simatic-wincc-oa/wincc-oa-basic-software.html)
-
-
-W ramach pracy magisterskiej autorzy nie wykonywali żadnych prac związanych z rozwojem czy utrzymaniem oprogramowania WinCC OA. Jest ono natomiast szczególnie istotne z punktu widzenia testów, jakim musiał być poddawany system GGSS wraz z postępami prac. \textbf{dopisac dlaczego, napisac cos jeszcze moze np o pracy grzeska}
-
-% Krotko co to jest
-% Co to sa panele, pokazac przyklad
-% Krotko jak dziala DIM, co jest u nas klientem, a co serwerem
+SIMATIC WinCC Open Architecture jest oprogramowaniem typu SCADA firmy SIEMENS służącym do wizualizacji i sterowania procesami produkcyjnymi. Stanowi ono trzon systemu kontroli detektora ATLAS i pozwala na monitorowanie i sterowanie pracą wchodzących w jego skład podsystemów. WinCC OA pozwala m.in. na tworzenie specjalnych paneli, przedstawiających w przyjaznej dla użytkownika formie graficznej zebrane dane oraz procesy zachodzące w monitorowanym systemie - przykład tego typu panelu, obrazujący pracę słomkowych liczników proporcjonalnych wchodzących w skład warstwy sprzętowej systemu GGSS, przedstawiony został na rysunku \ref{fig:winccoa_panel_example}.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{components/ggss_images/winccoa_panel.png}
-\caption{}
+\caption{Fragment przykładowego panelu informacyjno-administracyjnego stworzonego z wykorzystaniem technologii WinCC OA. Widoczne są m.in.: parametry związane z pomiarami wykonywanymi za pomocą słomkowych liczników proporcjonalnych (np. \emph{Peak pos.} i \emph{Peak area}), data ostatniej aktualizacji oraz wskaźniki informujące o ostrzeżeniach i błędach.}
 \label{fig:winccoa_panel_example}
 \end{figure}
 
+
+Autorzy niniejszego dokumentu nie byli odpowiedzialni za przeprowadzanie prac związanych z rozwojem oraz utrzymanem systemu WinCC OA funkcjonującego w ramach infrastruktury CERN. Z tego też powodu szczegóły jego działania nie zostaną omówione. Istotna, z punktu widzenia niniejszej pracy, jest natomiast możliwość zastosowania go jako narzędzia ułatwiajacego przeprowadzanie okresowych testów systemu GGSS. Wynika to przede wszystkim z wygodnej w użytkowaniu funkcjonalności paneli, pozwalających na monitorowanie działania projektu w czasie rzeczywistym oraz natychmiastowe wykrywanie wszelkich nieprawidłowości. 
+
+
 \section{Środowisko docelowe i ograniczenia}
-Charakterystyka środowiska docelowego, w jakim działa system GGSS, jest z punktu widzenia niniejszej pracy bardzo istotna - silny związek projektu z infrastrukturą dostarczaną przez CERN stawia przed autorami niniejszej pracy szereg ograniczeń dotyczących wersji wykorzystywanych narzędzi, jak również wymusza dodatkowe działania w przypadku wykonywania pewnych operacji. Do najważniejszych ograniczeń narzucanych przez środowisko docelowe i specyfikę projektu należą:
+Charakterystyka środowiska docelowego, w jakim działa system GGSS, jest z punktu widzenia niniejszej pracy bardzo istotna, przede wszystkim ze względu na bardzo znaczący związek projektu z infrastrukturą dostarczaną przez CERN. Stawia to przed autorami szereg szereg ograniczeń dotyczących wersji wykorzystywanych narzędzi, jak również wymusza dodatkowe działania w przypadku wykonywania pewnych operacji. Do najważniejszych ograniczeń narzucanych przez środowisko docelowe i specyfikę projektu należą:
 \begin{itemize}
-    \item dostępna wersje kompilatora języka C++ - w ramach infrastruktury CERN dostępny jest kompilator \emph{g++ (GCC) 4.8.5}. Wersja ta wspiera w większości standard C++11, a zatem funkcjonalności takie jak wyrażenia lambda czy semantyka przenoszenia. Niestety oferowane przez nią wsparcie nie jest pełne - brakuje m.in. poprawnej implementacji biblioteki odpowiedzialnej za przetwarzanie wyrażeń regularnych. Ze względu na wymóg zapewnienia możliwości budowania projektu na maszynie docelowej, ograniczenie to stanowiło znaczące utrudnienie podczas prac nad kodem źródłowym aplikacji wchodzących w skład systemu.
-    \item dostępna wersja narzędzia CMake - na maszynach docelowych dostępna jest wersja \emph{2.8.12.2}, stanowiąca bardzo stare wydanie narzędzia. \textbf{dopisac cos}
-    \item związek projektu z wersją jądra systemu \textbf{dopisac cos}
-    \item możliwość przeprowadzania testów tylko w określonych momentach prac nad projektem \textbf{dopisac cos}
-    \item ograniczone uprawnienia w środowisku docelowym \textbf{dopisac cos}
-    \item konieczność zachowania kompatybilności wstecznej \textbf{dopisac cos}
+    \item dostępna wersja kompilatora języka C++ - w ramach infrastruktury CERN dostępny jest kompilator \emph{g++ (GCC) 4.8.5}. Wersja ta wspiera w większości standard C++11, a zatem funkcjonalności takie jak wyrażenia lambda czy semantyka przenoszenia. Niestety oferowane przez nią wsparcie nie jest pełne - brakuje m.in. poprawnej implementacji biblioteki odpowiedzialnej za przetwarzanie wyrażeń regularnych. Ze względu na wymóg zapewnienia możliwości budowania projektu na maszynie docelowej, ograniczenie to stanowiło znaczące utrudnienie podczas prac nad kodem źródłowym aplikacji wchodzących w skład systemu.
+    \item dostępna wersja narzędzia CMake - na maszynach docelowych dostępna jest wersja \emph{2.8.12.2}, stanowiąca bardzo stare wydanie narzędzia. Oprogramowanie w znacząco nowszej wersji (tzn. o numerze wyższym od \emph{3.0}) dostępne jest jedynie na wybranych komputerach wchodzących w skład infrastruktury CERN, przez co zdecydowano o pozostaniu przy starym jego wydaniu. Stosowana wersja nie zawiera wielu powszechnie stosowanych współcześnie funkcjonalności oraz charakteryzuje się innym podejściem do zarządzania zależnościami (operacje na poziomie katalogów, uznawane za tzw. \emph{złą praktykę}).
+    \item związek projektu z wersją jądra systemu - jednym z modułów wchodzących w skład systemu GGSS jest \emph{ggss-driver}, zawierający sterownik dla wielokanałowego analizatora amplitudy CAEN N957. Istnienie tego modułu wymusza zgodność wersji jądra systemu operacyjnego pomiędzy środowiskiem deweloperskim i produkcyjnym, co w konsekwencji prowadzi do komplikacji infrastruktury budowania projektu - konieczne jest stosowanie maszyn wirtualnych oraz narzędzia konteneryzacyjnego Docker podczas procesu budowania komponentu \emph{ggss-driver} (stosowane rozwiązanie opisane zostało przez autorów szczegółowo w ich pracy inżynierskiej).
+    \item ograniczone uprawnienia w środowisku docelowym - \textbf{dopisac cos}
+    \item możliwość przeprowadzania testów tylko w określonych momentach prac nad projektem - nad systemami GGSS oraz DCS pracuje wielu ekspertów, testowanie projektu możliwe jest zatem tylko wtedy, gdy nie zakłóca to prac innych osób i jest fizycznie możliwe (np. gdy nie są wykonywane prace nad warstwą sprzętową systemu). Wymusza to dostosowanie tempa prac w taki sposób, by jednocześnie testowany był ograniczony, ale znaczący zakres zmian (m.in. by możliwe było szybkie wprowadzenie poprawek w przypadku wykrycia błędu).
+    \item konieczność zachowania kompatybilności wstecznej - zmiany wprowadzane w systemie nie mogą powodować, że starsze wersje komponentów, z jakich składa się system GGSS (rys. \ref{fig:high_level_architecture}) staną się niezdatne do użycia, np.: dodanie nowego parametru do pliku konfiguracyjnego nie powinno wykluczać możliwości użycia starszej wersji tegoż pliku oraz starszej wersji oprogramowania. Tego typu ograniczenia obowiązują również w kontekście danych wymienianych pomiędzy aplikacją GGSS a systemem kontroli detektora za pomocą protokołu DIM - dane mają odgórnie ustalony, niemożliwy do zmiany format.
 \end{itemize}
 
-
-
-% Dedykowany komputer
-% Jakie ograniczenia wynikaja z tego
-% Wymog wstecznej kompatybilnosci
