@@ -1,6 +1,9 @@
 # Created by https://www.gitignore.io/api/c++,latex,cmake,clion,python,intellij,sublimetext
 # Edit at https://www.gitignore.io/?templates=c++,latex,cmake,clion,python,intellij,sublimetext
 
+**/out
+**/.idea
+
 ### C++ ###
 # Prerequisites
 *.d
