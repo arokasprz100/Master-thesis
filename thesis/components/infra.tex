@@ -7,7 +7,7 @@ Niniejszy rozdział zawiera opis prac wykonanych przez autorów w ramach rozwoju
 \section{Zmiany w architekturze projektu}
 Przez zmiany w architekturze projektu autorzy rozumieją stopniowy rozwój zaimplementowanego przez nich w ramach pracy inżynierskiej rozwiązania. Rozwój ten obejmuje przede wszyskim uproszczenie powstałej hierarchii zależności między poszczególnymi elementami warstwy oprogramowania (rozumianymi zarówno jako repozytoria, jak i biblioteki), uczynienie systemu bardziej przystępnym dla użytkownika (np. poprzez nadanie komponentom nazw dobrze oddających ich przeznaczenie) oraz przygotowanie systemu pozwalającego w prosty sposób odtworzyć kod źródłowy w wersji bez wprowadzonych w ramach pracy magisterskiej modyfikacji (jako rodzaj zabezpieczenia przed skutkami potencjalnych błędów, które mogły zostać wprowadzone do oprogramowania podczas prac nad nim). Znaczna część zmian opisanych w niniejszej części pracy była możliwa do wprowadzenia z uwagi na trwające jednocześnie prace nad kodem źródłowym systemu GGSS i zmiany zachodzące w ich czasie.
 
-\subsection{Stan początkowy architektury projektu}
+\subsection{Wprowadzenie do problematyki}
 Przeprowadzone przez autorów w ramach pracy inżynierskiej modyfikacje architektury systemu GGSS obejmowały przede wszystkim migrację projektu do systemu kontroli wersji Git, wprowadzenie spójnego nazewnictwa poszczególnych komponentów oraz zastosowanie funkcjonalności submodułów będącej częścią technologii Git do stworzenia hierarchicznej struktury repozytoriów (w odróżnieniu od pierwotnej, płaskiej architektury opartej o katalogi). Celem tych zmian było ułatwienie pracy nad pojedynczymi komponentami projektu oraz uczynienie struktury projektu przyjazną dla użytkownika, co zostało zdaniem autorów osiągnięte. 
 
 Architektura stanowiąca punkt wyjściowy zmian wykonanych w ramach niniejszej pracy przedstawiona została na rysunku \ref{fig:old_structure} (z pominięciem repozytoriów pomocniczych, zawierających np. dokumentację). Projekt zawierał 14 repozytoriów, tworzących strukturę hierarchiczną, w skład których wchodziły m.in.: aplikacje, pomocnicze skrypty, infrastruktura budowania oraz kod źródłowy bibliotek implementujących poszczególne funkcjonalności systemu. W kontekście tej części pracy szczególnie istotne są repozytoria zawierające kod źródłowy bibliotek statycznych oraz pliki nagłówkowe, stanowiące trzon projektu (tzn. wykorzystywane przez aplikację \emph{ggss-runner}): \emph{ggss-lib}, \emph{ggss-software-libs}, \emph{ggss-hardware-libs}, \emph{ggss-util-libs} oraz \emph{ggss-misc} (repozytoria te oznaczone zostały na rys. \ref{fig:old_structure} kolorem niebieskim). Ich rola w pierwotnej wersji projektu prezentowała się następująco:
@@ -203,12 +203,12 @@ W ramach przeprowadzonych prac wykonane zostały zmiany pozwalające na uproszcz
 
 Dla repozytoriów biorących udział w procesie budowania aplikacji \emph{ggss-runner} utworzone zostały ponadto gałęzie \emph{legacy}, zawierające kod źródłowy projektu bez wprowadzonych w ramach niniejszej pracy zmian - dzięki temu możliwy jest stosunkowo łatwy powrót do oryginalnej wersji aplikacji, co stanowi zabezpieczenie na wypadek wprowadzenia do jej źródeł błędów.
 
-
-
 \input{components/infra/gitio_submodules}
 
-\section{Rozwój systemu budowania projektu}
-\section{Automatyzacja i centralizacja wersjonowania projektu}
-\section{Pakietowanie i rozlokowanie projektu}
-\section{Rozwój infrastruktury do testowania warstwy sprzętowej}
+\input{components/infra/building_project}
 
+\input{components/infra/versioning}
+
+\input{components/infra/packages}
+
+\input{components/infra/hardware_testing}
