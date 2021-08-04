@@ -1,10 +1,4 @@
-\chapter{Prace nad architekturą i infrastrukturą projektu}
-\label{cha:infra}
-
-
-Niniejszy rozdział zawiera opis prac wykonanych przez autorów w ramach rozwoju architektury i infrastruktury systemu GGSS. Rozdział ten stanowi bezpośrednią kontynuację pracy inżynierskiej autorów, gdzie przygotowane zostały pierwsze wersje rozwijanych w ramach pracy magisterskiej rozwiązań. Przedstawione tu informację dotyczą szerokiego zakresu zagadnień związanych z inżynierią oprogramowania, takich jak: zarządzanie strukturą projektu oraz jego zależnościami, automatyzacja procesów towarzyszących wytwarzaniu oprogramowania czy przygotowanie infrastruktury ułatwiającej testy warstwy sprzętowej systemu. 
-
-\section{Zmiany w architekturze projektu}
+\section{Zmiany w architekturze projektu (AK)}
 Przez zmiany w architekturze projektu autorzy rozumieją stopniowy rozwój zaimplementowanego przez nich w ramach pracy inżynierskiej rozwiązania. Rozwój ten obejmuje przede wszyskim uproszczenie powstałej hierarchii zależności między poszczególnymi elementami warstwy oprogramowania (rozumianymi zarówno jako repozytoria, jak i biblioteki), uczynienie systemu bardziej przystępnym dla użytkownika (np. poprzez nadanie komponentom nazw dobrze oddających ich przeznaczenie) oraz przygotowanie systemu pozwalającego w prosty sposób odtworzyć kod źródłowy w wersji bez wprowadzonych w ramach pracy magisterskiej modyfikacji (jako rodzaj zabezpieczenia przed skutkami potencjalnych błędów, które mogły zostać wprowadzone do oprogramowania podczas prac nad nim). Znaczna część zmian opisanych w niniejszej części pracy była możliwa do wprowadzenia z uwagi na trwające jednocześnie prace nad kodem źródłowym systemu GGSS i zmiany zachodzące w ich czasie.
 
 \subsection{Wprowadzenie do problematyki}
@@ -40,7 +34,7 @@ Architektura stanowiąca punkt wyjściowy zmian wykonanych w ramach niniejszej p
 
 \begin{figure}
 \centering
-\includegraphics[width=1.35\textwidth]{components/infra_images/old_structure.pdf}
+\includegraphics[width=1.35\textwidth]{old_structure.pdf}
 \caption{Architektura projektu przed wprowadzeniem modyfikacji (sytuacja wyjściowa). Groty strzałek wskazują repozytoria bazowe, kolory natomiast opisują rolę poszczególnych modułów: zielony oznacza repozytoria pomocnicze, żółty - aplikacje, czerwony - biblioteki zewnętrzne, fioletowy - sterownik a niebieski - biblioteki i pliki nagłówkowe projektu GGSS.}
 \label{fig:old_structure}
 \end{figure}
@@ -63,7 +57,7 @@ Przygotowane przez autorów w ramach pracy inżynierskiej rozwiązanie było w p
 Pierwszym podjętym przez autorów działaniem mającym na celu modyfikację struktury projektu była próba jej uproszczenia poprzez analizę zależności wewnętrzych systemu (tzn. zależności pomiędzy poszczególnymi bibliotekami). Prowadzone równolegle prace nad kodem źródłowym projektu pozwoliły autorom zaobserwować, iż pewna część występujących w nim dyrektyw preprocesora \lstinline{#include} nie oddaje w poprawny sposób faktycznej struktury zależności między bibliotekami. Najważniejszy przykład stanowi łańcuch zależności występujących pomiędzy biblioteką \emph{ggss-lib}, a bibliotekami \emph{caenhv-lib} oraz \emph{thread-lib}. W oryginalnej wersji projektu zależności między wymienionymi komponentami prezentowały się tak, jak na rysunku \ref{fig:dependency_problem_old}, tzn. bibliteka \emph{ggss-lib} zależna była od biblioteki \emph{caenhv-lib}, która natomiast zawierała dyrektywę \lstinline{#include} dołączającą plik nagłówkowy z biblioteki \emph{thread-lib}.
 
 
-\savebox{\mybox}{\includegraphics[width=0.40\textwidth]{components/infra_images/dependency_problem_old.pdf}}
+\savebox{\mybox}{\includegraphics[width=0.40\textwidth]{dependency_problem_old.pdf}}
 
 \begin{figure}[H]
 \centering
@@ -78,7 +72,7 @@ Pierwszym podjętym przez autorów działaniem mającym na celu modyfikację str
 \centering
 \vbox to \ht\mybox{%
     \vfill
-    \includegraphics[width=\textwidth]{components/infra_images/dependency_problem_solution.pdf}
+    \includegraphics[width=\textwidth]{dependency_problem_solution.pdf}
     \vfill
 }
 \caption{Struktura po wprowadzeniu zmian.}
@@ -154,7 +148,7 @@ Możliwość odtworzenia pierwotnej wersji kodu źródłowego osiągnięta zosta
 
 Opisanymi zmianami objęte zostały następujące repozytoria: \emph{ggss-all}, \emph{ggss-runner}, \emph{ggss-lib}, \emph{ggss-software-libs}, \emph{ggss-hardware-libs}, \emph{external-dim-lib}, \emph{external-n957-lib} oraz \emph{ggss-util-libs}. W przypadku repozytorów o nazwach zawierających przedrostek \emph{external-} zmiany te polegały jedynie na utworzeniu nowej gałęzi - zawartość bibliotek zewnętrznych nie była przez autorów pracy modyfikowana.
 
-Ostatecznie więc zbudowanie aplikacji \emph{ggss-runner} w jej pierwotnej wersji jest bardzo proste, z poziomu repozytorim \emph{ggss-all} sprowadza się do wykonania komend zamieszczonych na listingu \ref{lst:legacy}. Dodatkowo, pliki \emph{README.md} stanowiące dokumentację poszczególnych repozytorów zostały na gałęziach \emph{legacy} odpowiednio zmodyfikowane, by opisywać obowiązującą tam procedurę budowania projektu oraz zawartość poszczególnych modułów.
+Ostatecznie więc zbudowanie aplikacji \emph{ggss-runner} w jej pierwotnej wersji jest bardzo proste, z poziomu repozytorium \emph{ggss-all} sprowadza się do wykonania komend zamieszczonych na listingu \ref{lst:legacy}. Dodatkowo, pliki \emph{README.md} stanowiące dokumentację poszczególnych repozytorów zostały na gałęziach \emph{legacy} odpowiednio zmodyfikowane, by opisywać obowiązującą tam procedurę budowania projektu oraz zawartość poszczególnych modułów.
 
 \begin{lstlisting}[
     caption={Komendy pozwalające na pobranie kodu źródłowego oraz zbudowanie aplikacji \emph{ggss-runner} w jej oryginalnej wersji. },
@@ -196,19 +190,9 @@ W ramach przeprowadzonych prac wykonane zostały zmiany pozwalające na uproszcz
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{components/infra_images/new_architecture.pdf}
+\includegraphics[width=\textwidth]{new_architecture.pdf}
 \caption{Finalna struktura projektu, po wprowadzeniu wszystkich zmian opisanych w niniejszej pracy. Strzałki wskazują w stronę modułów bazowych. Widoczne jest znaczące uproszczenie struktury projektu względem wersji oryginalnej (rys. \ref{fig:old_structure}).}
 \label{fig:new_architecture}
 \end{figure}
 
 Dla repozytoriów biorących udział w procesie budowania aplikacji \emph{ggss-runner} utworzone zostały ponadto gałęzie \emph{legacy}, zawierające kod źródłowy projektu bez wprowadzonych w ramach niniejszej pracy zmian - dzięki temu możliwy jest stosunkowo łatwy powrót do oryginalnej wersji aplikacji, co stanowi zabezpieczenie na wypadek wprowadzenia do jej źródeł błędów.
-
-\input{components/infra/gitio_submodules}
-
-\input{components/infra/building_project}
-
-\input{components/infra/versioning}
-
-\input{components/infra/packages}
-
-\input{components/infra/hardware_testing}

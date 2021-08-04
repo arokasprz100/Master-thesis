@@ -1,10 +1,11 @@
-\chapter{Praktyki stosowane w projekcie} % TODO: nazwa
+\appendix
+\chapter{Przegląd praktyk stosowanych podczas prac nad projektem (JC)}
 \label{cha:practices}
 
-Celem tego rozdziału jest opisanie praktyk stosowanych w projekcie GGSS podczas wykonywania pracy magisterskiej. Poruszone zostaną tematy organizacji pracy nad kodem w zespole, dokumentacja projektu, czy też konwencje zastosowane w celu uzyskania jednolitego kodu źródłowego w przestrzenii całego systemu GGSS.
+Celem niniejszego dodatku jest przedstawienie najważniejszych praktyk stosowanych przez autorów podczas wykonywania prac nad systemem GGSS. Poruszone zostaną tematy organizacji pracy nad kodem w zespole, dokumentacja projektu, czy też konwencje zastosowane w celu uzyskania w całym projekcie jednolitego kodu źródłowego.
 
 \section{Wprowadzenie do problematyki}
-Ze względu na zespołowy charakter w trakcie wykonywania pracy inżynierskiej zostały wprowadzone praktyki mające na celu organizację i koordynację współpracy. W ramach platformy GitLab, wykorzystywanej przez CERN jako główne narzędzie do współpracy nad kodem skorzystano z szeregu funkcjonalności ułatwiających śledzenie postępów, jak i zarządzanie projektem. Oprócz utworzenia zespołu, do którego został przypisany kod projektu oraz w ramach którego odbywała się kolaboracja, wykorzystano:
+Ze względu na zespołowy charakter przygotowanej przez autorów pracy inżynierskiej, w trakcie jej wykonywania wprowadzone zostały praktyki mające na celu organizację i koordynację współpracy. W ramach platformy GitLab, wykorzystywanej przez CERN jako główne narzędzie do współpracy nad kodem, skorzystano z szeregu funkcjonalności ułatwiających śledzenie postępów, jak i zarządzanie projektem. Oprócz utworzenia zespołu, do którego został przypisany kod projektu oraz w ramach którego odbywała się kolaboracja, wykorzystano:
 \begin{itemize}
 \item \emph{issue} - opis pojedynczego zadania/problemu. Zawiera podstawowe informacje, przypisaną osobę, etykietę, która oznacza obecny stan, termin wykonania oraz wagę
 \item \emph{kanban board} - tablica kanban zawierająca wszystkie przypisane do projektu zadania. Kolumny takiej tabeli stanowią spersonalizowane do projektu etykiety. Pozwala na wysokopoziomowe zarządzanie projektem, sprawdzenie statusu, czy też łatwą zmianę etykiety przypisanej do zadań poprzez przeciągnięcie do odpowiedniej kolumny. % czy pokazac kanban board
@@ -17,7 +18,7 @@ W trakcie wykonywania pracy inżynierskiej, szczególnie podczas początkowego e
 Ze względu na dobre sprawowanie się wyżej wymienionych praktyk w trakcie pracy inżynierskiej postanowiono o kontynuowaniu ich wykorzystania również w trakcie pracy magisterskiej. Z powodu nieregularnego aspektu pracy nad projektem, wykonywanie czynności zdalnie, lepsze poznanie środowiska, wykorzystywanych narzędzi oraz samej platformy GitLab postanowiono dostosować stosowane praktyki do nowych realiów. Dodatkowo bardzo ważną zasadą, biorąc pod uwagę zakończenie pracy nad projektem i przekazanie go osobie odpowiedzialnej za dalsze utrzymanie, było odpowiednie udokumentowanie całego projektu. Wymagało się, aby możliwie proste było wprowadzanie zmian do systemu GGSS oraz sprawne, nieprzerwane działanie po zakończeniu pracy magisterskiej. Dlatego dostarczona dokumentacja musiała być obszerna oraz dobrze opisująca zastosowane rozwiązania. Dodatkowo biorąc pod uwagę mocny nacisk tejże pracy na część aplikacyjną projektu potrzebne było zdefiniowanie pewnych zasad pozwalających na ustandaryzowaną pracę z kodem źródłowym aplikacji. Pozwoliło to na zachowanie pewnych konwencji w całym projekcie, co zapobiegało różnicom w kodzie między komponentami, a co za tym idzie utrzymanie kodu oraz wdrożenie nowych osób do projektu jest znacznie uproszczone.
 
 
-\section{Zmiana praktyk ze względu na niereguralność prac}
+\section{Zmiana praktyk ze względu na nieregularność prac}
 
 Prace nad systemem GGSS były kontynuowane, z mniejszymi przerwami, od obrony pracy inżynierskiej. Natomiast ich charakter był nieregularny. Każdy z autorów pracował nad systemem w wybranych przez siebie godzinach. Ze względu na to wszystkie praktyki, które opierały się o regularny czas pracy oraz przewidywanie czasu zakończenia danych zadań nie miały większego zastosowania. Postanowiono zatem zaprzestać przypisywania wag poszczególnym zadaniom. Oprócz wartości szacunkowej niewiele ona wnosiła w trakcie wykonywania zadania, dodatkowo przybrane wartości czasami różniły się od rzeczywistej wagi problemu, ponieważ często zadania wymagały w pierwszej kolejności zgłębienia tematu, a następnie określenia dokładnego rozwiązania problemu.
 
@@ -27,7 +28,7 @@ Rysunek \ref{fig:issue} przedstawia \emph{issue} utworzone według nowo ustalony
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{components/practices_res/issue}
+    \includegraphics[width=\textwidth]{issue.png}
     \caption{Przykładowe \emph{issue} wg. nowo przyjętych praktyk}
     \label{fig:issue}
 \end{figure}
@@ -49,7 +50,7 @@ Przygotowana w ten sposób dokumentacja pozwala osobie praktycznie niezapoznanej
 \newpage
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{components/practices_res/readme}
+    \includegraphics[width=\textwidth]{readme.png}
     \caption{Przykładowe \emph{README} w ramach repozytorium \emph{ggss-all}}
     \label{fig:readme}
 \end{figure} % zembedowac pdf
@@ -60,7 +61,7 @@ W projekcie została zastosowana również dokumentacja na poziomie kodu źród�
 Rysunek \ref{fig:code_documentation} przedstawia przykładową dokumentację zgodną z formatem wspieranym przez narzędzie \emph{doxygen}. Zawiera ona krótki opis dotyczący metody, następnie opis każdego z parametrów przyjmowanych przez daną metodą oraz wartość zwracaną przez metodę. Informacje te są bardzo przydatne w przypadku, gdy nie jesteśmy pewni, zważając na samą definicję metody, jej działania, parametrów wejściowych, czy też wyjścia. Opis taki rozwiewa częściowo wątpliwości i pozwala w poprawny sposób skorzystać z wcześniej napisanego kodu.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{components/practices_res/code_documentation}
+    \includegraphics[width=\textwidth]{code_documentation.png}
     \caption{Przykładowa dokumentacja metod w bibliotece \emph{fit-lib} w ramach projektu GGSS}
     \label{fig:code_documentation}
 \end{figure} % wstawic jako listing
@@ -69,7 +70,7 @@ Rysunek \ref{fig:doxygen} przedstawia dokumentację jednej z metod w bibliotece 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{components/practices_res/doxygen}
+    \includegraphics[width=\textwidth]{doxygen.png}
     \caption{Przykładowa dokumentacja metod w bibliotece \emph{fit-lib} w ramach projektu GGSS}
     \label{fig:doxygen}
 \end{figure}
@@ -77,8 +78,6 @@ Rysunek \ref{fig:doxygen} przedstawia dokumentację jednej z metod w bibliotece 
 Ostatnim elementem dokumentacji zawartym w projekcie są dokumenty \emph{how-to}. Napisane, podobnie jak pliki \emph{README}, za pomocą języka znaczników \emph{Markdown}, natomiast mają charakter globalny dla całego projektu - nie ograniczają się do jednego repozytorium. Dokumenty takie znajdują się w repozytorium \emph{ggss-aux}. Opisane są tam krok po kroku bardziej zaawansowane aspekty pracy z projektem GGSS, jak np.: sposób obsługi architektury wielo-poziomowej opartej o submoduły, czy też przygotowywanie wirtualnej maszyny do pracy jako \emph{gitlab runner} w środowisku GitLab udostępnionym w ramach infrastruktury CERN.
 
 \section{Konwencja kodowania}
-
-
 Ze względu na to, że w trakcie pracy magisterskiej bardzo duży nacisk położono na część aplikacyjną projektu autorzy, jeszcze przed rozpoczęciem pracy nad kodem źródłowym, postanowili ustanowić konwencję kodowania, tak, aby na przestrzenii całego projektu GGSS utrzymać jednolity kod. Zasady, które zostały ustalony tyczą się nazewnictwa: klas, przestrzenii nazw, zmiennych, plików. Postanowiono wykorzystać, dobrze znane w środowisku, systemy notacji ciągów tekstowych \emph{lower camel case} oraz \emph{upper camel case}. Ze względu na różnorodność możliwych rozszerzeń plików w przypadku języka C++ postanowiono również ujednolicić ten aspekt. W przypadku plików z kodem źródłowym zastosowano rozszerzenia \emph{.cpp} oraz \emph{.h}. % wstawic listing z camel case przykladami %
 
 Ustanawiając konwencję kodowania postanowiono ograniczyć się do wyżej wymienionych aspektów, sposób projektowania architektury, podziału na foldery, klasy, etc. wewnątrz danego modułu pozostawiono bez większych obostrzeń. Oczywiście autorzy w każdym z dotkniętych miejsc stosowali dobre praktyki progrmaistyczne oraz tak zwany \emph{clean code}, natomiast, ze względu na to, że w większości przypadków prace nad projektem dotyczyły modyfikacji już istniejącego kodu oraz modułów była zachowana wcześniej zastosowana architektura.

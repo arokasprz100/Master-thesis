@@ -24,8 +24,6 @@
 \usepackage{listings}
 \usepackage{multicol}
 
-
-
 \newsavebox\mybox
 
 
@@ -233,7 +231,7 @@
 
 \thispagestyle{empty}
 \begin{center}
-\includegraphics[scale=1.4]{res/agh_nzw_s_pl_1w_wbr_cmyk.pdf} \\[0.2cm]
+\includegraphics[scale=1.4]{static/agh_nzw_s_pl_1w_wbr_cmyk.pdf} \\[0.2cm]
 
 WYDZIAŁ FIZYKI I INFORMATYKI STOSOWANEJ \\[0.2cm]
 KATEDRA ODDZIAŁYWAŃ I DETEKCJI CZĄSTEK \\[1.2cm]
@@ -448,15 +446,14 @@ Termin oddania w dziekanacie: ?? września 2021\\[1cm]
 \tableofcontents
 \clearpage
 
-\include{components/intro}
-\include{components/technologies}
-\include{components/ggss}
-\include{components/practices}
-\include{components/infra}
-\include{components/code}
-\include{components/tests}
-\include{components/summary}
-\include{components/extras}
+\include{1_introduction/introduction}
+\include{2_technologies/technologies}
+\include{3_ggss_introduction/ggss}
+\include{4_infrastructure/infrastructure}
+\include{5_code/code}
+\include{6_tests/tests}
+\include{7_summary/summary}
+\include{8_extras/extras}
 
 
 \printbibliography

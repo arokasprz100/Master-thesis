@@ -1,0 +1,33 @@
+\chapter{Wykorzystane technologie (AK i JC)}
+\label{ch:technologies}
+
+% setup
+\graphicspath{{2_technologies/static/}}
+
+% content
+\section{Język C++ (AK)} % BOOST, GSL
+\section{Język Python (AK)}
+\section{Narzędzia do analizy oprogramowania (AK)} % valgrind, clang tidy, clion
+\section{System kontroli wersji Git (???)} % submoduly, repozytoria, gałęzie %
+\section{Portal GitLab (JC)}
+%    \subsection{GitLab CI/CD}
+%    \subsection{GitLab Runner} % albo dodac przypis w miejscu w ktorym jest o tym wspomniane, ze zostalo to opisane w pracy inzynierskiej
+\section{Narzędzie CMake (AK)} % CPack CTest
+\section{Menadżer pakietów RPM (JC)}
+
+
+% \subsection{Język C++}
+% Zarówno aplikacja \emph{ggss-runner}, jak i wszystkie aplikacje pomocnicze, napisane zostały za pomocą języka C++. Jest to wydajny, wszechstronny język programowania ogólnego przeznaczenia, pozwalający programiście zarówno na wykorzystywanie wysokopoziomowych abstrakcji (programowanie obiektowe, generyczne i funkcyjne), jak i na wydajne wykonywanie niskopoziomowych operacji. W ciągu ostatnich dziesięciu lat język ten był intensywnie rozwijany - od 2011 roku pojawiły się cztery nowe standardy, w tym najnowszy w roku 2020, a kolejny przewidziany jest na rok 2023. Zmiany wprowadzane w nowych wydaniach języka mają na celu zarówno dodawanie do niego nowych funkcjonalności, jak równeż promowanie praktych pozwalających tworzyć prosty w utrzymaniu, czytelny kod. Niestety z uwagi na ograniczenia wynikające ze cech środowiska docelowego, w jakim działać ma system GGSS, w omawianym projekcie możliwe było wykorzystanie jedynie standardu C++11. 
+
+
+% \subsection{Biblioteki zewnętrzne}
+% W projekcie wykorzystywane są ponadto biblioteki nie będące częścią standardu języka C++, dostarczające funkcjonalności niezbędnych do poprawnego działania systemu. Najważniejsze z nich to:
+% \begin{itemize}
+%     \item \emph{Boost} \textbf{cytowanie} - rozbudowany zestaw bibliotek dla języka C++, cieszący się znaczącą popularnością, m.in. ze względu na wysoką jakość i szeroki zakres wprowadzanych funkcjonalności (m.in. przetwarzanie argumentów linii poleceń, implementacja operacji na grafach, wsparcie dla programowania sieciowego, tworzenia testów jednostkowych czy zaawansowanego metaprogramowania). Ponadto niektóre z bibliotek wchodzących w skład \emph{Boost} były podstawą do implementacji funkcjonalności takich jak inteligentne wskaźniki (ang. smart pointers) czy obsługa wyrażeń regularnych w nowych standardach języka C++.
+%     \item \emph{GNU Scientific Library (GSL)} \textbf{cytowanie} - biblioteka dla języków C i C++, dostarczająca implementacje popularnych algorytmów numerycznych
+%     \item \emph{Qt} oraz \emph{Qwt} \textbf{cytowanie} - wieloplatformowy zestaw bibliotek i narzędzi pozwalających na tworzenie aplikacji okienkowych, wykorzystywany przez aplikacje \emph{ggss-spector} oraz \emph{ggss-reader}
+%     \item \emph{DIM} \textbf{cytowanie} - dostarczona przez CERN biblioteka umożliwiająca wykorzystywanie protokołu DIM
+%     \item \emph{CAEN-N957} \textbf{cytowanie} - dostarczona przez firmę CAEN biblioteka współdzielona napisana w języku C, służąca do obsługi analizatora wielokanałowego N957
+% \end{itemize}
+
+% Infrastruktura budowania projektu oparta jest o narzędzie CMake (\textbf{cytowanie}) (wersja 2.8) rozwijane przez firmę \emph{Kitware}. Zastosowanie go pozwala na generowanie pliku budującego projekt właściwego dla danej platformy docelowej (np. \emph{Makefile} dla systemów z rodziny UNIX), a co za tym idzie, pozwala na łatwe tworzenie aplikacji wieloplatformowych. Stosując narzędzie CMake, tworzenie systemu budowania projektu polega na przygotowaniu pliku (lub zestawu plików) \emph{CMakeLists.txt}, zawierającego polecenia pozwalające na określenie przez programistę informacji takich jak: standard języka C++, lokalizacja plików źródłowych i bibliotek zewnętrznych.
