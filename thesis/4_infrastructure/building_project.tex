@@ -2,9 +2,43 @@
 \section{Rozwój systemu budowania projektu (AK)}
 \label{ch:building_project}
 
-\subsection{Wprowadzenie do problematyki}
+W niniejszej części pracy zawarty został opis najważniejszych modyfikacji wprowadzonych przez autorów w systemie budowania aplikacji i bibliotek projektu GGSS. Przeprowadzone przez autorów prace miały na celu przede wszystkim dalszy rozwój i utrzymanie rozwiązania przygotowanego przez nich w ramach studiów inżynierskich.
 
-\subsection{Motywacja do wprowadzenia zmian}
+
+\subsection{Wprowadzenie do problematyki}
+Obecnie stosowany w projekcie system budowania został w znaczącej części przygotowany przez autorów w ramach napisanej przez nich pracy inżynierskiej. Rozwiązanie to oparte zostało o narzędzie CMake oraz, w mniejszym stopniu, o język programowania Python, i umożliwia poprawne zbudowanie każdego elementu (tzn. aplikacji lub biblioteki) wchodzącego w skład projektu GGSS. Przygotowany w ramach pracy inżynierskiej system miał spełniać następujące założenia:
+\begin{itemize}
+    \item niezależność od systemu operacyjnego - system powinien działać poprawnie zarówno na urządzeniach wykorzystujących system operacyjny Linux, jak i na komputerach z Windowsem. Z tego też powodu do realizacji zadania wybrane zostało narzędzie CMake.
+    \item możliwość budowania projektu o skomplikowanej, hierarchicznej strukturze - takim projektem jest, w swojej obecnej postaci, system GGSS
+    \item możliwość budowania każdego z komponentów systemu (tzn. biblioteki lub aplikacji) z osobna - zbudowanie niewielkiej aplikacji pomocniczej nie powinno wymagać budowy całego projektu
+    \item budowanie każdego elementu projektu raz - jeśli dana zależność wykorzystywana jest przez kilka komponentów systemu, powinna zostać zbudowana tylko jeden raz - takie rozwiązanie pozwala uzyskać czytelną, jednopoziomową wynikową strukturę katalogów, która ułatwia szybkie znalezienie odpowiedniego pliku wykonywalnego lub biblioteki.
+\end{itemize}
+Wszystkie z wymienionych założeń spełnione zostały już na etapie tworzenia przez autorów pracy inżynierskiej. W jej ramach otrzymane zostało w pełni działające rozwiązanie, które wykorzystywane jest w swoim środowisku docelowym od niemal dwóch lat. Z tego też powodu w niniejszej pracy zamieszczony został jedynie pobieżny opis systemu - jego szczegółowa wersja zawarta została  w przygotowanej przez autorów pracy inżynierskiej, a jej znajomość nie jest konieczna, by zrozumieć zmiany wprowadzone przez autorów w ramach niniejszej pracy.
+
+
+% jakie sa pliki 
+% jak budowana jest hierarchia
+
+W ramach niniejszej pracy autorzy wprowadzili do stworzonego systemu pomniejsze modyfikacje, mające na celu:
+\begin{itemize}
+    \item poprawę błędów, które wykryte zostały podczas użytkowania systemu 
+    \item dodanie wsparcia dla budowania testów jednostkowych i dokumentacji projektu
+    \item ułatwienie pracy z systemem - uczynienie jego interfejsu czytelniejszym poprzez zastosowanie mechanizmu funkcji i makr udostępnianego przez narzędzie CMake
+    \item rozbudowa skryptu \lstinline{build.py} znajdującego się w repozytorium \emph{ggss-all}, którego zadaniem jest udostępnienie użytkownikowi prostego interfejsu do budowania wybranych komponentów systemu
+\end{itemize}
+
+
+% W ramach niniejszej pracy autorzy wprowadzili kilka modyfikacji, których zadaniem było utrzymanie i rozbudowa już istniejącego systemu. 
+
+
+
+% Głównym założeniem przygotowywanego systemu było umożliwienie budowania projektu o strukturze hierarchicznej, co zostało w pełni zrealizowane w ramach pracy inżynierskiej. W ramach niniejszej pracy magisterskiej system ten uległ jedynie niewielkim modyfikacjom, których zadaniem była poprawa błędów, ułatwienie pracy z systemem oraz wprowadzenie kilku pomniejszych funkcjonalności. Z tego też powodu
+
+
+% Ponieważ rozumienie szczegółów działania przygotowanego systemu nie jest konieczne, by zrozumieć wprowadzone w ramach niniejszej pracy modyfikacje, autorzy zdecydowali o niezamieszczaniu tutaj jego opisu - 
+
+
+%\subsection{Motywacja do wprowadzenia zmian}
 
 \subsection{Zastosowanie funkcji i makr narzędzia CMake}
 
