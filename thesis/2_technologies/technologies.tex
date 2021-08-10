@@ -47,7 +47,7 @@ Na listingu \ref{lst:cpp_new} przedstawiona została natomiast implementacja prz
 ]{2_technologies/code_samples/cpp_example_new.cpp}
 
 \clearpage
-Język C++ charakteryzuje się ponadto istnieniem dodatkowych, nie będących częścią standardu, bibliotek poszerzających zestaw narzędzi dostarczanych przez język. Z punktu widzenia systemu GGSS istotne są: zestaw bibliotek Boost, biblioteka GNU Scientific Library (GSL) oraz zestaw bibliotek i narzędzi Qt.
+Język C++ charakteryzuje się ponadto istnieniem dodatkowych, nie będących częścią standardu, bibliotek poszerzających zestaw dostarczanych przez niego narzędzi. Z punktu widzenia systemu GGSS istotne są: zestaw bibliotek Boost, biblioteka GNU Scientific Library (GSL) oraz zestaw bibliotek i narzędzi Qt.
 
 Boost to popularna kolekcja bibliotek dla języka C++, ułatwiająca wiele aspektów tworzenia oprogramowania poprzez dostarczenie zróżnicowanego zestawu narzędzi programistycznych: zarówno ogólnego przeznaczenia, jak i bardzo wyspecjalizowanych. Pakiet Boost rozwijany jest znacznie szybciej niż biblioteka standardowa języka C++, a ponadto niektóre jego elementy stanowiły podstawę dla funkcjonalności dodawanych do języka w nowych jego wydaniach (np. wprowadzona w standardzie C++17 biblioteka \lstinline{filesystem}, służąca do zarządzania systemem plików, oparta jest na analogicznym module z zestawu Boost). Przykładowe funkcjonalności udostępniane przez pakiet Boost to: rozszerzona względem biblioteki standardowej obsługa łańcuchów znakowych, dodatkowe kontenery (np. \lstinline{Boost.MultiIndex}), implementacja algorytmów grafowych czy asynchroniczne programowanie sieciowe. Ze względu na szeroki zakres oferowanych funkcjonalności, pakiet Boost stosowany jest również przez warstwę oprogramowania omawianego w niniejszej pracy systemu GGSS.
 
@@ -70,10 +70,28 @@ Na listingu \ref{lst:python} przedstawiony został prosty przykład zastosowania
     label={lst:python}
 ]{2_technologies/code_samples/python_example.py}
 
-% Krotkie omownienie pythona jako jezyka o szerokim zastosowaniu (od skryptow po aplikacje webowe) - napisac jak my uzywamy
-% Glowne zalety Pythona na przykladzie - przejrzysta skladnia, niski prog wejscia, elastycznosc
 
 \section{Narzędzia do analizy oprogramowania (AK)}
+Wraz z postępującym rozwojem szeroko rozumianej informatyki, stale rośnie złożoność powstającego oprogramowania. Powoduje to, że utrzymanie wysokiej jakości kodu źródłowego staje się coraz trudniejsze, a w przypadku wielu projektów - niemożliwe do realizacji bez pomocy dodatkowych narzędzi. Niniejsza część pracy magisterskiej stanowi krótkie wprowadzenie do szerokiej tematyki, jaką jest analiza oprogramowania. Przedstawione zostaną podstawy teoretyczne, jak również zarysowane zostanie działanie narzędzi wykorzystywanych przez autorów podczas prac nad systemem GGSS. Ze względu na charakter projektu, omówione zostaną wyłącznie technologie pozwalające na pracę z oprogramowaniem napisanym w językach C i C++. 
+
+\subsubsection*{Wstęp teoretyczny}
+Pojęcie \emph{narzędzi do analizy oprogramowania} definiuje bardzo szeroki zakres różnego rodzaju programów, umożliwiających lub ułatwiających wykonywanie działań takich jak: znajdowanie i eliminowanie błędów oraz przyczyn ich występowania, badanie zużycia różnego rodzaju zasobów (np. pamięci) oraz analiza jakości kodu źródłowego. W zależności od przyjętego kryterium podziału, analizę oprogramowania kategoryzować można na zróżnicowane sposoby. Jeśli zatem podział następować ma na podstawie tego, kiedy analiza jest przeprowadzana, to wyróżnić można następujące jej rodzaje:
+\begin{itemize}
+    \item analiza statyczna (ang. \emph{static analysis}) - następuje bez uruchamiania badanego programu. Przykładem narzędzi umożliwiających wykonywanie tego typu badań są tzw. lintery (ang. \emph{linter}), pozwalające na analizę kodu źródłowego pod względem stylu programowania i umożliwiające wczesne wykrywanie wielu błędów.
+    \item analiza dynamiczna (ang. \emph{dynamic analysis}) - następuje w trakcie wykonania programu. Jako przykład oprogramowania wykonującego tego typu analizę podać można narzędzia umożliwiające tzw. profilowanie (ang. \emph{profiling}), pozwalające na monitorowanie wydajności i zużycia zasobów przez badany program.
+\end{itemize}
+
+Inne kryterium podziału ... 
+
+
+\subsubsection*{Valgrind}
+
+
+\subsubsection*{Statyczna analiza kodu źródłowego}
+
+
+\subsubsection*{Podsumowanie}
+
 % Wstep teoretyczny - czym jest analiza kodu, jakie mamy rodzaje, co to jest instrumentacja
 % Omowienie Valgrinda jako frameworka, wskazanie narzedzia Memcheck
 % Krotkie omowienie dzialania Memcheck, m.in. rodzaje wyciekow pamieci, jakie są ich konsekwencje, wskazac te potencjalnie grozne dla aplikacji dzialajacych jako uslugi (stopniowe nagromadzenie sie zuzytej pamieci - przyklad)
