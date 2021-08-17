@@ -1,0 +1,30 @@
+user@host:~/ggss-all$ python3 build.py --help
+usage: build.py [-h] [-d] [-s] [-v] --buildtype {debug,release} 
+                [--boostpath {default,variable}]
+                (--buildall | --apps {runner,serviceapps,dimcs,driver}
+                [{runner,serviceapps,dimcs,driver} ...])
+                [--version VERSION]
+
+This script can be used for building various GGSS-related applications, 
+like ggss-runner.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d, --dimonline       build project using latest DIM version. Disabled by default.
+  -s, --staticboost     force static Boost library linking. Disabled by default.
+  -v, --venv            build project using virtualenv. All required dependencies 
+                        will be installed. Disabled by default.
+  --buildtype {debug,release}
+                        enable debug or release mode.
+  --boostpath {default,variable}
+                        choose boost path: default /usr/local or the one specified 
+                        using BOOST environment variable. Variable is used by 
+                        default.
+  --buildall            Build all available apps.
+  --apps {runner,serviceapps,dimcs,driver} [{runner,serviceapps,dimcs,driver} ...]
+                        Choose apps to build.
+  --version VERSION     Version with which apps will be labeled. 
+                        Default: dev-<currenttime> (YYYY-MM-DD_HH-MM-SS)
+
+Consider visiting https://gitlab.cern.ch/atlas-trt-dcs-ggss/ggss-all for further 
+info on GGSS software.
