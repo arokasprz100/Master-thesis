@@ -5,11 +5,9 @@ Niniejszy rozdział stanowi szczegółowy raport z przeprowadzanych w środowisk
 \section{Cykliczne testy systemu (AK)}
 Praca nad projektem stanowiącym część dużego, rozwijanego przez wiele osób systemu, wymaga stosowania metod pozwalających na zapewnienie jego niezawodności. Dlatego też autorzy zdecydowali się na przeprowadzania okresowych testów systemu GGSS, dzięki czemu możliwe było wczesne wykrywanie i eliminowanie pojawiających się w projekcie błędów. Regularne przeprowadzanie weryfikacji poprawności działania najnowszej wersji warstwy oprogramowania systemu GGSS pozwoliło ponadto na wygodne testowanie wprowadzanych przez autorów funkcjonalności - duża częstotliwość oznacza w tym przypadku możliwość testowania niewielkiego zbioru zmian, co znacząco ułatwia wczesne wykrywanie związanych z nimi nieprawidłowości.
 
+Ze względu na fakt, iż autorzy pracują nad systemem GGSS od września 2019 roku, to procedura przeprowadzania tego typu testów zawarta została w manuskrypcie pracy inżynierskiej. Z tego też powodu nie został tutaj zamieszczony szczegółowy opis wykonywanych czynności. Elementem stanowiącym nowość względem procesu przeprowadzanego w ramach pracy inżynierskiej były testy wprowadzanych oraz modyfikowanych funkcjonalności. Zarys procedury testowania przedstawiony został w formie graficznej na rysunku ... 
 
-% Specyfika (co ile, w jakich przypadkach byly wykonywane)
-% Wspomniec ze opisane w inz, testowane rozne wersje, ze dzialaja, ktora uzywana najczesciej
-% Co bylo testowane (poprawnosc dzialania przez kilka godzin/kilka dni, pojedyncze funkcjonalnosci w zaleznosci od potrzeb, zuzycie pamieci za pomoca skryptow + listing)
-% Opisac krotko procedure (moze jakis diagram)
+% dodac diagram i zrobic krotki jego opis 
 
 \section{Testy po migracji systemu (JC)}
 % Opisac krotko co to za migracja
@@ -21,6 +19,9 @@ Praca nad projektem stanowiącym część dużego, rozwijanego przez wiele osób
 \section{Testy wersji finalnej (AK i JC)}
 % Wstep, kiedy wykonywane, w jakim czasie (AK)
 % Kazda funkcjonalnosc z osobna
-%   - po kolei opis kazdej (np. hvkiller, komendy itp)
-% Testy hardware (skrypty)
-% Testy zuzycia zasobow
+%   - po kolei opis kazdej (np. hvkiller, komendy, skrypty operacyjne itp)
+% Testy hardware (skrypty) (JC)
+% Testy zuzycia zasobow (AK: valgrind, JC: skrypt)
+
+
+% Względem pracy inżynierskiej autorzy dokonali zmian w wykorzystywanych do przeprowadzania testów narzędziach. Jednym z nich był skrypt pozwalający na monitorowanie zużycia zasobów przez aplikację 

@@ -7,23 +7,41 @@ Niniejszy rozdział stanowi opis wprowadzonych przez autorów zmian w kodzie źr
 
 \section{Specyfika pracy}
 
-    \subsection{Testy jednostkowe} % w tym problem mockowania w systemach legacy
-    \subsection{Zakres wprowadzanych zmian} % napisac ze celem nie bylo przepisanie calej apki
-    \subsection{Przyjęte ograniczenia} % brak nowych zaleznosci, zgodnosc ze srodowiskiem docelowym
+\subsection{Testy jednostkowe} % w tym problem mockowania w systemach legacy
+\subsection{Zakres wprowadzanych zmian} % napisac ze celem nie bylo przepisanie calej apki
+\subsection{Przyjęte ograniczenia} % brak nowych zaleznosci, zgodnosc ze srodowiskiem docelowym
 
 \section{Poprawa jakości kodu źródłowego}
+% celem tego etapu bylo zapoznanie sie ze struktura kodu oraz jednoczesne zwiekszenie jego jakosci
+% tego typu operacje wazne, bo pozwalaja innym latwiej zrozumiec kod
+% napisac ze zmiany mialy charakter malych modyfikacji (nie calych architektur)
 
-    \subsection{Migracja do standardu C++11}
-    \subsection{Naprawa błędów w kodzie źródłowym}
-    \subsection{Likwidacja nieużywanych fragmentów kodu źródłowego}
-    \subsection{Zmiany w strukturze bibliotek}
+\subsection{Migracja do standardu C++11}
+% wymienic krotko (np. od punktow) najwazniejsze z wprowadzanych zmian
+% jakies 2-3 mniejsze przyklady (petla for, noexcept, enum class w log-lib)
+% wspomniec, ze nie wszystko dalo sie zmienic (np. bo roznica miedzy std a boost, np watki)
+
+\subsection{Naprawa błędów w kodzie źródłowym}
+% wspomniec, ze bledow bylo bardzo niewiele, zaden z nich nie zagrazal tak naprawde poprawnosci dzialania projektu
+% jako przyklad opisac blad z wyszukiwaniem w XML-u
+
+\subsection{Likwidacja nieużywanych fragmentów kodu źródłowego}
+% fragmenty takie jak w fit-lib (3 znalezione funkcje) i xml-lib (dwie implementacje przechowywania wezlow) - pozostałosci po starszych wersjach systemu i eksperymentach
+% pozostalosci po starej wersji systemu w bibliotece ggss-lib
+% szczegolny przyklad: metody lamiace enkapsulacje w bibliotece fifo-lib
+
+\subsection{Pozostałe zmiany i podsumowanie}
+% zmiana w strukturze bibliotek (rozbicie na pliki - log i sigslot)
+% wyodrebnienie powtarzajacych sie fragmentow kodu (np. w log-lib i xml-lib)
+% wspomniec ze ujednolicona zostala konwencja nazewnictwa i dokumentacji
+% podsumowanie - ile bibliotek poddanych zostalo refactoringowi, ktore nie i dlaczego
 
 \section{Rozszerzenie możliwości aplikacji}
     
-    \subsection{Obsługa zaawansowanych komend dla zasilaczy wysokiego napięcia}
-    \subsection{Rozbudowa biblioteki odpowiedzialnej za dopasowywanie krzywej}
-    \subsection{Zmiany w sposobie aktualizacji parametrów i zebranych danych}
-    \subsection{Zabezpieczenie przed przepełnieniem bufora urządzenia MCA}
-    \subsection{Wprowadzenie dodatkowych komend sterujących i monitorujących}
+\subsection{Obsługa zaawansowanych komend dla zasilaczy wysokiego napięcia}
+\subsection{Rozbudowa biblioteki odpowiedzialnej za dopasowywanie krzywej}
+\subsection{Zmiany w sposobie aktualizacji parametrów i zebranych danych}
+\subsection{Zabezpieczenie przed przepełnieniem bufora urządzenia MCA}
+\subsection{Wprowadzenie dodatkowych komend sterujących i monitorujących}
 
 \section{Podsumowanie}
