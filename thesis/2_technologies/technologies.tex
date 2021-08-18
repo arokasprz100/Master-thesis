@@ -100,10 +100,41 @@ Inne kryterium podziału ...
 % Wskazac mozliwości zastosowania analizy w wiekszym srodowisku (np. SonarLint i SonarQube w wielu firmach), możliwość wlaczenia takiego rozwiazania w CI + dlaczego u nas tego nie ma
 
 \section{System kontroli wersji Git (JC)} % submoduly, repozytoria, gałęzie %
-\section{Portal GitLab (JC)}
-%    \subsection{GitLab CI/CD}
-%    \subsection{GitLab Runner} % albo dodac przypis w miejscu w ktorym jest o tym wspomniane, ze zostalo to opisane w pracy inzynierskiej
+Git jest to oprogramowanie służące do śledzenia zmian dokonywanych w zadanym zbiorze plików. Głównym celem jest umożliwianie sprawnej współpracy między programistami podczas procesu wytwarzania oprogramowania. Narzędzie to pozwala m.in. na równoległa pracę nad jednym zestawem plików przez wielu deweloperów, wersjonowanie zmian wprowadzanych w projekcie. Cechą wyróżniającą technologię Git od pozostałych rozwiązań służących do śledzenia zmian jest prędkośc działania, możliwość zastosowania wielu podejść dotyczących przepływu pracy (ang. \emph{workflow}), czy też ilość kopii zapasowych, automatycznie tworzących się w ramach korzystania z wyżej wymienionego narzędzia.
 
+Podstawowym i najważniejszym elementem technologii Git są tak zwane repozytoria (ang. \emph{repository}). U swojej podstawy jest to ukryty folder \lstinline{.git}, który jest tworzony w momencie aktywowania kontroli wersji w projekcie. Folder ten znajduje się w głównej ścieżce projektu, czyli \lstinline{<ścieżka do projektu>/.git}. Zawarte są w nim wszystkie informacje niezbędne do poprawnego działania technologii Git, np.: informacje o zmianach w prowadzonych w plikach z każdą rewizją (ang. \emph{commit}), wszystkie informacje na temat gałęzi (ang. \emph{branches}) w projekcie, informacje o zmianach lokalnych oraz o etapie (ang. \emph{stage}) w jakim się znajdują. Takie repozytorium wraz z samą zawartością projketu możemy zdeponować w jednym z portali obsługujących technologię git, na przykład: portal GitLab.
+
+Chcąc utrwalić zmiany w kodzie wykorzystując technologię Git należy skorzystać z funkcjonalności rewizji. W pierwszej kolejności należy dodać pliki, których stan ma być zachowany za pomocą komendy \lstinline{git add}, a następnie wykonując komendę \lstinline{git commit} należy utworzyć nową rewizję. W ten sposób utworzona rewizja posiada swój własny, unikalny identyfikator, korzystając z niego możemy w dowolnym momencie wrócić wszystkie pliki do stanu w którym znajdowały się w trakcie tworzenia wyżej wymienionej rewizji. Rewizję taką możemy również umieścić na zdalnym repozytorium utrzymywanym w ramach wcześniej wspomnianych portali.
+
+Bardzo przydatną funkcjonalnością Git, szczególnie w przypadku równoległej pracy nad tymi samymi plikami, jak i utrzymywania porządku, są tak zwane gałęzie. Pozwalają one na utworzenie alternatywej historii rewizji, dzięki czemu deweloperzy mogą prowadzić w pełni odseparowaną pracę nad funkcjonalnościami. W momencie, gdy zakończą oni pracę mogą połączyć swoje gałęzie w jedną, która będzie zawierałą wszystkie przez nich wykonane zmiany. W przypadku wystąpienia zmian konfliktujących ze sobą, np.: zmiana tej samej linijki kodu na obydwu gałęziach, należy problem taki rozwiązać ręcznie, to znaczy programista musi ręcznie wybrać wersję danej linijki kodu, która jest odpowiednia, bądź ręcznie połączyć obie wersje w jedną.
+
+Jedną z bardziej zaawansowanych funkcji Git, która została mocno wykorzystana w projkecie są submoduły (ang. \emph{submodules}). Pozwalają one na powiązanie dwóch niezależnych repozytoriów. W repozytorium nadrzędnym należy wykonać komendę \lstinline{git submodule add <url>}. Powoduje ona dodanie innego, zewnętrznego repozytorium jako podkatalog w repozytorium nadrzędnym. Wytwarzanie nowych rewizji w repozytorium nadrzędnym, oprócz zapisania stanu plików w tymże repozytorium, skutkuje zachowaniem informacji o identyfikatorze rewizji submodułu. Dzięki temu jesteśmy w stanie wersjonować zarówno nasze pliki, jak i wersję zależności z których korzystamy. Dodatkowo wykorzystując submoduły Git pozwala na bardzo prostą inicjalizację projektu składającego się z wielu repozytoriów, czy też zarządzanie nim.
+%https://git-scm.com/
+\section{Portal GitLab (JC)}
+
+GitLab jest to serwis hostujący repozytoria Git oparty o gui (\emph{graphical user interface}) w postaci portalu internetowego. Zadaniem tego rozwiązanie jest możliwość przechowywania oraz udostępniania repozytoriów Git. Rysunek \ref{fig:gitlab} przedstawia panel grupy w ramach platformy GitLab oraz kilka repozytoriów w ramach niej zawartych.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.80\textwidth]{gitlab}
+    \caption{Panel grupy na paltformie GitLab}
+    \label{fig:gitlab}
+\end{figure}
+
+Oprócz tego portal ten wzbogaca współpracę opartą na repozytoriach poprzez wprowadzenie tak zwanych \emph{merge request}. Pozwalają one na współpracę nad łączeniem dwóch gałęzi repozytorium w jedno. Rysunek \ref{fig:merge} przedstawia część przykładowego panelu \emph{merge request}. Oprócz logu wydarzeń widoczne są informację na temat: osoby, która zatwierdziła zmiany, statusu skonfigurowanej automatyzacji, czy też stanu danego merge request. Dostępne są również zakładki, gdzie sprawdzić można wszystkie rewizje które wchodzą w skład gałęzi, którą chcemy dołączyć oraz różnice we wszystkich zmienionych plikach.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{gitlab_merge}
+    \caption{Przykładowy \emph{merge request} na platformie GitLab}
+    \label{fig:merge}
+\end{figure}
+
+Wraz ze wzrostem portali takich jak GitLab zaczęto wprowadzać dodatkowe udogodnienia dla programistów, które szczególnie skupiają się na procesie wytwórczym kodu, infrastrukturze do tego stosowanej oraz różnym praktykom stosowanym w nowoczesnych projektach. Jedną z takich funkcjonalności jest \emph{GitLab CI/CD}, czyli część portalu GitLab oraz framework pozwalający na automatyzację procesu wytwórczego poprzez zastosowanie podejścia Continuous Integration/Continuous Delivery. Gitlab CI/CD pozwala na zdefiniowanie akcji, które mają być wykonywane automaczynie, w przypadku wystąpenia pewnych zdarzeń, na przykład: automatycznie wykonanie testów w momencie utworzenia nowej rewizji repozytorium na portalu Gitlab, czy też utworzenie nowego wydania aplikacji po przekazaniu odpowiedniego tag'a do repozytorium na platformie.
+
+Wszystkie akcje zawarte w wyżej wymienionej automatyzacji wykonywane są na specjalnie przygotowanych maszynach wirtualnych zarejestrowanych w portalu Gitlab, czyli \emph{Gitlab Runners}. Maszyny te posiadają zainstalowane odpowiednie rozszerzenia oraz oprogramowanie \emph{docker}, ponieważ większość akcji wykonywana jest w ramach kontenerów.
+
+%https://en.wikipedia.org/wiki/GitLab
 \section{Narzędzie CMake (AK)}
 % Krotki opis co to jest, czym sie rozni od Make, zalety
 % Opis dwoch wersji, jakie sa roznice miedzy nimi
@@ -112,3 +143,14 @@ Inne kryterium podziału ...
 
 
 \section{Menadżer pakietów RPM (JC)}
+\emph{RPM Package Manager} jest systemem do zarządzania pakietami na systemach z rodziny Red Hat, Fedora, CentOS, OpenSUSE. Posługuje się on pakietami z rozszerzeniem \emph{.rpm}. W ramach takiego pakietu zawarte są:
+\begin{itemize}
+    \item główna zawartość - na przykład: skompilowana aplikacja, gotowy skrypt bash, itp.
+    \item metadane - informacje o autorze, zawartości, wersji zawartości, opis pakietu, wymagane zależności
+    \item logika instalacji oraz logika dezinstalacji - skrypty mające na celu przygotowanie systemu do instalacji oraz posprzątanie systemu po dezinstalacji pakietu
+\end{itemize}
+
+Instalacja oprogramowania za pomocą menadżera pakietów pozwala na znacznie przyspieszenie procesu. Zazwyczaj wszystkie akcje, które są wymagane przed zainstalowaniem oprogramowania, wykonywane są w ramach logiki instalacji. Menadżer pakietów, wykorzystując zewnętrzne repozytoria, jest w stanie pobrać i zainstalować wszystkie pakiety jakich wymaga przez nas instalowany pakiet. Dodatkowo menadżer pakietów RPM zapewnia zabezpiecznie i weryfikacje poprawności pakietu w postaci technologii \emph{GPG} oraz  \emph{MD5}.
+
+%https://rpm.org/documentation.html
+%https://en.wikipedia.org/wiki/RPM_Package_Manager

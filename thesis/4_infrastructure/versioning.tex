@@ -2,8 +2,44 @@
 \section{Automatyzacja i centralizacja wersjonowania projektu (JC)}
 \label{ch:versioning}
 
+Niniejszy rozdział traktuje o wersjonowaniu w projekcie ggss. Sposobie w jaki były wersjonowane aplikacje przed wprowadzeniem najnowszych zmian, wymaganiami jakie zostały postawione co do systemu wersjonowania oraz sposobie implementacji wymaganego systemu wersjonowania.
+
 \subsection{Wprowadzenie do problematyki}
+
+Wersjonowanie oprogramowania jest to proces, którego celem jest przypisanie aplikacji utworzonej danego dnia unikatowego identyfikatora, dzięki czemu w dowolnej chwili jesteśmy w stanie wrócić do aplikacji, która już wcześniej znajdowała się w środowisku produkcyjnym i została dogłębnie przetestowana. Jest to szczególnie przydatne w momencie, gdy z jakiegoś powodu do środowiska produkcyjnego trafi zepsuta wersja aplikacji. Ponadto wersjonowanie aplikacji pozwala na śledzenie zmian oraz wprowadzanych usprawnień w aktualizacji. Użytkownicy są w stanie, sprawdzjąc dokumentację wprowadzonych zmian, określić, czy wersja aplikacji którą używają posiada wszystkie wymagane przez nich funkcjonalności. Ponadto znajdywanie głownej przyczyny późno wykrytego błędu staje się znacznie prostrze. Jest możliwe porównanie różnych wersji aplikacji, dzięki czemu możliwe jest określnie w jakim przedziale czasowym pojawił się wyżej wymieniony błąd.
+
+W projekcie ggss wersjonowaniu poddawany był jedynie pakiet RPM z sterownikami oraz zależnościami zewnętrznymi. Wersja składała się z czterech komponentów, czyli \lstinline{<MAJOR>.<MINOR>.<PATCH>-<RELEASE>}. Komponent wersji, który był zmieniany przy wprowadzaniu zmian był wybierany uznaniowo. Dodatkowo wersjonowanie do tej pory było rozwiązane jako ręcznie wpisana wartość w plikach CMake służących do budowania projektu. Każda z części projektu ggss, która wymagała wersjonowania była wersjonowana osobno.
 
 \subsection{Motywacja do wprowadzenia zmian}
 
-\subsection{...}
+Pierwszym czynnikiem, z powodu którego zdecydowano się na wprowadzenie zmian w systemie wersjonowania była jego nieporęczność. Każda zmiana i wydanie nowej wersji aplikacji wymagały od dewelopera, aby pamiętał, że należy jeszcze dodatkowo zmienić wersję w plikach CMake. Był to kolejny krok który programista musiał wykonać w celu przeprowadzenia poprawnego procesu rozwoju oprogramowania, a co za tym idzie potencjalnie kolejne miejsce na pomyłkę. Dodatkowo nieodpowiednia zmiana wersji, na przykład przez pomyłkę, na niższą powodowała problemy z procesem instalacji nowej wersji oprogramowania w środowisku docelowym. Ze względu na to, że systemy działające przy detektorze mają bardzo duże restrykcje proces instalacji nowych wersji aplikacji jest monitorowany przez administratorów systemowych. Pomyłki w zmianie wersji oprogramowania uniemożliwiały ich zainstalowanie ze względu na błędy w działaniu menadżera pakietów oraz sprzeciw administratorów dla instalacji niepoprawnie wersjonowanych aplikacji.
+
+Kolejnym czynnikiem który spowodował wprowadzenie zmian w systemie wersjonowania był wymóg postawiony autorom, aby wszystkie aplikacje ggss publikowane w danym momencie miały dokładnie tą samą wersję, to jest: aby zarówno komponent A miał wersję X, jak i komponent B miał wersję X. Dzięki zastosowaniu takiego podejścia możliwe jest bardzo szybkie zidentyfikowanie kombinacji komponentów systemu ggss, które są ze sobą kompatybilne.
+
+Ze względu na te czynniki postanowiono przygotować zautomatyzowany, scentralizowany system wersjonowania oparty o dostępną infrastrukturę, czyli: skrypty budujące w języku Python, pliki CMake, portal Gitlab i automatyzację w oparciu o Gitlab CI/CD.
+
+\subsection{Zmiany w skryptach budujących projekt}
+
+W celu zapewnienia automatycznego, scentralizowanego wersjonowania należało wykonać zmiany w kilku warstwach projektu ggss. W pierwszej kolejności zmodyfikowano głowny skrypt do budowania (\lstinline{build.py}) w repozytorium ggss-all. Została dodana do niego obsługa argumentu wejściowego \lstinline{--version} tak, aby można było definiować wersję zarówno ręcznie w trakcie uruchamiania wyżej wymienionego skryptu, jak i poprzez automatyzację zdefiniowaną w ramach Gitlab CI/CD. W przypadku braku podania wersji, którą mają zostać oznaczone budowane pliki postanowiono ustawiać ją tak, aby było wiadomo, że wyprodukowane pliki stanowią wersję deweloperską, a nie produkcyjną. W takim przypadku wersja przygotowywana przez skrypt wygląda następująco: \lstinline{dev-YYYY-MM-DD_HH-MM-SS}. Pozwala to na identyfikację, że pliki zostały zbudowane poza oficjalnym systemem automatyzującym cały proces, oraz dokładną datę i godzinę kiedy skrypt budujący został uruchomiony. Oprócz rozszerzenia argumentów wejściowych dostosowania wymagał również sposób obsługi plików CMake w wyżej wymienionym skrypcie. Wersja przekazywania jest za pomocą parametru \lstinline{VERSION} do wszystkich plików CMake obsługiwanych przez skrypt.
+
+\subsection{Zmiany w plikach CMake}
+
+W przypadku plików CMake zasotosowano podobne podejście, jak w przypadku pliku \lstinline{build.py}. Dodano argument wejściowy w postaci parametru \lstinline{VERSION}. Pozwala to na odebranie wartości wersji od skryptów zewnętrznych, jak i ręcznie wpisanej przez użytkownika korzystającego z plików CMake. W przypadku nieustawienia wartości wyżej wymienionego parametru ustawiana jest wartość domyślna w postaci \lstinline{no-version}. Listing \ref{lst:cmake_version_arg} przedstawia przykładowe zastosowanie tego systemu w przypadku repozytorium ggss-driver.
+
+\begin{lstlisting}[language=CMake,caption={Zastosowanie parametru VERSION w repozytorium ggss-driver},label={lst:cmake_version_arg},frame=single]
+if(NOT VERSION)
+    set(VERSION "no-version")
+endif()
+
+message(STATUS "ggss-driver version: ${VERSION}")
+
+#parameter initialization
+set (CPACK_PACKAGE_NAME "ggss-driver-cc7")
+set (CPACK_PACKAGE_VERSION ${VERSION})
+\end{lstlisting}
+
+
+\subsection{Zastosowanie semantic-versioning oraz zmiany w automatyzacji}
+%dwa nowe stage od semantic versioning, analiza commitów, tworzenie nowych release
+
+%https://semver.org/
