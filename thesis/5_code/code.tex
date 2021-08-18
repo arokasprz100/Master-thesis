@@ -1,36 +1,29 @@
 \chapter{Prace nad kodem źródłowym projektu (AK)}
 \label{cha:code}
 
-\section{Wprowadzenie - analiza aplikacji \emph{ggss-runner}}
+Niniejszy rozdział stanowi opis wprowadzonych przez autorów zmian w kodzie źródłowym aplikacji \emph{ggss-runner}, stanowiącej trzon warstwy oprogramowania systemu GGSS. Opis poszczególnych modyfikacji poprzedzony został krótkim wprowadzeniem, opisującym wysokopoziomowe dzialanie omawianego programu oraz wynikające z jego specyfiki ograniczenia i założenia. Omówienie wprowadzonych zmian podzielone zostało na dwie części. W pierwszej z nich przedstawione zostały modyfikacje nie mające wpływu na sposób działania aplikacji, ale poprawiające jakość jej kodu źródłowego, np. poprzez jego migrację do nowszego standardu języka C++. Druga część stanowi natomiast opis nowych funkcjonalności oraz rozszerzeń wprowadzonych przez autorów do projektu. 
 
-\section{Metodyka prac}
+\section{Analiza aplikacji \emph{ggss-runner}}
 
-    \subsection{Testy jednostkowe}
+\section{Specyfika pracy}
 
-    \subsection{Problem \emph{mockowania}}
-
-    \subsection{Statyczna analiza kodu źródłowego}
-
-    \subsection{Przyjęte ograniczenia}
+    \subsection{Testy jednostkowe} % w tym problem mockowania w systemach legacy
+    \subsection{Zakres wprowadzanych zmian} % napisac ze celem nie bylo przepisanie calej apki
+    \subsection{Przyjęte ograniczenia} % brak nowych zaleznosci, zgodnosc ze srodowiskiem docelowym
 
 \section{Poprawa jakości kodu źródłowego}
 
     \subsection{Migracja do standardu C++11}
-
-    \subsection{Naprawa błędów w kodzie}
-
+    \subsection{Naprawa błędów w kodzie źródłowym}
+    \subsection{Likwidacja nieużywanych fragmentów kodu źródłowego}
     \subsection{Zmiany w strukturze bibliotek}
 
-    \subsection{Prace nad biblioteką \emph{ggss-lib}}
-
-\section{Wprowadzenie nowych funkcjonalności}
-
-    \subsection{Biblioteka \emph{hvcommand-lib}}
-
-    \subsection{Zmiany w sposobie aktualizacji parametrów i danych}
-
-    \subsection{Wprowadzenie dodatkowych komend}
-
-    \subsection{Zmiany w algorytmie dopasowywania krzywej}
+\section{Rozszerzenie możliwości aplikacji}
+    
+    \subsection{Obsługa zaawansowanych komend dla zasilaczy wysokiego napięcia}
+    \subsection{Rozbudowa biblioteki odpowiedzialnej za dopasowywanie krzywej}
+    \subsection{Zmiany w sposobie aktualizacji parametrów i zebranych danych}
+    \subsection{Zabezpieczenie przed przepełnieniem bufora urządzenia MCA}
+    \subsection{Wprowadzenie dodatkowych komend sterujących i monitorujących}
 
 \section{Podsumowanie}

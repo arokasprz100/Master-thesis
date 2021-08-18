@@ -72,32 +72,55 @@ Na listingu \ref{lst:python} przedstawiony został prosty przykład zastosowania
 
 
 \section{Narzędzia do analizy oprogramowania (AK)}
-Wraz z postępującym rozwojem szeroko rozumianej informatyki, stale rośnie złożoność powstającego oprogramowania. Powoduje to, że utrzymanie wysokiej jakości kodu źródłowego staje się coraz trudniejsze, a w przypadku wielu projektów - niemożliwe do realizacji bez pomocy dodatkowych narzędzi. Niniejsza część pracy magisterskiej stanowi krótkie wprowadzenie do szerokiej tematyki, jaką jest analiza oprogramowania. Przedstawione zostaną podstawy teoretyczne, jak również zarysowane zostanie działanie narzędzi wykorzystywanych przez autorów podczas prac nad systemem GGSS. Ze względu na charakter projektu, omówione zostaną wyłącznie technologie pozwalające na pracę z oprogramowaniem napisanym w językach C i C++. 
-
-\subsubsection*{Wstęp teoretyczny}
-Pojęcie \emph{narzędzi do analizy oprogramowania} definiuje bardzo szeroki zakres różnego rodzaju programów, umożliwiających lub ułatwiających wykonywanie działań takich jak: znajdowanie i eliminowanie błędów oraz przyczyn ich występowania, badanie zużycia różnego rodzaju zasobów (np. pamięci) oraz analiza jakości kodu źródłowego. W zależności od przyjętego kryterium podziału, analizę oprogramowania kategoryzować można na zróżnicowane sposoby. Jeśli zatem podział następować ma na podstawie tego, kiedy analiza jest przeprowadzana, to wyróżnić można następujące jej rodzaje:
+Podczas prac nad systemem GGSS autorzy wykorzystali szereg narzędzi ułatwiających utrzymanie jakości oraz niezawodności tworzonego oprogramowania. Współcześnie, wraz z rosnącym skomplikowaniem powstających projektów informatycznych, rośnie zapotrzebowanie na narzędzia wspierające analizę tworzonego oraz rozwijanego oprogramowania - jest ono często utrzymywane przez wiele osób, przez co zachowanie jego wysokiej jakości staje się coraz bardziej wymagającym zadaniem. Opisywane narzędzia charakteryzują się szerokim zakresem oferowanych możliwości, m.in. monitorowanie zużycia zasobów czy też badanie kodu źródłowego pod kątem zgodności z pewnymi przyjętymi standardami, oraz wspierają wykonywanie analizy programu na wiele zróżnicowanych sposobów. W najprostszym ujęciu wskazać można dwie możliwości klasyfikacji technik analizy oprogramowania:
 \begin{itemize}
-    \item analiza statyczna (ang. \emph{static analysis}) - następuje bez uruchamiania badanego programu. Przykładem narzędzi umożliwiających wykonywanie tego typu badań są tzw. lintery (ang. \emph{linter}), pozwalające na analizę kodu źródłowego pod względem stylu programowania i umożliwiające wczesne wykrywanie wielu błędów.
-    \item analiza dynamiczna (ang. \emph{dynamic analysis}) - następuje w trakcie wykonania programu. Jako przykład oprogramowania wykonującego tego typu analizę podać można narzędzia umożliwiające tzw. profilowanie (ang. \emph{profiling}), pozwalające na monitorowanie wydajności i zużycia zasobów przez badany program.
+    \item analiza kodu źródłowego (ang. \emph{source analysis}) oraz analiza kodu maszynowego (ang. \emph{binary analysis}) - w przypadku pierwszego typu badaniom poddawany jest kod źródłowy, napisany np. z wykorzystaniem języka C++, drugie podejście polega natomiast na analizie programu na poziomie kodu maszynowego lub reprezentacji pośredniej, takiej jak kod bajtowy (ang. \emph{bytecode}).
+    \item analiza statyczna (ang. \emph{static analysis}) oraz analiza dynamiczna (ang. \emph{dynamic analysis}) - podejścia te różni to, czy badanie wykonywane jest bez uruchamiania programu (pierwszy typ), czy też w trakcie jego wykonywania (drugi rodzaj).
 \end{itemize}
 
-Inne kryterium podziału ... 
+Powyższe dwa podziały pozwalają ostatecznie określić cztery kategorie analizy oprogramowania: statyczna analiza kodu źródłowego, statyczna analiza kodu maszynowego, dynamiczna analiza kodu źródłowego oraz dynamiczna analiza kodu maszynowego. Każde z tych podejść charakteryzuje się pewnymi zaletami względem pozostałych, należy je jednak traktować jako komplementarne - wskazane jest, w zależności od potrzeb, wykorzystywanie różnego typu narzędzi ułatwiających utrzymanie wysokiej jakości tworzonego oprogramowania. Szczegółowa analiza każdej z wymienionych możliwości wykracza poza zakres niniejszej pracy, w dalszej jej części przedstawione zostały jedynie najważniejsze informację na temat szczególnie istotnych narzędzi, które wykorzystywali autorzy podczas prac nad systemem GGSS. W zamieszczonym opisie pominięte zostało jednak oprogramowanie, którego znajomość nie jest konieczna w celu zrozumienia dalszych części niniejszego manuskryptu, takie jak GNU Debugger (GDB).
 
+Z punktu widzenia testów, jakie wykonywane były podczas prac nad systemem GGSS, bardzo istotna jest platforma Valgrind. Jej działanie opiera się na przeprowadzaniu tzw. instrumentacji - umieszczaniu w kodzie dodatkowych instrukcji, pozwalających na wykonywanie jego analizy, co w tym przypadku ma miejsce w czasie wykonywania programu. Valgrind pozwala na tworzenie wyspecjalizowanych narzędzi wykorzystujących dynamiczną instrumentację binarną, dzięki udostępnieniu rdzenia (ang. \emph{core}), którego zadaniem jest deasemblacja kodu maszynowego do tzw. postaci pośredniej. Postać ta wykorzystywana jest przez poszczególne narzędzia, które dodają odpowiedni dla danego zastosowania kod analizujący. Szczególnie istotne z punktu widzenia niniejszej pracy są narzędzia Memcheck oraz Massif, których zadaniem jest monitorowanie, w jaki sposób badany program wykorzystuje dostępną pamięć.
 
-\subsubsection*{Valgrind}
+Memcheck jest domyślnym narzędziem udostępnianym przez platformę Valgrind, pozwalającym na wykrywanie błędów związanych z zarządzaniem pamięcią w programach napisanych w językach C i C++. Przykładem tego typu błędów są wycieki pamięci, użycie zmiennych, którym nie została nadana żadna wartość, oraz próby dostępu do zwolnionej pamięci. Memcheck jest szczególnie istotny w kontekście testów systemu GGSS, ponieważ pozwala upewnić się, że podczas działania aplikacji wchodzących w skład projektu nie mają miejsca żadne błędy mogące powodować stopniowy wzrost zużycia zasobów, co w przypadku systemu działającego nieprzerwanie przez wiele miesięcy jako usługa mogłoby doprowadzić do niespodziewanej awarii. 
 
+Na listingu \ref{lst:memcheckcode} przedstawiony został fragment kodu źródłowego napisanego w języku C++, zawierającego przykłady prostych błędów, które mogą zostać wykryte przy użyciu narzędzia Memcheck: użycie niezainicjalizowanej zmiennej oraz wyciek pamięci. W funkcji \lstinline{main()} tworzona jest zmienna \lstinline{no_value}, której nie zostaje nadana wartość. Następnie na jej podstawie podejmowana jest decyzja o zmianie wartości zmiennej \lstinline{value} - sprawia to, że działanie programu jest niemożliwe do przewidzenia. W ostatniej linii funkcji \lstinline{main()} tworzona jest dynamiczna tablica dziesięciu liczb całkowitych - ponieważ w programie nie następuje jej zwolnienie, jest to prosta forma wycieku pamięci.
 
-\subsubsection*{Statyczna analiza kodu źródłowego}
+\lstinputlisting[
+    language=C++, 
+    caption={Przykład prostego programu zawierającego błędu możliwe do wykrycia za pomocą narzędzia Memcheck: użycie zmiennej, której nie została nadana wartość oraz wyciek pamięci.}, 
+    label={lst:memcheckcode}
+]{2_technologies/code_samples/memcheck_code.cpp}
 
+Na listingu \ref{lst:memcheckcmd} przedstawione zostało natomiast wywołanie narzędzia Memcheck w celu zbadania stanowiącego przykład programu. W zamieszczonym wyjściu widoczne są informacje na temat wykrycia obu błędów. Ponadto, ponieważ nastąpiło wywołanie z użyciem opcji \lstinline{--track-origins=yes}, wskazywane jest źródło wystąpienia nieprawidłowości (np. w przypadku niezainicjalizowanej zmiennej jest to linia, w której następuje jej definicja). Ponadto wyświetlane są: podsumowanie zawierające informacje na temat dynamicznych alokacji pamięci (czyli na tzw. stercie - ang. \emph{heap}) oraz raport podsumowujący wykryte przez narzędzie wycieki pamięci, w zależności od ich rodzaju.
 
-\subsubsection*{Podsumowanie}
+\lstinputlisting[
+    language=Cmd, 
+    caption={Wywołanie narzędzia Memcheck w celu zbadania programu zamieszczonego na listingu \ref{lst:memcheckcode} - widoczne informacje na temat obu obecnych w przykładzie błędów.}, 
+    label={lst:memcheckcmd}
+]{2_technologies/code_samples/memcheck_output.txt}
 
-% Wstep teoretyczny - czym jest analiza kodu, jakie mamy rodzaje, co to jest instrumentacja
-% Omowienie Valgrinda jako frameworka, wskazanie narzedzia Memcheck
-% Krotkie omowienie dzialania Memcheck, m.in. rodzaje wyciekow pamieci, jakie są ich konsekwencje, wskazac te potencjalnie grozne dla aplikacji dzialajacych jako uslugi (stopniowe nagromadzenie sie zuzytej pamieci - przyklad)
-% Krotko o innych narzedziach (np. Cachegrind), czemu tutaj mniej istotne
-% Statyczna analiza kodu źródłowego - jakie możliwości daje CLion oraz clang-tidy
-% Wskazac mozliwości zastosowania analizy w wiekszym srodowisku (np. SonarLint i SonarQube w wielu firmach), możliwość wlaczenia takiego rozwiazania w CI + dlaczego u nas tego nie ma
+W niniejszej pracy pominięty został szczegółowy opis technik stosowanych przez narzędzie Memcheck w celu wykrywania błędów występujących w badanym programie. Istotna jest natomiast informacja, że przeprowadzana analiza oparta jest na wykorzystywaniu dodatkowych zasobów, w tym znaczącej ilości pamięci. W ten sposób działa m.in. mechanizm wykrywanie użycia niezainicjalizowanych zmiennych - każdy bit danych zarządzany przez badany proces jest śledzony przez narzędzie za pomocą metadanych w postaci innego bitu (tzw. \emph{valid-value bit}). Powoduje to znaczący wzrost zużycia pamięci, a zatem uniemożliwia jednoczesne przeprowadzanie (np. za pomocą innych, zewnętrznych narzędzi) badań dotyczących ilości wykorzystywanych przez analizowany program zasobów.
+
+Drugim, istotnym z uwagi na prezentowane w niniejszym manuskrypcie treści, narzędziem opartym o platformę Valgrind jest Massif. Umożliwia on generowanie szczegółowych raportów opisujących wykorzystanie pamięci sterty (oraz opcjonalnie stosu) przez badany program. Pozwala to wykrywać scenariusze takie jak stopniowo rosnący, wraz z długotrwałym działaniem programu, rozmiar dynamicznie alokowanych struktur danych. Ponieważ w takim przypadku wyciek pamięci nie następuje w sposób jawny, problem tego typu jest trudny do wykrycia za pomocą narzędzia Memcheck. Uproszczony przykład tego typu scenariusza przedstawiony został na listingu \ref{lst:massif_code}. Zamieszczony tam program symuluje sterowany przez użytkownika pomiar: w każdej iteracji pętli \lstinline{do-while} następuje alokacja pamięci, a następnie na podstawie wprowadzonego na standardowe wejście znaku podejmowana jest decyzja o kontynuacji lub zakończeniu działania. Po zakończeniu wykonywania pętli następuje zwolnienie pamięci. Przedstawiony program nie zawiera błędów związanych z zarządzaniem pamięciom - zastosowania narzędzia Memcheck nie wskazuje na występowanie żadnych problemów. Każda iteracja pętli \lstinline{do-while} wiąże się jednak ze zwiększeniem rozmiaru wykorzystywanej przez program pamięci sterty, co ostatecznie może doprowadzić do jej wyczerpania, a co za tym idzie, do błędu kończącego działanie aplikacji. Tego typu scenariusz jest szczególnie niebezpieczny w przypadku aplikacji, od których oczekuje się bezawaryjnego działania przez bardzo długi czas (np. kilka miesięcy) - w tego typu przypadkach mechanizm sterujący alokacją pamięci może być znacząco bardziej skomplikowany, niż ten przedstawiony w przykładzie, a co za tym idzie wczesne wykrycie potencjalnego problemu może być niemożliwe bez zastosowania narzędzia takiego jak Massif.
+
+\lstinputlisting[
+    language=C++, 
+    caption={Przykład prostego programu symulującego cykliczne wykonywanie pomiaru. W każdej iteracji wykonywana jest dynamiczna alokacja pamięci, a użytkownik za pomocą standardowego wejścia decyduje o zaprzestaniu lub kontynuacji działania programu. Załączony kod obrazować ma sytuację, w której program stopniowo zwiększa zużycie dostępnych zasobów, co w konsekwencji doprowadzić może do przerwania jego działania, gdy zostaną one wyczerpane.}, 
+    label={lst:massif_code}
+]{2_technologies/code_samples/massif_code.cpp}
+
+Na rysunku \ref{fig:massif_plot} przedstawiony został natomiast wykres wykonany za pomocą danych, jakie znalazły się w raporcie wygenerowanym przez narzędzie Massif. Przedstawia on zużycie pamięci sterty w funkcji czasu dla przykładowego uruchomienia zaprezentowanego programu - wyraźnie widoczny jest wzrost ilości wykorzystywanych zasobów wraz z kolejnymi alokacjami następującymi w pętli \lstinline{do-while}. Poza danymi liczbowymi na temat zużycia przez badany program pamięci, generowany przez narzędzie raport zawiera informacje na temat następujących alokacji, co ułatwia znajdowanie źródeł wzrostu wykorzystania zasobów. Ze względu na znaczny rozmiar generowanego raportu nie został on zaprezentowany w niniejszym manuskrypcie.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{massif_plot.pdf}
+\caption{Wykres przedstawiający ilość wykorzystywanej pamięci sterty w funkcji czasu. Zaprezentowane dane pochodzą z przykładowego uruchomienia programu zawartego na listingu \ref{lst:massif_code} - ich pozyskanie możliwe było dzięki wykorzystaniu wygenerowanego przez narzędzie Massif raportu.}
+\label{fig:massif_plot}
+\end{figure}
+
+Innym typem narzędzi wykorzystywanych przez autorów niniejszej pracy są te służące do statycznej analizy kodu źródłowego w celu określenia jego zgodności z przyjętymi konwencjami. Wykonywane w ten sposób badanie pozwala wykryć nieprawidłowości związane zarówno z tak prostymi zagadnieniami jak przyjęty styl (np. nazewnictwo zmiennych czy kolejność załączania plików nagłówkowych), jak również z wykorzystaniem poszczególnych elementów języka programowania (np. wykrywanie przestarzałych, niezalecanych konstrukcji, takich jak wspomniany w części opisującej język C++ wskaźnik \lstinline{std::auto_ptr}). Tego typu narzędzia w znaczącym stopniu ułatwiają refaktoryzację (ang. \emph{refactoring}), czyli proces wprowadzania w istniejącym kodzie źródłowym zmian, których celem jest zwiększenie jego jakości bez zmiany funkcjonalności. Przykładem bardzo popularnego wśród programistów C++ narzędzia przeprowadzającego statyczną analizę kodu źródłowego jest Clang-Tidy, oparty na kompilatorze Clang. Ponadto nowoczesne środowiska programistyczne bardzo często posiadają zintegrowaną funkcjonalność pozwalającą przeprowadzić tego typu badanie. Tego typu środowiskiem jest, wykorzystywany przez autorów do pracy nad systemem GGSS, CLion stworzony przez firmę JetBrains.
+
 
 \section{System kontroli wersji Git (JC)} % submoduly, repozytoria, gałęzie %
 Git jest to oprogramowanie służące do śledzenia zmian dokonywanych w zadanym zbiorze plików. Głównym celem jest umożliwianie sprawnej współpracy między programistami podczas procesu wytwarzania oprogramowania. Narzędzie to pozwala m.in. na równoległa pracę nad jednym zestawem plików przez wielu deweloperów, wersjonowanie zmian wprowadzanych w projekcie. Cechą wyróżniającą technologię Git od pozostałych rozwiązań służących do śledzenia zmian jest prędkośc działania, możliwość zastosowania wielu podejść dotyczących przepływu pracy (ang. \emph{workflow}), czy też ilość kopii zapasowych, automatycznie tworzących się w ramach korzystania z wyżej wymienionego narzędzia.
@@ -135,7 +158,19 @@ Wraz ze wzrostem portali takich jak GitLab zaczęto wprowadzać dodatkowe udogod
 Wszystkie akcje zawarte w wyżej wymienionej automatyzacji wykonywane są na specjalnie przygotowanych maszynach wirtualnych zarejestrowanych w portalu Gitlab, czyli \emph{Gitlab Runners}. Maszyny te posiadają zainstalowane odpowiednie rozszerzenia oraz oprogramowanie \emph{docker}, ponieważ większość akcji wykonywana jest w ramach kontenerów.
 
 %https://en.wikipedia.org/wiki/GitLab
+
 \section{Narzędzie CMake (AK)}
+CMake jest rozwijanym przez firmę \emph{Kitware} narzędziem automatyzującym procesy związane z cyklem życia oprogramowania, w tym przede wszystkim jego budowanie, testowanie, instalację oraz tworzenie pakietów. Udostępnia intuicyjny, oparty o prosty język skryptowy interfejs, umożliwiający tworzenie konfiguracji w sposób niezależny od docelowej platformy, dzięki czemu możliwe jest konstruowanie zaawansowanych, dostosowanych do potrzeb konkretnego projektu systemów budowania. Stanowi trzon systemu budowania i pakietowania przygotowanego na potrzeby systemu GGSS przez autorów niniejszego manuskryptu w ramach napisanej przez nich pracy inżynierskiej. Z narzędziem CMake ściśle zintegrowane są systemy CPack oraz CTest, który zadaniem jest kolejno: tworzenie pakietów instalacyjnych z oprogramowaniem (np. \lstinline{.rpm}) oraz tworzenie konfiguracji umożliwiających testowanie automatyczne.
+
+Na listingu \ref{lst:cmake_example} przedstawiony został bardzo prosty przykład pliku \lstinline{CMakeLists.txt}, zawierającego konfigurację pozwalająca na zbudowanie aplikacji napisanej w języku C++. Na załączonym fragmencie kodu widoczne są komendy pozwalające określić informacje takie jak: minimalna wersja narzędzia CMake, nazwa oraz wersja projektu czy lista plików wchodzących w skład tworzonej aplikacji.
+
+\lstinputlisting[
+    language=CMake, 
+    caption={Przykład pliku \lstinline{CMakeLists.txt}, zawierającego komendy pozwalające na zbudowanie prostej, składającej się z jednego pliku źródłowego, aplikacji napisanej w języku C++}, 
+    label={lst:cmake_example}
+]{2_technologies/code_samples/cmake_example.cmake}
+
+
 % Krotki opis co to jest, czym sie rozni od Make, zalety
 % Opis dwoch wersji, jakie sa roznice miedzy nimi
 % Prosty przyklad

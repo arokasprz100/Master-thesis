@@ -4,7 +4,7 @@ Przez zmiany w architekturze projektu autorzy rozumieją stopniowy rozwój zaimp
 \subsection{Wprowadzenie do problematyki}
 Przeprowadzone przez autorów w ramach pracy inżynierskiej modyfikacje architektury systemu GGSS obejmowały przede wszystkim migrację projektu do systemu kontroli wersji Git, wprowadzenie spójnego nazewnictwa poszczególnych komponentów oraz zastosowanie funkcjonalności submodułów będącej częścią technologii Git do stworzenia hierarchicznej struktury repozytoriów (w odróżnieniu od pierwotnej, płaskiej architektury opartej o katalogi). Celem tych zmian było ułatwienie pracy nad pojedynczymi komponentami projektu oraz uczynienie struktury projektu przyjazną dla użytkownika, co zostało zdaniem autorów osiągnięte. 
 
-Architektura stanowiąca punkt wyjściowy zmian wykonanych w ramach niniejszej pracy przedstawiona została na rysunku \ref{fig:old_structure} (z pominięciem repozytoriów pomocniczych, zawierających np. dokumentację). Projekt zawierał 14 repozytoriów, tworzących strukturę hierarchiczną, w skład których wchodziły m.in.: aplikacje, pomocnicze skrypty, infrastruktura budowania oraz kod źródłowy bibliotek implementujących poszczególne funkcjonalności systemu. W kontekście tej części pracy szczególnie istotne są repozytoria zawierające kod źródłowy bibliotek statycznych oraz pliki nagłówkowe, stanowiące trzon projektu (tzn. wykorzystywane przez aplikację \emph{ggss-runner}): \emph{ggss-lib}, \emph{ggss-software-libs}, \emph{ggss-hardware-libs}, \emph{ggss-util-libs} oraz \emph{ggss-misc} (repozytoria te oznaczone zostały na rys. \ref{fig:old_structure} kolorem niebieskim). Ich rola w pierwotnej wersji projektu prezentowała się następująco:
+Architektura stanowiąca punkt wyjściowy zmian wykonanych w ramach niniejszej pracy przedstawiona została na rysunku \ref{fig:old_structure} (z pominięciem repozytoriów pomocniczych, zawierających np. dokumentację). Zawarte na schemacie kolory obrazują rolę każdego modułu (zielony - repozytorium pomocnicze, czerwony - zależność zewnętrzna, żółty - aplikacja, fioletowy - sterownik urządzenia oraz niebieski - kod źródłowy oraz pliki nagłówkowe bibliotek). Projekt składał się zatem z 14 tworzących strukturę hierarchiczną repozytoriów, zawierających elementy takie jak: aplikacje, pomocnicze skrypty, infrastruktura budowania oraz kod źródłowy bibliotek implementujących poszczególne funkcjonalności systemu. W kontekście tej części pracy szczególnie istotne są repozytoria zawierające kod źródłowy bibliotek statycznych oraz pliki nagłówkowe, stanowiące trzon projektu (tzn. wykorzystywane przez aplikację \emph{ggss-runner}): \emph{ggss-lib}, \emph{ggss-software-libs}, \emph{ggss-hardware-libs}, \emph{ggss-util-libs} oraz \emph{ggss-misc} (repozytoria te oznaczone zostały na rys. \ref{fig:old_structure} kolorem niebieskim). Ich rola w pierwotnej wersji projektu prezentowała się następująco:
 \begin{itemize}
     \item \textbf{\emph{ggss-hardware-libs}} - przechowywanie bibliotek odpowiedzialnych za obsługę urządzeń wchodzących w skład warstwy sprzętowej systemu GGSS. W pierwotnej wersji projektu były to następujące biblioteki statyczne:
     \begin{itemize}
@@ -27,19 +27,15 @@ Architektura stanowiąca punkt wyjściowy zmian wykonanych w ramach niniejszej p
         \item \emph{thread-lib} - odpowiedzialna za implementację wykorzystywanego w projekcie mechanizmu wielowątkowości
     \end{itemize}
     \item \textbf{\emph{ggss-misc}} - przechowywanie plików nagłówkowych (niebędących cześcią żadnej z bibliotek statycznych) oraz plików \lstinline{.cmake} tworzących infrastrukturę budowania projektu
-    \item \textbf{\emph{ggss-lib}} - przechowywanie kodu źródłowego zawierającego główną logikę systemu GGSS
+    \item \textbf{\emph{ggss-lib}} - przechowywanie kodu źródłowego zawierającego główną logikę systemu GGSS oraz przesyłane za pomocą protokołu DIM struktury danych
 \end{itemize}
 
-\begin{landscape}
-
-\begin{figure}
+\begin{figure}[H]
 \centering
-\includegraphics[width=1.35\textwidth]{old_structure.pdf}
+\includegraphics[width=\textwidth]{old_structure.pdf}
 \caption{Architektura projektu przed wprowadzeniem modyfikacji (sytuacja wyjściowa). Groty strzałek wskazują repozytoria bazowe, kolory natomiast opisują rolę poszczególnych modułów: zielony oznacza repozytoria pomocnicze, żółty - aplikacje, czerwony - biblioteki zewnętrzne, fioletowy - sterownik a niebieski - biblioteki i pliki nagłówkowe projektu GGSS.}
 \label{fig:old_structure}
 \end{figure}
-
-\end{landscape}
 
 \subsection{Motywacja do wprowadzenia zmian}
 Przygotowane przez autorów w ramach pracy inżynierskiej rozwiązanie było w pełni funkcjonalne, charakteryzowało się jednak pewnymi wadami i ograniczeniami, wynikającymi przede wszystkim z ograniczeń czasowych, niewielkiego doświadczenia autorów w pracy z projektem oraz istniejącego wtedy założenia o niemodyfikowaniu kodu źródłowego aplikacji i bibliotek wchodzących w skład projektu. Najważniejsze z występujących w tym rozwiązaniu problemów to:
@@ -132,10 +128,11 @@ Finalna struktura repozytorium \emph{ggss-util-libs} przedstawiona została na l
 `-- utils-lib
 \end{lstlisting}
 
+Aby zachować możliwość wglądu w historię zmian przeprowadzanych w repozytorium \emph{ggss-misc} zdecydowano, że jego likwidacja polegać będzie na przeprowadzeniu archiwizacji oraz usunięciu z pozostałych modułów odniesień do niego. Udostępniany przez portal GitLab mechanizm archiwizacji polega na oznaczeniu repozytorium jako niemodyfikowalne i przeniesieniu go do osobnej zakładki w widoku organizacji. Dzięki takiemu rozwiązaniu repozytorium wciąć dostępne jest do wglądu (a zatem istnieje możliwość zbudowania tych wersji systemu GGSS, które korzystały z niego jako z submodułu), niemożliwy jest natomiast jego dalszy rozwój.
+
+
 Poza wspomnianymi do tej pory repozytoriami zmianami objęte zostały ponadto moduły przechowujące aplikacje służące do testowania i obsługi urządzeń elektronicznych wchodzących w skład warstwy sprzętowej systemu GGSS. Motywacją do wprowadzenia modyfikacji była konieczność rozbudowy projektu o kolejne tego typu aplikacje - tworzenie dla każdej z nich osobnego repozytorium znacząco komplikowałoby strukturę projektu. Zdecydowano zatem, iż repozytoria \emph{mca-n957} oraz \emph{external-caen-n957-demo} zostaną dołączone do nowo powstałego repozytorium \emph{ggss-hardware-service-apps}, grupującego niewielkie programy służące do operowania na urządzeniach.
 
-
-% TODO: moze wspomniec o koniecznosci zachowania historii i jak zostało to zrobione???
 
 Poza zmniejszeniem progu wejścia do projektu poprzez uczynienie jego struktury prostszą, opisane do tej pory zmiany korzystnie wpłynęły na działanie mechanizmu submodułów systemu Git, na którym oparty został proces zarządzania zależnościami między repozytoriami w projekcie. Redukcja liczby repozytoriów i powiązań między nimi oraz zmniejszenie głębokości drzewa zależności (poprzez likwidację repozytorium \emph{ggss-misc}) miało pozytywny wpływ na wydajność systemu zarządzającego architekturą projektu. 
 
@@ -165,16 +162,16 @@ python ../ggss-all/build.py --staticboost --buildtype release
 \end{lstlisting}
 
 \subsection{Pomniejsze zmiany}
-Poza do tej pory opisanymi, wykonanych zostało kilka pomniejszych modyfikacji mających na celu szeroko pojętą poprawę jakości struktury projektu. Przeprowadzone prace obejmują bogaty zakres wprowadzonych zmian, nie jest więc możliwe zamieszczenie w niniejszej pracy dokładnego opisu każdej z nich. Poniżej krotko opisane zostały więc trzy wybrane przez autorów modyfikacje, charakteryzujące się różnym poziomem skomplikowania, ale operujące na poziomie pojedynczych repozytoriów. 
+Poza do tej pory opisanymi, wykonanych zostało kilka pomniejszych modyfikacji mających na celu szeroko pojętą poprawę jakości struktury projektu. Poniżej krotko opisane zostały trzy wybrane przez autorów modyfikacje, charakteryzujące się różnym poziomem skomplikowania, ale operujące na poziomie pojedynczych repozytoriów. 
 
-\subsubsection{Likwidacja repozytorium \emph{ggss-oper}}
+\subsubsection{Archiwizacja repozytorium \emph{ggss-oper}}
 Jednym z repozytoriów wprowadzonych przez autorów w ramach wykonywania pracy inżynierskiej był moduł \emph{ggss-oper}, zawierający skrypty oraz pliki konfiguracyjne stanowiące znaczną część infrastruktury przeznaczonej do użytkowania wraz z oprogramowaniem GGSS na maszynie docelowej. Zawartość tego repozytorium, nie stanowiąca wkładu wniesionego przez autorów niniejszej pracy w system, obejmowała m.in.: 
 \begin{itemize}
     \item pierwsze wersje skryptów służących do przeprowadzania testów urządzeń wchodzących w skład warstwy sprzętowej projektu (napisane z wykorzystaniem języka Python)
     \item skrypty zarządzające stanem środowiska docelowego (np. ustawiające wymagane zmienne środowiskowe)
     \item skrypty zarządzające oprogramowaniem systemu GGSS, np. \lstinline{ggss_monitor.sh} pozwalający na uruchamianie, zatrzymywanie oraz sprawdzanie stanu aplikacji \emph{ggss-runner}
 \end{itemize}
-Wraz z postępami prac nad projektem, część z wymienionej powyżej zawartości zastąpiona została przez autorów pracy rozwiązaniami alternatywnymi (np. skrypty służące do przeprowadzania operacji na urządzeniach zastąpione zostały aplikacjami napisanymi w języku C++), pozostałe przeniesione zostały natomiast do repozytorium \emph{ggss-all}. Ostatecznie moduł został więc zlikwidowany.
+Wraz z postępami prac nad projektem, część z wymienionej powyżej zawartości zastąpiona została przez autorów pracy rozwiązaniami alternatywnymi (np. skrypty służące do przeprowadzania operacji na urządzeniach zastąpione zostały aplikacjami napisanymi w języku C++), pozostałe przeniesione zostały natomiast do repozytorium \emph{ggss-all}. Ostatecznie moduł został więc zarchiwizowany.
 
 
 \subsubsection{Utworzenie biblioteki \emph{asyncserial-lib}}
