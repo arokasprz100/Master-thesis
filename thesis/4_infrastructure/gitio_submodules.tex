@@ -10,7 +10,7 @@ W trakcie przygotowywania pracy inżynierskiej, a konkretnie wykonywania migracj
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{submodule_links.pdf}
-    \caption{Zasada działania submodułów.}
+    \caption{Zasada działania submodułów: dowiązanie w ramach danej wersji repozytorium nadrzędnego wskazuje na konkretną wersję repozytorium podrzędnego.}
     \label{fig:submodules_links}
 \end{figure}
 
@@ -21,7 +21,7 @@ W trakcie przygotowywania pracy inżynierskiej, a konkretnie wykonywania migracj
 ]{4_infrastructure/code_samples/submodules_init.txt}
 
 \subsection{Motywacja do wprowadzenia zmian}
-Pomimo wielu aspektów \emph{git submodules}, które bardzo dobrze wpasowały się w kreowaną przez autorów w trakcie pracy inżynierskiej strukturę, z technologią tą związanych jest szereg niedogodności. Pierwszy znaczącym problemem napotkanym w trakcie pracy z submodułami było nietypowe zachowanie repozytoriów w trakcie ich inicjalizacji, a konkretnie automatyczne odłączanie ich od głównej gałęzi (wynika to z faktu, iż śledzenie zależności polega w tym przypadku na zapamiętywaniu identyfikatora konkretnej rewizji, nie zaś informacji o gałęzi). Co więcej praca z submodułami wymaga od programisty zwiększonej czujności oraz stosowania dodatkowych zasad, ponieważ więcej jest miejsc na pomyłkę, co może doprowadzić do niepoprawnego działania wykorzystanych narzędzi. Kolejnym problemem napotkanym w trakcie pracy z submodułami jest czasochłonność niektórych operacji, w szczególności aktualizacji repozytorium na samym spodzie \emph{drzewa zależności}. Zmiana taka wymaga manualnej aktualizacji po kolei każdego z repozytorium, aż do samej góry tejże struktury, co przedstawia rysunek \ref {fig:submodules_update}. Każda z aktualizacji przedstawiona na wspomnianym rysunku, to tak na prawdę cztery lub więcej koniecznych do wykonania akcji, do których wliczają się: aktualizacja repozytorium podrzędnego, dodanie wszystkich zmian do rejestru odpowiedzialnego za ich śledzenie, utworzenie nowej wersji repozytorium, opublikowanie nowej wersji na zewnętrznym serwerze.
+Pomimo wielu aspektów \emph{git submodules}, które bardzo dobrze wpasowały się w kreowaną przez autorów w trakcie pracy inżynierskiej strukturę, z technologią tą związanych jest szereg niedogodności. Pierwszy znaczącym problemem napotkanym w trakcie pracy z submodułami było nietypowe zachowanie repozytoriów w trakcie ich inicjalizacji, a konkretnie automatyczne odłączanie ich od głównej gałęzi (wynika to z faktu, iż śledzenie zależności polega w tym przypadku na zapamiętywaniu identyfikatora konkretnej rewizji, nie zaś informacji o gałęzi). Co więcej praca z submodułami wymaga od programisty zwiększonej czujności oraz stosowania dodatkowych zasad, ponieważ więcej jest miejsc na pomyłkę, co może doprowadzić do niepoprawnego działania wykorzystanych narzędzi. Kolejnym problemem napotkanym w trakcie pracy z submodułami jest czasochłonność niektórych operacji, w szczególności aktualizacji repozytorium na samym spodzie drzewa zależności. Zmiana taka wymaga manualnej aktualizacji po kolei każdego z repozytorium, aż do samej góry tejże struktury, co przedstawia rysunek \ref {fig:submodules_update}. Każda z aktualizacji przedstawiona na wspomnianym rysunku, to tak na prawdę cztery lub więcej koniecznych do wykonania akcji, do których wliczają się: aktualizacja repozytorium podrzędnego, dodanie wszystkich zmian do rejestru odpowiedzialnego za ich śledzenie, utworzenie nowej wersji repozytorium, opublikowanie nowej wersji na zewnętrznym serwerze.
 
 \begin{figure}[H]
     \centering
@@ -33,7 +33,7 @@ Pomimo wielu aspektów \emph{git submodules}, które bardzo dobrze wpasowały si
 
 \subsection{Automatyzacja z użyciem dedykowanego narzędzia}
 \label{subsec:gitio}
-Konieczność wykonywania szeregu powtarzalnych czynności w celu wprowadzenia oraz propagacji zmian w poszczególnych modułach projektu GGSS stanowiła problem, który potencjalnie mógłby pochłonąć bardzo znaczącą ilość czasu, możliwego do przeznaczenia na rozwój samego systemu. Dlatego też już w początkowych tygodniach opisywanych prac autorzy zdecydowali się na przygotowanie, z wykorzystaniem języka Python, aplikacji \emph{gitio}, której zadaniem było rozwiązanie przedstawionego problemu. Ze względu na to, że metadane technologii Git są bardzo złożone, a opanowanie zasad wewnętrznego działania tejże technologii wymagałoby bardzo dużo czasu, skorzystano z dedykowanej biblioteki dostępnej z poziomu języka Python. Argumenty wejściowe przyjmowane przez \emph{gitio} to:
+Konieczność wykonywania szeregu powtarzalnych czynności w celu wprowadzenia oraz propagacji zmian w poszczególnych modułach projektu GGSS stanowiła problem, który potencjalnie mógłby pochłonąć bardzo znaczącą ilość czasu, możliwego do przeznaczenia na rozwój samego systemu. Dlatego też już w początkowych tygodniach opisywanych prac autorzy zdecydowali się na przygotowanie, z wykorzystaniem języka Python, aplikacji \emph{gitio}, której zadaniem było rozwiązanie przedstawionego problemu. Ze względu na to, że metadane technologii Git są bardzo złożone, a opanowanie zasad wewnętrznego działania tejże technologii wymagałoby bardzo dużo czasu, skorzystano z dedykowanej biblioteki \cite{gitpython} dostępnej z poziomu języka Python. Argumenty wejściowe przyjmowane przez \emph{gitio} to:
 \begin{itemize}
     \item \lstinline{-h, --help} - pozwala na wyświetlanie informacji o przeznaczeniu programu oraz przyjmowanych argumentach wraz z krótkim opisem
     \item \lstinline{-p PATH, --path PATH} - ścieżka do głównego folderu zawierające drzewo repozytoriów do wyrównania
@@ -56,7 +56,7 @@ Zasada działania aplikacji jest stosunkowo prosta, natomiast znacząco ułatwia
 \end{itemize}
 W celu zapewnienia bezpieczeństwa \emph{gitio} pozwala na wyrównanie wersji repozytoriów tylko w przypadku, gdy w danym repozytorium nie ma żadnych zmian od wykonania ostatniej rewizji. 
 
-Rysunek \ref{fig:gitlab_gitio} przedstawia przykładową rewizję na portalu GitLab utworzoną z użyciem gitio. Wiadomość w ramach utworzonej rewizji, czyli \emph{Automatic repository update}, wskazuje na wykorzystanie \emph{gitio}. Jedyne zmiany jakie jest w stanie wprowadzić \emph{gitio}, to aktualizacja rewizji pod-projektu, co również widoczne jest na załączonym rysunku.
+Rysunek \ref{fig:gitlab_gitio} przedstawia przykładową rewizję na portalu GitLab utworzoną z użyciem \emph{gitio}. Wiadomość w ramach utworzonej rewizji, czyli \emph{Automatic repository update}, wskazuje na wykorzystanie \emph{gitio}. Jedyne zmiany jakie jest w stanie wprowadzić \emph{gitio}, to aktualizacja rewizji pod-projektu, co również widoczne jest na załączonym rysunku.
 
 \begin{figure}[H]
     \centering
@@ -67,23 +67,13 @@ Rysunek \ref{fig:gitlab_gitio} przedstawia przykładową rewizję na portalu Git
 
 
 \subsection{Dokumentacja sposobu pracy z submodułami}
-Ze względu na to, że praca z repozytoriami posiadającymi submoduły wymaga dodatkowej uwagi oraz praktyk, względem pracy ze zwykłymi repozytoriami, autorzy postanowili przygotować stosowaną dokumentację, która pozwala na uniknięcie poważnych błędów, które mogłyby doprowadzić do zepsucia systemu kontroli wersji.
+Ze względu na to, że praca z repozytoriami posiadającymi submoduły wymaga poświęcenia dodatkowej uwagi oraz stosowania specyficznych praktyk, autorzy postanowili przygotować stosowną dokumentację, w formie plików README.md umieszczonych w repozytorium \emph{ggss-aux}. Jej stosowanie pozwala na uniknięcie poważnych błędów, które mogłyby doprowadzić do niepoprawnego działania systemu kontroli wersji.
 
-Dokumentacja została podzielona na trzy części. Pierwsza z nich odnosi się do poprawnej inicjalizacji repozytoriów z wielopoziomowymi submodułami:
+Dokumentacja została podzielona na trzy części. Pierwsza z nich odnosi się do poprawnej inicjalizacji repozytoriów z wielopoziomowymi submodułami. Poniżej zaprezentowane zostało krótkie streszczenie zawartych tam informacji:
 \begin{itemize}
-    \item W pierwszej kolejności należy sklonować odpowiednie repozytorium z zewnętrznego serwera. W celu ułatwienia pracy z submodułami należy akcję to wykonać za pomocą protokołu ssh wraz z przypisanym odpowiednim kluczem. Oszczędzi to nam wpisywania loginu oraz hasła przy każdorazowym klonowaniu submodułów. Przykładowa komenda dla repozytorium \lstinline{ggss-all} wygląda następująco: \lstinline{git clone ssh://git@gitlab.cern.ch:7999/atlas-trt-dcs-ggss/ggss-all.git}.
-    \item Po poprzednim kroku sklonowane jest jedynie główne repozytorium, brak jest zawartości folderów z submodułami. Ich inicjalizacja powinna zostać wykonana komendami \lstinline{git submodule init} oraz \lstinline{git submodule update}, natomiast w celu przyspieszenia tego procesu można wykonać jedną komendę, a mianowicie \lstinline{git submodule update --init --recursive}. Właśnie taka komenda polecana przez przez autorów do pracy z projektem GGSS.
-    \item Ze względu na sposób działania submodułów git przed dokonaniem zmian należy jeszcze zmienić gałęzie we wszystkich submodułach na gałąź docelową. Domyślnie inicjalizacja submodułów powoduje, że ich gałęzie są w stanie oderwanym (ang. \emph{detached}), co nie pozwala na tworzenie nowych rewizji i ich publikację. W celu dokonania zbiorczej zmiany gałęzi należy wykonać komendę \lstinline{git submodule foreach --recursive "git checkout master"}
+    \item W pierwszej kolejności należy sklonować odpowiednie repozytorium z zewnętrznego serwera. W celu ułatwienia pracy z submodułami należy akcję tę wykonać za pomocą protokołu SSH wraz z przypisanym kluczem. Pozwala to uniknąć wielokrotnego wpisywania loginu oraz hasła przy każdorazowym klonowaniu submodułów. Przykładowa komenda dla repozytorium \lstinline{ggss-all} wygląda następująco: \lstinline{git clone ssh://git@gitlab.cern.ch:7999/atlas-trt-dcs-ggss/ggss-all.git}.
+    \item W ramach poprzedniego kroku sklonowane zostało jedynie główne repozytorium, brak jest zawartości katalogów z submodułami. Ich inicjalizacja powinna zostać wykonana komendami \lstinline{git submodule init} oraz \lstinline{git submodule update}, natomiast w celu przyspieszenia tego procesu można wykonać jedną komendę, a mianowicie \lstinline{git submodule update --init --recursive}. Właśnie taka komenda polecana przez przez autorów do pracy z projektem GGSS.
+    \item Ze względu na sposób działania submodułów, przed dokonaniem zmian należy jeszcze zmienić gałęzie we wszystkich submodułach na gałąź docelową. Domyślnie inicjalizacja submodułów powoduje, że znajdują się one w stanie \lstinline{detached HEAD}, co oznacza odwołanie do konkretnej rewizji, a nie gałęzi. W celu dokonania zbiorczego ustawienia gałęzi należy wykonać komendę \lstinline{git submodule foreach --recursive "git checkout master"}
 \end{itemize}
 
-Kolejna część dokumentacji odnosi się do porad i dobrych praktyk, które należy stosować pracując z infrastrukturą repozytoriów opartą o submoduły:
-\begin{itemize}
-    \item Przed rozpoczęciem pracy nad nową funkcjonalnością należy upewnić się, że korzystamy z najnowszej dostępnej wersji repozytorium oraz zależności
-    \item Ze względu na użycie submodułów należy upewnić się, że ich gałąź nie jest w stanie oderwanym.
-    \item Przed użyciem \emph{gitio} w celu wyrównania wersji wskazywanych przez submoduły należy upewnić się, że w repozytorium nie znajdują się żadne nieopublikowane zmiany, a w przypadku ich wystąpienia należy wytworzyć i opublikować nową rewizję manualnie.
-    \item Twórz nową wersję na głównej gałęzi jedynie po przetestowaniu wprowadzanych zmian.
-\end{itemize}
-
-Ostatnią częścią dokumentacji jest krótki opis, w jaki sposób propagować zmiany w całym projekcie GGSS. Propagacja odbywa się za pomocą wyrównania wersji wskazywanych przez submoduły, a zatem przez odpowiednie skorzystanie z \emph{gitio}. Więcej szczegółów jak skorzystać z \emph{gitio} oraz warunków jakie należy spełnić zostały opisane w sekcji \ref{subsec:gitio}.
-
-Niniejsza dokumentacja w wersji angielskiej dostępna jest jako plik markdown w repozytorium projektu ggss i została również dołączona do niniejszej pracy jako dodatek TUTAJ WSTAWIĆ REFERENCJE DO DODATKU.
+Kolejna część dokumentacji odnosi się do porad i dobrych praktyk, które należy stosować pracując z infrastrukturą repozytoriów opartą o submoduły. Ostatnią częścią dokumentacji jest natomiast krótki opis, w jaki sposób propagować zmiany w całym projekcie GGSS. Propagacja odbywa się za pomocą wyrównania wersji wskazywanych przez submoduły, a zatem przez odpowiednie skorzystanie z \emph{gitio}. Więcej szczegółów jak skorzystać z \emph{gitio} oraz warunków jakie należy spełnić zostały opisane w sekcji \ref{subsec:gitio}. Treść przygotowanej dokumentacji załączona została do niniejszej pracy w formie dodatku ... 

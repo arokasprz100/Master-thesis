@@ -1,9 +1,9 @@
 \clearpage
-\section{Zmiany wdorżeniowe projektu ggss}
+\section{Zmiany wdrożeniowe projektu GGSS}
 \label{ch:scripts}
 
 
-Niniejsza część pracy opisuje zmiany związane ze skryptami służącymi do bosługi projektu ggss w środowisku docelowym. Opisowi poddane zostały wprowadzone w nich zmiany, nowe funkcjonalności, czy też usprawnienia mające na celu poszerzenie możliwości wdrożeniowe projektu ggss. Przedstawione zostały również rozwinięcia wdrożeniowe w automatyzacji projektu ggss.
+Niniejsza część pracy opisuje zmiany związane ze skryptami służącymi do obsługi projektu GGSS w środowisku docelowym. Opisowi poddane zostały wprowadzone w nich zmiany, nowe funkcjonalności, czy też usprawnienia mające na celu poszerzenie możliwości wdrożeniowe projektu GGSS. Przedstawione zostały również rozwinięcia wdrożeniowe w automatyzacji projektu GGSS.
 
 \subsection{Wprowadzenie do problematyki}
 
@@ -12,9 +12,9 @@ W celu zapewnienia obsługi systemu ggss w środowisku produkcyjnym oraz łatwo�
 \subsection{Motywacja do wprowadzenia zmian}
 \label{sec:scripts_motiv}
 
-Ze względu na sposób implementacji poprzednich skryptów w celu porawnego działania wymagane było, aby w systemie docelowym istaniała określona struktura katalogów, a wewnątrz niej znajdowały się aplikacje projektu ggss. Dodatkowo logika potrzebna do działania systemu rozbita była na wiele plików-skryptów luźno ze sobą powiązanych, z niewiele tłumaczącymi nazwami. W celu dowiedzenia się co dany skrypt robi trzeba było sprawdzać jego zawartość, bądź być dobrze zaznajomionym ze skrótami użytymi w nazwie. Ze względu na powyższe czynniki postanowiono usprawnić skrypty odpowiadające za obsługę projektu ggss w systemie docelowym. Dodatkowo postanowiono rozszerzyć możliwości skryptów o monitorowanie zasobów zużywanych przez główną aplikację projektu ggss.
+Ze względu na sposób implementacji poprzednich skryptów w celu poprawnego działania wymagane było, aby w systemie docelowym istniała określona struktura katalogów, a wewnątrz niej znajdowały się aplikacje projektu ggss. Dodatkowo logika potrzebna do działania systemu rozbita była na wiele plików-skryptów luźno ze sobą powiązanych, z niewiele tłumaczącymi nazwami. W celu dowiedzenia się co dany skrypt robi trzeba było sprawdzać jego zawartość, bądź być dobrze zaznajomionym ze skrótami użytymi w nazwie. Ze względu na powyższe czynniki postanowiono usprawnić skrypty odpowiadające za obsługę projektu ggss w systemie docelowym. Dodatkowo postanowiono rozszerzyć możliwości skryptów o monitorowanie zasobów zużywanych przez główną aplikację projektu ggss.
 
-Modyfikacji została poddana również infrastruktura odpowiedzialna za awaryjne wyłączanie zasilania. Po analizie jej obecnych możliwości oraz uzyskaniu wymagań co do infrastruktury okazało się, że nie spełnia ona założeń. Najważniejszym przypadkiem użycia dla tejże infrastruktury było wyłączenie zasilania w momencie, gdy główna aplikacja ggss przestaje działać. Oprócz tego zabezpieczeniu miał zostać poddany proces wyłączania maszyny (ang. shutdown), tak, aby po zamknięciu systemu operacyjnego na komputerze produkcyjnym zasilania na zasilaczu również zostały wyłączone. Infrastruktura w pierwotnej postaci wspierała jedynie ten drugi przypadek.
+Modyfikacji została poddana również infrastruktura odpowiedzialna za awaryjne wyłączanie zasilania. Po analizie jej obecnych możliwości oraz uzyskaniu wymagań co do infrastruktury okazało się, że nie spełnia ona założeń. Najważniejszym przypadkiem użycia dla tejże infrastruktury było wyłączenie zasilania w momencie, gdy główna aplikacja ggss przestaje działać. Oprócz tego zabezpieczeniu miał zostać poddany proces wyłączania maszyny (ang. \emph{shutdown}), tak, aby po zamknięciu systemu operacyjnego na komputerze produkcyjnym zasilania na zasilaczu również zostały wyłączone. Infrastruktura w pierwotnej postaci wspierała jedynie ten drugi przypadek.
 
 Ze względu na brak ustandaryzowanego oraz łatwego sposobu na pozyskanie aplikacji, pakietów oraz skryptów potrzebnych na wdrożenie systemu ggss w środowisko docelowe postanowiono wzbogacić automatyzację o kroki konsolidujące wszystkie zasoby potrzebne do wdrożenia projektu w środowisko produkcyjne wraz z ich odpowiednim opisaniem.
 
@@ -28,7 +28,7 @@ W ramach pracy inżynierskiej został przygotowany skrypt \emph{check\_mem\_ggss
 \end{itemize}
 RSS dokładniej ukazuje pamięc wykorzystywaną przez proces. W przypadku monitorowania z użyciem jedynie VSZ możemy łatwo pominąć niepokojące zachowanie aplikacji, ponieważ w zaalokowanej pamięci nie będzie to widoczne.
 
-Skrypt został rozbudowany również o system, który pozwala na nieprzerwane działanie w tle bez błędów nawet, gdy główna aplikacja ggss pozostaje nieuruchomiona. Wyświetlany jest wówczas stosowny komunikat zamiast standardowych statystyk. Efekt ten uzyskano dzięki wykorzystaniu szeregu połączonych ze sobą, za pomocą tak zwanych \emph{pipe}, programów środowiska linux, tj.: \emph{ps, grep} oraz \emph{awk}. Odpowiednie połączenie tych komend pozwala na uzyskanie PID (\emph{Process Identifier}) aplikacji i zapisanie go w zmiennej. W przypadku, gdy aplikacja nie jest uruchomiona zmienna pozostanie pusta. Wykorzystując język \emph{bash}, jego struktury warunkowe oraz wyżej wymienioną zmienną możliwe było utworzenie zachowania zależnego od tego, czy proces jest uruchomiony, czy też nie.
+Skrypt został rozbudowany również o system, który pozwala na nieprzerwane działanie w tle bez błędów nawet, gdy główna aplikacja ggss pozostaje nieuruchomiona. Wyświetlany jest wówczas stosowny komunikat zamiast standardowych statystyk. Efekt ten uzyskano dzięki wykorzystaniu szeregu połączonych ze sobą, za pomocą tak zwanych \emph{pipe}, programów środowiska Linux, tj.: \emph{ps, grep} oraz \emph{awk}. Odpowiednie połączenie tych komend pozwala na uzyskanie PID (\emph{Process Identifier}) aplikacji i zapisanie go w zmiennej. W przypadku, gdy aplikacja nie jest uruchomiona zmienna pozostanie pusta. Wykorzystując język \emph{bash}, jego struktury warunkowe oraz wyżej wymienioną zmienną możliwe było utworzenie zachowania zależnego od tego, czy proces jest uruchomiony, czy też nie.
 
 %https://man7.org/linux/man-pages/man1/ps.1.html
 %https://softwareperformancenotes.github.io/rssvsz/

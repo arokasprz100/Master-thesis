@@ -1,53 +1,72 @@
 \chapter{Testy systemu (AK i JC)}
 \label{cha:tests}
+
+% setup
+\graphicspath{{6_tests/static/}}
+
+% content
 Niniejszy rozdział stanowi szczegółowy raport z przeprowadzanych w środowisku docelowym testów systemu GGSS. Został on podzielony na trzy części, opisujące różne rodzaje przeprowadzanych przez autorów sprawdzeń. Pierwsza z nich przybliża informacje dotyczące przeprowadzanych w sposób cykliczny testów - nacisk położony został tutaj przede wszystkim na opis powtarzanej w każdej iteracji procedury pozwalającej zweryfikować poprawność działania systemu. Druga część stanowi opis sprawdzeń wykonywanych w czasie mającej miejsce w lipcu 2021 roku migracji systemu do nowego środowiska docelowego. Zamieszczone w niej informacje dotyczą wkładu autorów we wspomnianą migrację, obejmującego m.in. wykonanie testów warstwy sprzętowej systemu GGSS. Ostatnia część niniejszego rozdziału opisuje wykonane w sierpniu 2021 roku testy finalnej wersji projektu. W tym przypadku przedstawiony został szczegółowy raport, obejmujący weryfikację poprawności działania każdej wprowadzonej do systemu lub zmodyfikowanej funkcjonalności, badanie stabilności systemu ze względu na wykorzystywane zasoby oraz testy nowych elementów infrastruktury, takich jak skryptu zarządzające środowiskiem docelowym.
 
 \section{Cykliczne testy systemu (AK)}
-Praca nad projektem stanowiącym część dużego, rozwijanego przez wiele osób systemu, wymaga stosowania metod pozwalających na zapewnienie jego niezawodności. Dlatego też autorzy zdecydowali się na przeprowadzania okresowych testów systemu GGSS, dzięki czemu możliwe było wczesne wykrywanie i eliminowanie pojawiających się w projekcie błędów. Regularne przeprowadzanie weryfikacji poprawności działania najnowszej wersji warstwy oprogramowania systemu GGSS pozwoliło ponadto na wygodne testowanie wprowadzanych przez autorów funkcjonalności - duża częstotliwość oznacza w tym przypadku możliwość testowania niewielkiego zbioru zmian, co znacząco ułatwia wczesne wykrywanie związanych z nimi nieprawidłowości.
+Praca nad projektem stanowiącym część dużego, rozwijanego przez wiele osób systemu wymaga, w celu zapewnienia poprawności działania, przeprowadzania cyklicznych testów w środowisku docelowym. Pozwala to na wczesne wykrywanie i eliminowanie pojawiających się w projekcie błędów. Regularne przeprowadzanie weryfikacji poprawności działania najnowszej wersji warstwy oprogramowania systemu GGSS pozwoliło ponadto na wygodne testowanie wprowadzanych przez autorów funkcjonalności - duża częstotliwość oznacza w tym przypadku możliwość testowania niewielkiego zbioru zmian.
 
-Ze względu na fakt, iż autorzy pracują nad systemem GGSS od września 2019 roku, to procedura przeprowadzania tego typu testów zawarta została w manuskrypcie pracy inżynierskiej. Z tego też powodu nie został tutaj zamieszczony szczegółowy opis wykonywanych czynności. Elementem stanowiącym nowość względem procesu przeprowadzanego w ramach pracy inżynierskiej były testy wprowadzanych oraz modyfikowanych funkcjonalności.
+Ze względu na fakt, iż autorzy pracują nad systemem GGSS od września 2019 roku, to procedura przeprowadzania tego typu testów zawarta została w manuskrypcie pracy inżynierskiej. Z tego też powodu nie został tutaj zamieszczony szczegółowy opis wykonywanych czynności. Elementem stanowiącym nowość względem procesu przeprowadzanego w ramach pracy inżynierskiej były testy wprowadzanych oraz modyfikowanych funkcjonalności. 
 
+\clearpage
+Na rysunku \ref{fig:tests_1} przedstawiony został stosowany przez autorów cykl pracy - kolorem niebieskim oznaczone zostały etapy związane z testowaniem systemu. Po przygotowaniu nowego wydania systemu autorzy rozpoczynali pierwszy etap testów, gdzie manualnej weryfikacji poddawane był nowe funkcjonalności oraz wprowadzone modyfikacje. Tego typu sprawdzenia wykonywane były zwykle za pomocą statycznie linkowanej wersji \emph{release} projektu. Jeśli tego typu testy zakończone zostały powodzeniem, następował drugi etap procesu testowania - trwajacy od kilku godzin do kilku dni test stabilności działania systemu, podczas którego moniotorowane były zapisywane w dzienniku zdarzeń inforacje oraz weryfikowane było zużycie zasobów. Opcjonalnie, jeśli testowane zmiany dotyczyły systemu budowania projektu, testom mogły zostać poddane inne jego wersje, np. \emph{debug}. Po zakończeniu tego etapu, jeśli nie zostały wykryte żadne błędy, system pozostawiany był w środowisku docelowym i traktowany jako wydanie stabilne. W przypadku niepowodzenia autorzy mieli możliwość wykonywania we wspomnianym środowisku dodatkowych sprawdzeń mających na celu ustalenie przyczyny błędu.
 
-
- Zarys procedury testowania przedstawiony został w formie graficznej na rysunku ... 
-
-% dodac diagram i zrobic krotki jego opis 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{algorithm.pdf}
+\caption{Diagram przedstawiający stosowany przez autorów cykl pracy - kolorem niebieskim oznaczone zostały etapy związane z regularnymi testami oprogramowania.}
+\label{fig:tests_1}
+\end{figure}
 
 \section{Testy po migracji systemu (JC)}
 
-Jednym z ważniejszych etapów w ramach pracy magisterskiej była migracja całego systemu ggss wraz ze sprzętem fizycznym do nowego środowiska uruchomieniowego. Polegała ona na przeniesieniu zarówno oprogramowania, jak i podłączenie sprzętu do nowego komputera.
+Jednym z ważniejszych etapów pracy magisterskiej była migracja całego systemu GGSS wraz ze sprzętem elektronicznym do nowego środowiska uruchomieniowego. Polegała ona na przeniesieniu kopii oprogramowania na nowy komputer oraz podłączeniu do niego wykorzystywanych urządzeń.
 
-Cała operacja miała odbywać się w ramach wyjazdu autorów do CERN, natomiast ze względów pandemicznych wyjazd ten został ostatecznie odwołany. Z tego powodu migracja mogłabyć jedynie częściowo przeprowadzana przez autorów, główną praca została wykonana przez ekspertów, którzy znajdowali się na miejscu. W ramach migracji wyżej wymienieni eksperci podłączyli sprzęt oraz przenieśli zawartość dysków ze starego komputera do nowej maszyny. Przed uruchomieniem całego systemu autorzy zdalnie zweryfikowali poprawność całego procesu. W ramach tego etapu wykorzystane zostały aplikacje do testowania sprzętu opisane w sekcji \ref{ch:hardware_testing}. W trakcie wykonywania testów sprzętu okazało się, że jedynie urządzenie połączone bezpośrednio do komputera jest wykrywane, a urządzenia połączone za pomocą usb hub'a nie są wykrywane, rozwiązaniem problemu było podłączenie dodatkowego zasilania wymaganego przez wcześniej wspomniany hub. Upewniwszy się iż sprzęt podłączony jest poprawnie, oraz poprawnie działający autorzy wykonali sprawdzenia pozostałych elementów środowiska, czyli: wpisów crontab, poprawności umieszczonych plików projektu oraz zainstalowanych bibliotek.
+Cała operacja miała odbywać się w ramach wyjazdu autorów do CERN, natomiast ze względów pandemicznych wyjazd ten został ostatecznie odwołany. Z tego powodu migracja mogła zostać jedynie częściowo przeprowadzana przez autorów, znaczną część pracy wykonali natomiast eksperci, którzy znajdowali się na miejscu. W ramach migracji podłączyli oni sprzęt oraz przenieśli zawartość dysków ze starego komputera do nowej maszyny. Przed uruchomieniem całego systemu autorzy zdalnie zweryfikowali poprawność całego procesu. W ramach tego etapu wykorzystane zostały aplikacje do testowania sprzętu opisane w sekcji \ref{ch:hardware_testing}. W trakcie wykonywania testów sprzętu okazało się, że jedynie urządzenie połączone bezpośrednio do komputera jest wykrywane, a urządzenia połączone za pomocą hub'u USB nie. Rozwiązaniem problemu było podłączenie dodatkowego zasilania wymaganego przez wcześniej wspomniany hub. Upewniwszy się iż sprzęt podłączony jest poprawnie i jego działanie nie budzi zastrzeżeń, autorzy wykonali sprawdzenia pozostałych elementów środowiska, czyli: zainstalowanych bibliotek, wpisów w tabeli programu \lstinline{crontab} oraz poprawności umieszczenia plików projektu.
 
-Po sprawdzeniu wszytstkich wymganych elementów środowiska autorzy rozpoczęli proces uruchamiania projektu ggss wraz z jego główną aplikacją. Całość przeprowadzana była z dokładnym monitorowaniem zachowania zarówno systemu, jak i sprzętu fizycznego. Opróćz zachowania aplikacji sprawdzane było również zużycie zasobów oraz ewentualne błędy, które mogły wystąpić ze względu na migrację. Po uruchomieniu projektu monitorowano jego działania przez kilka godzin, a następnie sprawdzono pliki z zapisaem działania następnego dnia. Nie stwierdzono żadnych problemów z systmem, a całość działała poprawnie. Migracja została uznana za zakończoną z sukcesem.
+Po sprawdzeniu wszystkich wymaganych elementów środowiska autorzy rozpoczęli proces uruchamiania projektu GGSS wraz z jego główną aplikacją. W jego trakcie dokładnie monitorowano zachowanie warstwy oprogramowania oraz urządzeń elektronicznych. Oprócz zachowania aplikacji sprawdzane było również zużycie zasobów oraz ewentualne błędy, które mogły wystąpić ze względu na migrację. Po uruchomieniu projektu monitorowano jego działanie przez kilka godzin, a następnego dnia dokonano sprawdzenia dziennika zdarzeń. Nie stwierdzono żadnych problemów z systemem, a całość działała poprawnie. Migracja została uznana za zakończoną z sukcesem.
 
 \section{Testy wersji finalnej (AK i JC)}
-Niniejsza sekcja opisuje wykonane w sierpniu 2021 roku finalne testy działania systemu GGSS w jego środowisku docelowym. Sprawdzeniu poddane zostały zarówno wszystkie najważniejsze funkcjonalności systemu, jak również elementy infrastruktury projektu oraz wprowadzone przez autorów zmiany. Ponadto zbadane zostało zużycie zasobów systemu, takich jak pamięć, podczas długotrwałego, nieprzerwanego działania aplikacji \emph{ggss-runner}. 
+Niniejsza sekcja stanowi opis testów finalnej wersji systemu GGSS wykonanych w sierpniu 2021 roku. Sprawdzeniu poddane zostały zarówno wszystkie najważniejsze funkcjonalności systemu, jak również elementy infrastruktury projektu oraz wprowadzone przez autorów zmiany. Ponadto zbadane zostało zużycie zasobów systemu, takich jak pamięć, podczas długotrwałego, nieprzerwanego działania aplikacji \emph{ggss-runner}. 
 
-Z punktu widzenia weryfikowanych funkcjonalności systemu autorzy dokonali sprawdzenia zarówno każdego przygotowanego przez nich rozszerzenia, jak i elementów wchodzących w skład projektu od początku prac nad nim. W kolejnych akapitach opisane zostały poszczególne scenariusze testowe wraz z otrzymanymi przez autorów wynikami.
+\subsection{Testy funkcjonalności głównej aplikacji}
+Autorzy dokonali szczegółowego sprawdzenia wszystkich przygotowanych modyfikacji i rozszerzeń. Ponadto testowane były elementy wchodzące w skład projektu od początku jego działania. W kolejnych akapitach opisane zostały poszczególne scenariusze testowe wraz z otrzymanymi przez autorów wynikami.
 
-Testom poddana została przygotowana przez autorów składnia komend służących do komunikacji z zasilaczami wysokiego napięcia. Wykonane zostały sprawdzenia wszystkich trzech typów poleceń (MON, SET, RAW) przy zastosowaniu zróżnicowanych konfiguracji opisujących moduły, kanały oraz parametry. Testy przeprowadzane zarówno z wykorzystaniem dostępnego w ramach infrastruktury WinCC OA panelu do wysyłania komend, jak również za pomocą dedykowanego skryptu \lstinline{dimhw.sh}. Listing ... przedstawia wyniki przykładowych trzech zapytań - we wszystkich przypadkach są one zgodne z oczekiwaniami. Ze względu na powtarzalny charakter sprawdzeń, nie zostały tutaj przytoczone wszystkie testowane scenariusze. 
+\subsubsection*{Działanie komend dedykowanych zasilaczom wysokiego napięcia}
+Testom poddana została przygotowana przez autorów składnia komend służących do komunikacji z zasilaczami wysokiego napięcia. Wykonane zostały sprawdzenia wszystkich trzech typów poleceń (MON, SET, RAW) przy zastosowaniu zróżnicowanych konfiguracji opisujących moduły, kanały oraz parametry. Listing \ref{lst:test_hw_1} przedstawia wyniki przykładowych trzech zapytań - we wszystkich przypadkach są one zgodne z oczekiwaniami. Ze względu na powtarzalny charakter sprawdzeń, nie zostały tutaj przytoczone wszystkie testowane scenariusze. Sprawdzona została ponadto obsługa błędów, wynikających m.in. z niepoprawnego formatu i zawartości przesyłanych poleceń. Biblioteka dokonuje poprawnej obsługi tego typu sytuacji.
 
 \lstinputlisting[
     language=Cmd, 
-    caption={aaaa}, 
+    caption={Przykładowe wyniki działania komend służących do komunikacji z zasilaczami wysokiego napięcia. Otrzymane rezultaty są zgodne z oczekiwaniami.}, 
     label={lst:test_hw_1}
 ]{6_tests/code_samples/dim_hw_ok.txt}
 
-Sprawdzona została ponadto obsługa błędów, wynikających m.in. z niepoprawnego formatu i zawartości przesyłanych poleceń. Listing ... prezentuje dwa tego typu przykłady, gdzie podana została kolejno niepoprawna specyfikacja urządzenia oraz kanału. Podobnego typu testy przeprowadzone zostały m.in. dla komend o niepoprawnej liczbie części czy błędnej specyfikacji parametru lub wartości. 
+\subsubsection*{Opróżnianie bufora urządzenia MCA}
+Sprawdzone zostało poprawne wykonanie algorytmu pozwalającego na zapobieganie przepełnieniu bufora urządzenia MCA poprzez cykliczne przenoszenie jego zawartości do pamięci RAM komputera. 
 
-\lstinputlisting[
-    language=Cmd, 
-    caption={aaaa}, 
-    label={lst:test_hw_2}
-]{6_tests/code_samples/dim_hw_error.txt}
+% Ponieważ funkcjonalność ta jest opcjonalna, działanie systemu zweryfikowane zostało w obu możliwych przypadkach funkcjonowania. Sprawdzeniu zostały poddane zar
 
-Kolejne testy dotyczyły funkcjonalności pozwalającej na zapobieganie przepełnieniu bufora urządzenia MCA. W tym przypadku sprawdzone zostały scenariusze takie jak: działanie programu, gdy w pliku konfiguracyjnym nie została wyspecyfikowana wartość parametru \lstinline{mcaRefreshInterval}, dzialanie gdy taki parametr w pliku został określony oraz wykonywanie pomiarów o zróżnicowanym czasie trwania. Testy tej funkcjonalności zakończyły się powodzeniem ...
+% Kolejne testy dotyczyły funkcjonalności pozwalającej na zapobieganie przepełnieniu bufora urządzenia MCA. W tym przypadku sprawdzone zostały scenariusze takie jak: działanie programu, gdy w pliku konfiguracyjnym nie została wyspecyfikowana wartość parametru \lstinline{mcaRefreshInterval}, dzialanie gdy taki parametr w pliku został określony oraz wykonywanie pomiarów o zróżnicowanym czasie trwania. Testy tej funkcjonalności zakończyły się powodzeniem ...
 
-% Wstep, kiedy wykonywane, w jakim czasie (AK)
-% Kazda funkcjonalnosc z osobna
-%   - po kolei opis kazdej (np. komendy itp)
+\subsubsection*{Działanie algorytmu dopasowującego funkcję do zebranych danych}
 
+
+\subsubsection*{Działanie komend sterujących systemem GGSS}
+
+
+\subsubsection*{Pozostałe testy}
+% zmiana wszystkich parametrow
+%
+
+
+
+
+
+\clearpage
 \subsection{Testy aplikacji oraz skryptów do obsługi sprzętu fizycznego}
 
 W ramach testów wersji finalnej przeprowadzono sprawdzenie wszystkich aplikacji do obsługi sprzętu fizycznego, które były modyfikowane, czy też utworzone od zera przez autorów. Teste były przeprowadzane w środowisku produkcyjnym przy wyłączonym systemie ggss, a dokładnie z wyłączoną główną aplikacją projektu. W celu sprawdzenia poprawności działania oraz funkcjonalności wykonano zaówno komendy z użyciem trybu interaktywnego utworzonych aplikacji, jak i trybu scenariuszowego. W pierwszej kolejności testom została poddana aplikacja odpowiedzialna za obsługę zasilacza wysokiego napięcia, czyli \emph{high-voltage-service-app}. Listing \ref{lst:high-voltage-service-app-startup} przedstawia wywołanie aplikacji z wszystkimi wymaganymi argumentami oraz wiadomość powitalną aplikacji. W ramach tejże wiadomości otrzymujemy informację o utworzeniu połączenia z modułem zasilacza, a dokładniej o dodaniu danego modułu do repozytorium. Następnie wyświetlana jest informacja o wykorzystaniu truby interaktywnego wraz z krótką pomocą zawierającą format komend.

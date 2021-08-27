@@ -1,8 +1,347 @@
-% UWAGA: Żeby bibliografia działała gdy używamy TeXstudio, to należy dołączyć
-% wykonywanie programu "bibtex" do opcji (w Options> Configure TeXstudio)
-% Więcej informacji w poście: https://tex.stackexchange.com/a/216325
-%
-% Aby użyć wpisu w kodzie .tex piszemy np:
-% \cite{AtlasAGH}
-% - to wykorzysta pierwszy z poniższych wpisów
-%
+%% Wstęp
+
+@online{WWW_wikipedia,
+    author = {Wikipedia The Free Encyclopedia},
+    title = {World Wide Web},
+    url = {https://en.wikipedia.org/wiki/World_Wide_Web},
+    urldate = {2021-08-27}
+}
+
+@online{HTTP_wikipedia,
+    author = {Wikipedia The Free Encyclopedia},
+    title = {Hypertext Transfer Protocol},
+    url = {https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol},
+    urldate = {2021-08-27}
+}
+
+@online{LHC_cern,
+    author = {CERN},
+    title = {The Large Hadron Collider},
+    url = {https://home.cern/science/accelerators/large-hadron-collider},
+    urldate = {2021-08-27}
+}
+
+@online{ATLAS_cern,
+    author = {CERN},
+    title = {ATLAS Experiment},
+    url = {https://atlas.cern/},
+    urldate = {2021-08-27}
+}
+
+@article{ATLAS_agh,
+    author = {Bochenek, M. and Bołd, T. and Ciba, K. and 
+    Dąbrowski, W. and Deptuch, M. and Dwużnik, M. and Fiutowski, T. and 
+    Grabowska-Bołd, I. and Idzik, M. and Jeleń, K. and Kisielewska, D. and 
+    Koperny, S. and Kowalski, T. Z. and Kulis, S. and Mindur, B. and Muryn, B. and 
+    Obłąkowska-Mucha, A. and Pieron, J. and Półtorak, K. and Prochal, B. and 
+    Suszycki, L. and Szumlak, T. and Świentek, K. and Toczek, B. and Tora, T.},
+    title = {Budowa aparatury detekcyjnej i przygotowanie
+programu fizycznego przyszłych eksperymentów fizyki
+cząstek (ATLAS i LHCb na akceleratorze LHC i Super
+LHC oraz eksperymentu na akceleratorze liniowym ILC).},
+    url = {https://inis.iaea.org/collection/NCLCollectionStore/_Public/40/108/40108055.pdf},
+    journal = {Akademia Górniczo-Hutnicza im. S. Staszica. Wydział Fizyki i Informatyki Stosowanej. Raport Roczny 2008.},
+    year = {2008}
+}
+
+@article{GGSS_jinst,
+    author = {Mindur (Corresponding author), Bartosz},
+    title = {Gas gain stabilisation in the ATLAS TRT detector},
+    journal = {Journal of Instrumentation},
+    year = {2016}
+}
+
+@manual{GGSS_inz,
+    author = {Cierpich, Jarosław and Kasprzak, Arkadiusz},
+    title = {Rozbudowa i uaktualnienie oprogramowania systemu GGSS detektora ATLAS TRT},
+    year = {2020}
+}
+
+@online{Git_main,
+    url = {https://git-scm.com/},
+    urldate = {2021-08-27}
+}
+
+@online{CMake_main,
+    author= {Kitware},
+    url = {https://cmake.org/},
+    urldate = {2021-08-27}
+}
+
+@online{CI_main,
+    author = {GitLab},
+    title = {GitLab Continuous Integration (CI) and Continuous Delivery (CD)},
+    url = {https://about.gitlab.com/product/continuous-integration/},
+    urldate = {2021-08-27}
+}
+
+
+%% Technologie
+
+@manual{Bjarne,
+    author = {Stroustrup, Bjarne},
+    title = {Język C++, Kompendium Wiedzy, Wydanie IV (The C++ Programming Language, 4th Edition)},
+    year = {2014},
+    pages = {35--53},
+    publisher = {HELION S.A.},
+    address = {ul. Kościuszki 1c, 44-100 Gliwice},
+}
+
+@online{cpp_reference,
+    url = {https://en.cppreference.com/w/},
+    urldate = {2021-08-27}
+}
+
+@manual{cpp17_book,
+    author = {Stephen Roth},
+    title = {Czysty kod w C++17. Oprogramowanie łatwe w utrzymaniu.},
+    year = {2018},
+    publisher = {HELION S.A.},
+    address = {ul. Kościuszki 1c, 44-100 Gliwice},
+}
+
+@manual{c_book,
+    author = {Kernighan, Brian W. and Ritchie, Dennis M.},
+    title = {Język ANSI C. Programowanie. Wydanie II},
+    year = {2010},
+    publisher = {HELION S.A.},
+    address = {ul. Kościuszki 1c, 44-100 Gliwice},
+}
+
+@online{Boost_main,
+    url={https://www.boost.org/},
+    urldate={2021-08-27}
+}
+
+@online{Boost_docs,
+    title = {Dokumentacja biblioteki Boost w wersji 1.57.0},
+    url = {https://www.boost.org/doc/libs/1_57_0/?view=categorized},
+    urldate = {2021-08-27}
+}
+
+@online{GSL_main,
+    url = {https://www.gnu.org/software/gsl/},
+    urldate = {2021-08-27}
+}
+
+@online{Qt_main,
+    url = {https://www.qt.io/},
+    urldate = {2021-08-27}
+}
+
+@online{MC_wikipedia,
+    author = {Wikipedia The Free Encyclopedia},
+    title = {Monte Carlo integration},
+    url = {https://en.wikipedia.org/wiki/Monte_Carlo_integration},
+    urldate = {2021-08-27}
+}
+
+@online{Python_main,
+    url={https://www.python.org/},
+    urldate={2021-08-27}
+}
+
+@manual{Lutz,
+    author = {Lutz, Mark},
+    title = {Python. Wprowadzenie. Wydanie IV (Learning Python, Fourth Edition by Mark Lutz)},
+    year = {2011},
+    pages = {49--65},
+    publisher = {HELION S.A.},
+    address = {ul. Kościuszki 1c, 44-100 Gliwice},
+}
+
+
+@manual(code_analysis,
+    author = {Nethercote, Nicholas},
+    title = {Dynamic Binary Analysis and Instrumentation or Building Tools is Easy},
+    year = {2004}
+)
+
+@manual{reverse,
+    author = {Bukowski, Tomasz and Antoniak, Grzegorz and Kwiecień, Tomasz and
+    Krzywicki, Mateusz and Hartung, Marcin and Coldwind, Gynvael and 
+    Hasherezade and Kotowicz, Maciej and Kowalczyk, Michał and Święcki, Robert and 
+    Bania, Piotr and Jurczyk, Mateusz},
+    title = {Praktyczna Inżynieria Wsteczna. Metody, techniki i narzędzia.},
+    year = {2018},
+    publisher = {Wydawnictwo Naukowe PWN SA},
+    address = {ul. Gottlieba Daimlera 2, 02-460 Warszawa}
+}
+
+@online{gdb,
+    url={https://www.gnu.org/software/gdb/},
+    urldate={2021-08-27}
+}
+
+@online{valgrind,
+    author= {Valgrind Developers},
+    title = {Valgrind},
+    url = {https://valgrind.org/},
+    urldate = {2021-08-27}
+}
+
+@manual{memcheck_1, 
+    author = {Seward, Julian and Nethercote, Nicholas},
+    title = {Using Valgrind to detect undefined value errors with bit-precision},
+    year = {2005}
+}
+
+@manual{memcheck_2,
+    author = {Seward, Julian and Nethercote, Nicholas},
+    title = {How to Shadow Every Byte of Memory Used by a Program},
+    year = {2007}
+}
+
+@online{massif,
+    author= {Valgrind Developers},
+    title = {Massif: a heap profiler},
+    url = {https://valgrind.org/docs/manual/ms-manual.html},
+    urldate = {2021-08-27}
+}
+
+@online{clang,
+    url={https://clang.llvm.org/},
+    urldate={2021-08-27}
+}
+
+@online{clang-tidy,
+    url={https://clang.llvm.org/extra/clang-tidy/},
+    urldate={2021-08-27}
+}
+
+@online{clion,
+    author= {JetBrains},
+    title = {Static code analysis},
+    url = {https://www.jetbrains.com/help/clion/code-inspection.html},
+    urldate = {2021-08-27}
+}
+
+@manual{progit,
+    author = {Chacon, Scott and Straub, Ben},
+    title = {Pro Git 2nd ed. Edition},
+    year = {2014},
+    publisher = {APress}
+}
+
+@online{docker_main,
+    url = {https://docs.docker.com/engine/docker-overview/},
+    urldate = {2021-08-27}
+}
+
+@online{rpm,
+    url = {https://rpm.org/documentation.html},
+    urldate = {2021-08-27}
+}
+
+@online{rpm_wiki,
+    url = {https://en.wikipedia.org/wiki/RPM_Package_Manager},
+    urldate = {2021-08-27}
+}
+
+@online{bash,
+    url = {https://www.gnu.org/software/bash/},
+    urldate = {2021-08-27}
+}
+
+
+%% Wprowadzenie do GGSS
+
+@manual{mindur_phd,
+    author = {Mindur, Bartosz},
+    title = {Wybrane zagadnienia związane z pracą słomkowych liczników proporcjonalnych w detektorze TRT eksperymentu ATLAS},
+    year = {2004}
+}
+
+@online{XML_wikipedia,
+    author = {Wikipedia The Free Encyclopedia},
+    title = {XML},
+    url = {https://pl.wikipedia.org/wiki/XML},
+    urldate = {2021-08-27}
+}
+
+@online{winccoa,
+    url = {https://www.winccoa.com/},
+    urldate = {2021-08-27}
+}
+
+@online{SCADA_wikipedia,
+    author = {Wikipedia The Free Encyclopedia},
+    title = {SCADA},
+    url = {https://en.wikipedia.org/wiki/SCADA},
+    urldate = {2021-08-27}
+}
+
+@online{DIMwebsite,
+    author = {Gaspar, C.},
+    title = {DIM Distributed Information Management System},
+    url = {https://dim.web.cern.ch/},
+    urldate = {2021-08-27}
+}
+
+@online{caen,
+    url = {https://www.caen.it/},
+    urldate = {2021-08-27}
+}
+
+@manual{ZadrozniakInz,
+    author = {Zadrożniak, Paweł},
+    title = {Opracowanie oraz oprogramowanie multipleksera sygnałów analogowych},
+    year = {2013}
+}
+
+@manual{ZadrozniakMgr,
+    author = {Zadrożniak, Paweł},
+    title = {Aktualizacja sprzętu elektronicznego dla Systemu Stabilizacji Wzmocnienia Gazowego},
+    year = {2015}
+}
+
+@manual{PodsiadloInz,
+    author = {Podsiadło, Grzegorz},
+    title = {Uaktualnienie systemu kontroli detektora dedykowanemu dla ATLAS TRT GGSS},
+    year = {2020}
+}
+
+
+%% Infrastruktura
+
+@online{doxygen,
+    url = {https://www.doxygen.nl/index.html},
+    urldate = {2021-08-27}
+}
+
+@online{gitpython,
+    url = {https://gitpython.readthedocs.io/en/stable/},
+    urldate = {2021-08-27}
+}
+
+@online{semver,
+    url = {https://semver.org/ },
+    urldate = {2021-08-26}
+}
+
+@online{semantic_release,
+    url = {https://github.com/semantic-release/semantic-release},
+    urldate = {2021-08-26}
+}
+
+@online{eslint,
+    url = {https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-eslint},
+    urldate = {2021-08-26}
+}
+
+@online{javascript,
+    url = {https://www.javascript.com/},
+    urldate = {2021-08-27}
+}
+
+@online{nodejs,
+    url = {https://nodejs.org/en/},
+    urldate = {2021-08-27}
+}
+
+%% Zmiany w kodzie
+
+
+%% Testy
+
+
