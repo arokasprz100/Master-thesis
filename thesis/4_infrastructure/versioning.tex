@@ -42,4 +42,51 @@ set (CPACK_PACKAGE_VERSION ${VERSION})
 \subsection{Zastosowanie semantic-versioning oraz zmiany w automatyzacji}
 %dwa nowe stage od semantic versioning, analiza commitów, tworzenie nowych release
 
+Do tej pory w projekcie ggss wersja była zmieniania według uznania dewelopera, który wprowadzał tą informację w plikach CMake odpowiedzialnych za budowanie danego komponentu aplikacji. W celu ustandaryzowania tego procesu zdecydowano się na stosowanie zasad \emph{semantic-versioning}. Według tychże zasad wersja składa się z trzech komponentów, tj.:
+\begin{itemize}
+    \item MAJOR - komponent ten jest zmieniany, gdy wprowadzamy zmiany w API aplikacji, które nie są kompatybilne z wcześniejszymi wydaniami, na przykład: dodatkowy, wymagany argument bez wartości domyślnej
+    \item MINOR - komponent ten jest zmieniany, gdy wprowadzamy zmiany w aplikacji, które są kompatybilne z wcześniejszymi wydaniami, na przykład: dodanie nowej całkowicie funkcjonalności, które nie wpływa na pozostałe dotąd oferowane możliwości
+    \item PATCH - komponent ten jest zmieniamy, gdy wprowadzamy poprawki, które są kompatybilne z wcześniejszymi wydaniami, na przykład: poprawa błędu wykrytego w aplikacji, zwiększenie stabilności
+\end{itemize}
+Zmieniając komponent o większym znaczeniu, należy wyzerować pozostałe komponenty wersji, czyli zmieniając wersję MAJOR należy wyzerować zarówno MINOR, jak i PATCH.
+
+Oprócz zastosowania wyżej wymienionych zasad postanowiono udoskonalić cały system wersjonowania o automatyzację za pomocą pipeline GitLab CI/CD. W tym celu wykorzystano projekt \emph{semantic-release}. Jest to projekt oparty o język JavaScript uruchamiany w środowisku NodeJS. Projekt ten pobiera informacje zawarte w rewizjach oraz na portali Gitlab dotyczące repozytorium w ramach którego został uruchomiony. Następnie pozyskane dane analizuje w celu określenia, czy powinna zostać uruchomiona automatyzacja odpowiedzialna za utworzenia nowego wydania (ang. release) na platformie Gitlab wraz z zwiększeniem wersji wg zasad semantic-versioning.
+
+Ze względu na to, że informacje na temat wersji potrzebne są również w części automatyzacji odpowiedzialnej za budowanie aplikacji podzielono wykorzystano projektu semantic-release na dwa kroki. W pierwszej kolejności uruchamiana jest analiza wiadomości zawartych w ramach rewizji tak, aby określić, czy wersja powinna zostać zmieniona oraz który komponent wersji powinien zostać zmieniony. Następnie informacja o wersji przekazywana jest do kroku odpowiedzialnego za budowanie wszystkich aplikacji projektu ggss. W ostatnim kroku gotowe do użycia aplikacje są przekazywane drugiego kroku wykonywanego w ramach logiki semtantic-release, czyli utworzenie nowego wydania. Rysunek \ref{fig:semantic_pipeline} przedstawia kroki podejmowane w ramach procesu automatyzacji. W ramach kroku ``Prepare`` przygotowywana jest informacja o wersji, w ramach kroku ``Build`` budowane są wszystkie aplikacjie biorąc pod uwagę wcześniej przygotowaną wersją, a w ramach kroku ``Releasse`` tworzona jest nowe wydanie.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{semantic_release_pipeline}
+    \caption{Kroki procesu automatyzacji z wykorzystaniem semantic-versioning.}
+    \label{fig:semantic_pipeline}
+\end{figure}
+
+Zasady analizy wiadomości w ramach rewizji przez semantic-release również zostały ustandaryzowane, a określone są przez konwencję \emph{ESLint}. W przypadku, gdy powinno zostać utworzone nowe wydanie należy wraz z nową rewizją przygotować wiadomośc w następującym formacie: \lstinline{tag: opis}, gdzie tag to jedna z następujących wartości:
+\begin{itemize}
+    \item Fix - naprawa błędu
+    \item Update - usprawnienie kompatybilne wstecz
+    \item New - nowa funkcjonalność
+    \item Breaking - zmiany niekompatybilne wstecz
+    \item Docs - zmiany w dokumentacji
+    \item Build - zmiany w procesie budowania
+    \item Upgrade - zmiany w zależnościach
+    \item Chore - zmiany, które w żaden sposób nie wpływają na użytkowanie, np.: zmiany w testach
+\end{itemize}
+Opisem może być dowolna wiadomośc krótko podsumowująca dokonane zmiany. Na podstawie analizowanych tagów semantic-release stosując zasady semantic-versioning automatycznie ustala odpowiednią informację o wersji. Przykładowe działania projektu semantic-release zostało przedstawione na listingu \ref{lst:analyze}.
+
+
+\begin{lstlisting}[language=cmd, caption={Analiza wiadomości zawartych w rewizjach z wykorzystaniem semantic-release.}, label={lst:analyze}]
+[@semantic-release/commit-analyzer] > Analyzing commit: Breaking: This is for presentation reasons
+[@semantic-release/commit-analyzer] > The release type for the commit is major
+[@semantic-release/commit-analyzer] > Analysis of 29 commits complete: major release
+[semantic-release] > Completed step "analyzeCommits" of plugin "@semantic-release/commit-analyzer"
+[semantic-release] > The next release version is 1.0.0
+\end{lstlisting}
+
+\subsection{Podsumowanie}
+
+Dzięki zastosowaniu wszystkich kroków przedstawionych w ramach zagadnienia wersjonowania osiągnięto w projekcie ggss scentralizowany, zautomatyzowany system wersjonowania wydań aplikacji. Wszystkie kroki potrzebne do utrzymania odpowiedniej wersji odbywają się w ramach automatyzacji opartej o Gitlab CI/CD oraz projekt semantic-release. Deweloper musi jedynie wprowadzać odpowiednie oznaczenia w wiadomościach związanych z kolejnymi rewizjami, a utworzony system automatycznie zajmie się ewaluacją wszystkich trzech komponentów kolejnej wersji, zbuduje wszystkie aplikacje przekazując wcześniej uzyskane dane oraz udostępni gotowe do działania aplikacjie w ramach nowego wydania dostępnego na portalu Gitlab.
+
 %https://semver.org/
+%https://github.com/semantic-release/semantic-release
+%https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-eslint

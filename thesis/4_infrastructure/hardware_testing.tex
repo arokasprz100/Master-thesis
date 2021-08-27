@@ -2,12 +2,109 @@
 \section{Rozwój infrastruktury do testowania warstwy sprzętowej (JC)}
 \label{ch:hardware_testing}
 
+Niniejsza część pracy została poświęcona aspektowi testowania urządzeń fizycznych wykorzystywanych przez projekt ggss. Zostały omówione próby przygotowania infrastruktury pozwalającej na przeprowadzanie testów z ominięciem głównej aplikacji ggss oraz ostateczne rozwiązanie przyjęte przez autorów. Same testy aplikacji do testowania fizycznego sprzętu zostały opisane w ramach rozdziału \ref{cha:tests}.
+
 \subsection{Wprowadzenie do problematyki}
+
+Ze względu na to, że system ggss do działania wymaga sprzętu fizycznego ważne jest, aby przed uruchomieniem głównej aplikacji była możliwość sprawdzenia, czy sprzęt jest sprawny. System ggss nie może zostać uruchomiony na niepoprawnie skonfigurowanym sprzęcie, ponieważ może to doprowadzić do różnych konsekwencji jak na przykład trwałe uszkodzenie sprzetu. Biorąc pod uwagę te wymogi w ramach systemu ggss istniały skrypty w języku Python oraz aplikacja w języku C++ służące do wykonywania akcji na sprzęcie fizycznym w celu jego weryfikacji.
 
 \subsection{Motywacja do wprowadzenia zmian}
 
+Rozwiązanie dotychczas stosowane w projekcie ggss posiadało wiele mankamentów. Największą jego wadą była dodatkowa zależność do biblioteki \emph{python-serial}, która nie jest obecna w środowisku docelowym przez co w ramach instalacji pakietu projektu ggss konieczna była instalacja również tejże biblioteki. Dodatkowo kod źródłowy był mało czytelny, przez co ciężko było rozszerzyć możliwości skryptów, szczególnie w przypadku tych w języku Python. Co więcej skrypty te wymagały rozszerzeń ze względu na swoje niewielkie możliwości weryfikacji sprzętu.
+
+Autorzy postanowili rozwiązać te problemy tworząc nowe skrypty służące testowaniu sprzętu fizycznego. Postawiono kilka celów, które te skrypty miały realizować. Po pierwsze najważniejszym założeniem było udostępnienie takiego interfejsu, który będzie pozwalał na możliwie jak najbardziej kompletne przetestowanie sprzętu znając jedynie komendy jakie ten sprzęt przyjmuje. Ważne, aby specjalista był w stanie sprawdzić dogłębnie działanie sprzętu bez potrzeby zaglądania w kod źródłowy skryptów służących do testowania. Kolejnym celem, który autorzy postanowili zrealizować, to zapewnić podobny interfejs w przypadku wszystkich przygotowanych aplikacji. Ostatnim z głównych celów było, w miarę możliwości, pozbycie się jak największej ilości zewnętrznych zależnosci.
+
+Po głębszej analizie potrzeb i możliwości dotąd stosowanych aplikacji, autorzy zdecydowali się pozostawić aplikację do testowania \emph{analizatora wielokanałowego} w stanie oryginalnym, a skupić się na aplikacjach, których zadaniem jest testowanie \emph{zasilacza wysokiego napięcia} oraz {multiplexera}. Opisowi zostały poddane jedyne te aplikacje oraz skrypty, które zostały napisane, bądź zmodyfikowane przez autorów.
+
 \subsection{Rozwiązanie oparte o język Python}
 
+W celu ułatwienia pracy ze sprzętem postanowiono przygotować prosty skrypt współpracujący z aplikacją \emph{udevadm}, służącą do obsługi i pobieraniu unformacji z systemu plików \emph{udev}, którego zadaniem jest dynamiczna alokacja plików urządzeń. Celem wyżej wymienionego skryptu było automatycznie pobieranie informacji na temat podłączonych do komputera urządzeń wchądzących w skład projektu ggss. Proces ten odbywał się za pomocą analizowania metadanych dostarczanych w ramach działania aplikacji udevadm. Listing \ref{lst:device_detector} przedstawia przykładowe działanie skryptu służącego do wykrywania sprzętu. Najważniejszą informację jaką uzyskujemy w ramach jego działania to ścieżki do plików urządzeń, które są parametrem wejściowym potrzebnym do działania, przygotowanych przez autorów, aplikacji do testowania sprzętu.
+
+\begin{lstlisting}[language=cmd,caption={Przykład działania skryptu do automatycznego wykrywania podłączonego sprzętu},label={lst:device_detector},frame=single]
+[jcierpic@host device-detector]$ python detect_all_devices.py
+Detected following devices:
+-----------------------------------
+High Voltage
+--------------
+device_path:/dev/ttyUSB0
+-----------------------------------
+
+-----------------------------------
+Multi Channel Analyzer
+--------------
+device_path:/dev/v1718_1
+device_path:/dev/v1718_0
+-----------------------------------
+
+-----------------------------------
+Multiplexer
+--------------
+serial:USBRM0104
+device_path:/dev/ttyUSB2
+serial:USBRM0103
+device_path:/dev/ttyUSB1
+-----------------------------------
+\end{lstlisting}
+
+Przygotowane zostały również dwie aplikacje w języku Python. Jedna służąca do testowania multipleksera, a druga do testowania zasilacza wysokiego napięcia. Docelowo obie aplikacje miały oferować tryb interaktywny, w którym osoby pracujące nad systemem mogą wprowadzać wcześniej zdefiniowane komendy za pomocą wyżej wymienionych aplikacji, a wynik ich działania byłby dostępny w ramach informacji zwrotnej. Ze względu na ograniczenia czasowe w ramach pierwszej implementacji jedynie aplikacja do testowania multipleksera oferowała taki tryb. Oprócz tego obie aplikacje oferowały zwykły tryb działania, tj.: wykonanie wcześniej zdefiniowanego zestawu komend oraz sprawdzenie poprawności ich wykonania i informacji zwrotnych od sprzętu.
+
+Rozwiązanie utworzone przez autorów realizowało tylko kilka celów, które zostały postawione. Po pierwsze częściowo został zrealizowany cel pozwalający na dogłębne przetestowanie sprzętu fizycznego. Ze względu na tryb interaktywnu użytkownicy systemu byli w stanie sprawdzić działanie w różnych, wymyślonych przez siebie przypadkach. Dodatkowo nowo napisane aplikacje stosowały się do standardów co do tworzenia czystego, łatwo rozszerzalnego kodu stosowanych w branży programistycznej, dzięki czemu dodawanie nowych funkcjonalności nie sprawiało dużych problemów.
+
+Nie udało się natomiast pozbyć zależności do zewnętrznej zależności, jaką była biblioteka \emph{python-serial}. Co więcej interfejs obydwu aplikacji nie był jednolity, ze względu na brakujący tryb interaktywny aplikacji przeznaczonej do zasilacza wysokiego napięcia. W trakcie prac nad aplikacjami odkryto również, że logika odpowiedzialna za obsługę komend zasilacza wysokiego napięcia istnieje już w systemie w postaci bibliotek w języku C++. Ponowna implementacja w języku Python powodowała duplikowanie odpowiedzialności oraz znaczne zwiększenie kosztów utrzymania.
+
+Z powodu wyżej wymienionych wad utworzonego rozwiązania postanowiono ponownie rozwiązać ten problem, tym razem z wykorzystaniem języka C++ oraz zastosowaniem jeszcze lepiej zaplanowanego interfejsu służącego testowaniu.
+
+%https://linux.die.net/man/8/udevadm
 \subsection{Rozwiązanie oparte o język C++}
 
+Tworząc rozwiązanie oparte o język C++ w pierwszej kolejności wykonano odpowiedni plan interfejsu użytkownika tak, aby był on jak najbardziej przyjazny i pozwalał na jak najlepsze przetestowanie sprzętu. Celem było stworznie takiego interfejsu, aby od użytkownika wymagana była jedynie znajomość komend. W tym celu postanowiono, na wzór rozwiązania w jezyku Python, zaimplementaować tryb interaktywny. Oprócz trybu interaktywnego zdecydowanie się również na tryb pozwalający na łatwą automatyzację procesu bez potrzeby każdorazowego wprowadzania komend do aplikacji. W ramach wypracowanego rozwiązania postanowiono dodać do aplikacji tryb scenariuszowy. Pozwala on na wykonanie wcześniej zdefiniowanych komend w ramach scenriuszów zdefiniowanych w zewnętrznym pliku scenariuszowym. W celu osiągnięcia jak największej czytelności zdecydowano się zastosować format zbliżony do dobrze znanego formatu \emph{YAML}. Listing \ref{lst:examplary_scenario} przedstawia przykładowy plik scenariuszowy z dwoma scenariuszami. Każdy ze scenariuszy składa się z kilku osobnych komend. Widoczne są również komentarze, których wsparcie dodano w celu zmiejszenia progu wejściowego dla osób, które dopiero zaczynają korzystać z tego rozwiązania.
+
+\begin{lstlisting}[language=yaml,caption={Przykładowy scenariusz w formacie zbliżonym do \emph{YAML}},label={lst:examplary_scenario},frame=single]
+SetAndCheckActiveChannelsScenario:
+- getsn         # Get serial number
+- setgetch 0    # Switch to channel 0 and check
+- setgetch 1    # Switch to channel 1 and check
+- setgetch 2    # Switch to channel 2 and check
+- setgetch 3    # Switch to channel 3 and check
+- setgetch 4    # Switch to channel 4 and check
+- setgetch 5    # Switch to channel 5 and check
+- setgetch 6    # Switch to channel 6 and check
+- setgetch 7    # Switch to channel 7 and check
+- setgetch 8    # Switch to channel 8 and check
+
+ReadSerialNumberAndActiveChannelScenario:
+- getsn         # Get serial number
+- getch         # Get current channel
+\end{lstlisting}
+
+Logika obsługi plików scenariuszowych została zawarta w ramach biblioteki \emph{scenario-lib}. Korzystają z niej dwie aplikacje to testowania sprzętu, tj.: \emph{high-voltage-service-app} oraz \emph{multiplexer-service-app}. Interfejs tych aplikacji jest możliwie zbliżony do siebie. Objawia się to między innymi w argumentach wejściowych obydwu aplikacji. Następne parametry są dla nich wspólne:
+\begin{itemize}
+    \item \lstinline{--help} - wyświetla opis wszystkich parametrów wejściowych oraz aplikacji
+    \item \lstinline{--dev-port} - ścieżka do pliku urządzeń, które odpowiada testowanemu sprzętowi
+    \item \lstinline{--scenario-file} - ścieżka do pliku ze scenariuszami
+    \item \lstinline{--scenarios} - nazwy scenariuszy z wcześniej wskazanego pliku scenariuszowego, które mają zostać uruchomione
+\end{itemize}
+
+Parametry \lstinline{--scenario-file} oraz \lstinline{--scenarios} są opcjonalne. W przypadku ich podania aplikacje są uruchamiane w trybie scenariuszowym, w przeciwnym wypadku w trybie interaktywnym. Ze wzlgędu na specyfikę sprzętu aplikacja \emph{high-voltage-service-app} wymaga również podania, jako argument wejściowy, ilości modułów w połączeniu łańcuchowym (ang. \emph{daisy chain}) - argument \lstinline{--dev-modules}.
+
+Komendy wspierane przez aplikację \emph{multiplexer-service-apps} są następujące:
+\begin{itemize}
+    \item getsn - pobranie numeru seryjnego
+    \item setch <numer kanału>  - pozwala na ustawienie aktywnego kanału
+    \item getch - pobranie aktywnego kanału
+    \item setgetch - ustawienie aktywnego kanału, a następnie pobranie w celu weryfikacji
+\end{itemize}
+
+W przypadku aplikacji \emph{high-voltage-service-app} wspierane są wszystkie komendy, które wspiera biblioteka \emph{hvcommand-lib}, a zatem wszystkie komendy możliwe do wykonania na zasilaczu. Oprócz wspierania samych komend wyżej wymieniona aplikacja pozwala na ich wykonanie w różnych trybach:
+\begin{itemize}
+    \item zwykły - wykonanie komendy i wyświetlenie odpowiedzi
+    \item asercji - wykonanie komendy i porównanie odpowiedzi do zadanej wartości. Komenda ta wspiera akcje jedynie na jednym elemencie zasilacza, czyli wynikiem działania musi być jedna wartość. W celu skorzystania z tego trybu należy poprzedzić komendę słowem kluczowym \lstinline{assert}, a jako przytostek wpisać oczekiwaną wartość
+    \item asersji z tolerancją - tryb ten działa dokładnie, jak wyżej opisany tryb asercji, natomiast poza oczekiwaną wartością należy podać również wartość parametru tolerancji.
+\end{itemize}
+Dodatkowo wspierana jest również komenda sleep. W przypadku obsługi zasilacza wysokiego napięcia wymagane jest odczekanie pewnego okresu czasu zanim ustawione wartości pojawią się na wyjściu zasilacza. Przykładowe działanie wyżej przedstawionych aplikacji zostanie przedstawione w ramach przeprowadzonych testów, które zostały opisane w ramach rozdziału \ref{cha:tests}.
+
+%https://yaml.org/
+
 \subsection{Podsumowanie}
+
+Ostatecznie utworzone rozwiązanie testowania sprzętu fizycznego wykorzystywanego przez projekt ggss spełniło wszystkie zakładane przez autorów cele. Z powodzeniem pozbyto się zależności do biblioteki zewnętrznej \emph{python-serial}. Napisane przez autorów aplikacje cechują się w miarę uwspólnonym interfejsem, a od użytkowników wymagana jest jedynie znajomość komend. Możliwe jest dogłębne przetestowanie urządzeń korzystając z trybu interaktywnego, a zautomatyzowanie tego procesu możliwe jest przy użyciu scenariuszy. Co więcej tryb scenariuszowy pozwala na zmianę działania automatycznego sprawdzania poprawności sprzętu bez potrzeby modyfikowania samych aplikacji, czy też ich ponownej kompilacji. Wystarczy jedynie napisać nowy scenariusz i podać go jako parametr wejściowy.

@@ -1,0 +1,65 @@
+\clearpage
+\section{Zmiany wdorżeniowe projektu ggss}
+\label{ch:scripts}
+
+
+Niniejsza część pracy opisuje zmiany związane ze skryptami służącymi do bosługi projektu ggss w środowisku docelowym. Opisowi poddane zostały wprowadzone w nich zmiany, nowe funkcjonalności, czy też usprawnienia mające na celu poszerzenie możliwości wdrożeniowe projektu ggss. Przedstawione zostały również rozwinięcia wdrożeniowe w automatyzacji projektu ggss.
+
+\subsection{Wprowadzenie do problematyki}
+
+W celu zapewnienia obsługi systemu ggss w środowisku produkcyjnym oraz łatwości korzystania istniało wiele skryptów, które pozwalały na wdrożenie aplikacji. Odpowiadały one między innymi za obsługę cyklu życia aplikacji, np.: poprzez komendy \lstinline{start}, \lstinline{stop}, \lstinline{remove_lock}, \lstinline{check} wsparane przez skrypt \emph{ggss\_monitor}. Co więcej skrypty te w połączeniu z aplikacją \emph{crontab}, odpowiedzialną za cykliczne wykonywanie komend na systemach z rodziny Linux, zapewniały ciągłe działanie aplikacji ggss oraz uruchamianie jej z odpowiednimi prawami dostępu. Oprócz skryptów wdrożeniowych w ramach systemu ggss istniała również infrastruktura odpowiedzialna za awaryjne wyłączenie zasilania na zasilaczu wysokiego napięcia.
+
+\subsection{Motywacja do wprowadzenia zmian}
+\label{sec:scripts_motiv}
+
+Ze względu na sposób implementacji poprzednich skryptów w celu porawnego działania wymagane było, aby w systemie docelowym istaniała określona struktura katalogów, a wewnątrz niej znajdowały się aplikacje projektu ggss. Dodatkowo logika potrzebna do działania systemu rozbita była na wiele plików-skryptów luźno ze sobą powiązanych, z niewiele tłumaczącymi nazwami. W celu dowiedzenia się co dany skrypt robi trzeba było sprawdzać jego zawartość, bądź być dobrze zaznajomionym ze skrótami użytymi w nazwie. Ze względu na powyższe czynniki postanowiono usprawnić skrypty odpowiadające za obsługę projektu ggss w systemie docelowym. Dodatkowo postanowiono rozszerzyć możliwości skryptów o monitorowanie zasobów zużywanych przez główną aplikację projektu ggss.
+
+Modyfikacji została poddana również infrastruktura odpowiedzialna za awaryjne wyłączanie zasilania. Po analizie jej obecnych możliwości oraz uzyskaniu wymagań co do infrastruktury okazało się, że nie spełnia ona założeń. Najważniejszym przypadkiem użycia dla tejże infrastruktury było wyłączenie zasilania w momencie, gdy główna aplikacja ggss przestaje działać. Oprócz tego zabezpieczeniu miał zostać poddany proces wyłączania maszyny (ang. shutdown), tak, aby po zamknięciu systemu operacyjnego na komputerze produkcyjnym zasilania na zasilaczu również zostały wyłączone. Infrastruktura w pierwotnej postaci wspierała jedynie ten drugi przypadek.
+
+Ze względu na brak ustandaryzowanego oraz łatwego sposobu na pozyskanie aplikacji, pakietów oraz skryptów potrzebnych na wdrożenie systemu ggss w środowisko docelowe postanowiono wzbogacić automatyzację o kroki konsolidujące wszystkie zasoby potrzebne do wdrożenia projektu w środowisko produkcyjne wraz z ich odpowiednim opisaniem.
+
+\subsection{Skrypt do monitorowania zużytych zasobów przez główną aplikację ggss}
+
+W ramach pracy inżynierskiej został przygotowany skrypt \emph{check\_mem\_ggssrunner.sh}, którego zadaniem było sprawdzanie zużycia pamięci, a dokładniej parametru VSZ (\emph{Virtual Memory Size}), który reprezentował ilość pamięci do której na dany moment miał dostęp proces, między innymi: pamięc na partycji \emph{swap}, pamięc zaalokowana (również ta nieużywana), pamięć przeznaczona na biblioteki współdzielone. Ze względu na to, że parametr ten nie oddawał dobrze zużywanej pamięci przez aplikację postanowiono rozbudować wyżej wymieniony skrypt o następujące parametry:
+\begin{itemize}
+    \item CPU - stosunek wykorzystanego czasu procesora do rzeczywistego czasu, który upłynął od uruchomienia procesu
+    \item MEM - stosunek RSS do całkowitej fizycznej pamięci zainstalowanej w systemie
+    \item RSS(\emph{Resident Set Size}) - ilość wykorzystywanej pamięci RAM przez proces. Brane pod uwagę są również biblioteki współdzielone, załadowane do pamięci, wykorzystywane przez proces. Nie zawiera informacji o pamięci na partycji swap.
+\end{itemize}
+RSS dokładniej ukazuje pamięc wykorzystywaną przez proces. W przypadku monitorowania z użyciem jedynie VSZ możemy łatwo pominąć niepokojące zachowanie aplikacji, ponieważ w zaalokowanej pamięci nie będzie to widoczne.
+
+Skrypt został rozbudowany również o system, który pozwala na nieprzerwane działanie w tle bez błędów nawet, gdy główna aplikacja ggss pozostaje nieuruchomiona. Wyświetlany jest wówczas stosowny komunikat zamiast standardowych statystyk. Efekt ten uzyskano dzięki wykorzystaniu szeregu połączonych ze sobą, za pomocą tak zwanych \emph{pipe}, programów środowiska linux, tj.: \emph{ps, grep} oraz \emph{awk}. Odpowiednie połączenie tych komend pozwala na uzyskanie PID (\emph{Process Identifier}) aplikacji i zapisanie go w zmiennej. W przypadku, gdy aplikacja nie jest uruchomiona zmienna pozostanie pusta. Wykorzystując język \emph{bash}, jego struktury warunkowe oraz wyżej wymienioną zmienną możliwe było utworzenie zachowania zależnego od tego, czy proces jest uruchomiony, czy też nie.
+
+%https://man7.org/linux/man-pages/man1/ps.1.html
+%https://softwareperformancenotes.github.io/rssvsz/
+
+\subsection{Zmiany w skryptach operacyjnych}
+
+Przed dokonaniem zmian w skryptach operacyjnych, w pierwszej kolejności dokonano analizy wykorzystywanych skryptów i usunięto te, które nie były już potrzebne. Były to skrypty: \emph{dimhw\_mon\_vmon.sh}, \emph{dimhw\_det\_all\_off.sh} oraz \emph{ggss\_starter.sh}. Pierwsze dwa z nich nie mogłyby zostać wykorzystane po wprowadzonych zmianach w systemie, ponieważ modyfikacji uległ format komend obsługiwanych przez projekt ggss, które mają kontrolować działanie zasilacza wysokiego napięcia. Natomiast ostatni z nich został usunięty, ponieważ logika zawarta w ramach tego skryptu została przeniesiona do pliku \emph{ggss\_monitor.sh}, czyli jedynego miejsca, gdzie była ona wykorzystywana.
+
+Jedną z ważniejszych zmian było wprowadzenie zmian w skryptach, które możliwiły umieszczanie projektu ggss w dowolnej ścieżce w systemie, w początkowej wersji skryptów operacyjnych zapisana na stałe ścieżka \lstinline{/localdisk/ggss/bin}. Obecnie ścieżka jest odczytywana względem umiejscowienia skryptów. Ze względu na to, że skrypty te cyklicznie uruchamiane są przez aplikację crontab niemożliwe było skrozystanie ze ścieżki względnej (\lstinline{./}) konieczne za to było wykorzystanie parametru \lstinline{BASH_SOURCE}, który jest tablicą, a element o indeksie 0 zawiera informację o względnej ścieżce, gdzie znajduje się wywoływany skrypt. Aby otrzymać ścieżkę bezwzględną wykorzystane zostało połączenie wyżej opisanego parametru waraz z komendą \lstinline{cd} oraz \lstinline{pwd}. Zamieniając wszystkie wystąpienia \lstinline{/localdisk/ggss/bin} na uzyskaną we wcześniej opisany sposób ścieżkę bezwzględną efektywnie pozwoliło na umieszczanie projektu ggss w dowolnej ścieżce w systemie.
+
+W skryptach operacyjnych dokonano również małego usprawnienia w systemie sprawdzającym, czy główna aplikacja systemu ggss jest uruchomiona. W pierwotnej wersji system jedynie sprawdzał, czy aplikacja ggssrunner jest uruchomiona. Dodatkowo system ten mógł łatwo ulec błędnemu działaniu, ponieważ wyniki nie były poprawnie filtrowane. Działanie polegało na sprawdzeniu, czy po odfiltrowaniu standardowego wyjścia z komendy \lstinline{ps} za pomocą komendy \lstinline{egrep} zawierającej jako argument nazwę aplikacji pozostaje jakakolwiek wartość. Szczęśliwie argument komendy filtrującej poprzedzony był preifixem \lstinline{./} dzięki czemu system działał poprawnie. Natomiast gdyby prefix ten nie występował to nawet w przypadku gdyby aplikacja ggssrunner nie była uruchomiona odflitrowany wynik działania zawierałby w sobie komendę egrep, co przedstawia listing \ref{lst:egrep_error}. W celu zapobiegnięcia w przyszłości problemów z systemem weryfikowania, czy główna aplikacja projektu ggss jest uruchomiona wprowadzono dodatkowy filtr elminujący z standardowego wyjścia wpisy na temat komendy grep.
+
+\begin{lstlisting}[language=cmd,caption={Przykładowe działanie połączenie komend ps oraz egrep bez prefixu \lstinline{./} przy argumencie komendy egrep.},label={lst:egrep_error},frame=single]
+jcierpic@host:~$ ps afux | egrep "ggssrunner"
+jcierpic  461  0.0  0.0  8160  732 pts/3   S+  14:20  0:00 \_ grep -E --color=auto ggssrunner
+\end{lstlisting}
+
+\subsection{Zmiany w systemie awaryjnego wyłączania zasilania}
+
+Ze względu na wymagane zmiany opisane w ramach sekcji \ref{sec:scripts_motiv} oraz chęci autorów do pozbycia się jak największej liczby zewnętrznych zależności w projekcie ggss wprowadzono szereg zmian w systemie awaryjnego wyłączania zasilania.
+
+Po pierwsze zmianie uległ skrypt \emph{wd\_hv.sh}, który uruchamiany jest cyklicznie w ramach aplikacji \emph{crontab}, a jego celem jest upewnienie się, że skrypt pułapka (ang. \emph{trap}), którego zadaniem jest uruchomienie aplikacji awaryjnego wyłączenia zasilania w przypadku otrzymania sygnały SIGTERM, dla zasilacza wysokiego napięcia jest uruchomiony. Wprowadzone zostały wcześniej opisane zmiany, które pozowliły na umieszczenie skryptu w dowolnym miejscu w systemie, dodatkowo wprowadzono zmiany usprawniające wykrywanie czy skrypt pułapka jest uruchomiony. Dodatkowo wprowadzona została funkcjonalność blokowania uruchomienia aplikacji pułapki, nawet, gdy jest ona nieuruchomiona. Zaimplementowane zostało to z użyciem pliku \emph{lock}. W przypadku występowania pliku \emph{high\_voltage\_killer\_trap.lock} w ścieżce, gdzie znajduje się skrypt \emph{wd\_hv.sh} skrypt pułapka nie zostanie uruchomiony niezależnie od pozostałych warunków.
+
+W celu zapewnienia awaryjnego wyłączania zasilania na zasilaczu wysokiego napięcia, gdy główna aplikacja projektu ggss pozostaje nieuruchomiona dłużej niż 5 minut, a przed tym okresem czasu była uruchomiona skrypt pułapka został wzbogacony o wyklrywanie statusu aplikacji ggssrunner oraz o licznik czasu z wykorzystaniem wewnętrznej zmiennej powłoki bash \emph{SECONDS}. W przypadku, gdy główna aplikacja ggss jest uruchomiona zmienna ta jest zerowana, w przeciwnym wypadku, gdy zmienna ta osiągnie wartość 300, czyli 5 minut, uruchamiana jest aplikacja \emph{high-voltage-killer}, której zadaniem jest wyłączenie zasilania na wyjściu zasilacza.
+
+Aplikacja \emph{high-voltage-killer} została napisana od początku z użyciem języka C++, a jej zasada działania jest identyczna, jak w przypadku pierwotnego rozwiązania w języku Python. W trakcie działania aplikacja łączy się ze wszystkimi dostępnym zasilaczami oraz wszystkimi ich modułami w podłączonymi w ramach połączenia łańcuchowego, po czym zeruje na nich napięcia. Dodatkowo, ze względu na wykorzystanie języka, który używany jest również w głównej aplikacji systemu ggss, możliwe było wykorzystanie obsługi zasilacza już istniejącej w ramach biblioteki \emph{caenn1470-lib}. Co więcej stosowanie języka C++ pozwoliło na pozbycie się ostatniej zależności w projekcie do biblioteki \emph{python-serial}, a zatem całkowite pozbycie się jej z projkektu ggss.
+
+\subsection{Wdrożenie z użyciem automatyzacji Gitlab CI/CD}
+
+Aby uprościć proces wdrażania systemu ggss wykorzystano funkcjonalność wydań (ang. \emph{release}) dostępną w ramach portalu Gitlab oraz częściowo opisaną w ramach sekcji \ref{ch:versioning}. Przy każdorazowym utworzeniu wydania wszystkie pliki potrzebne do wprowadzenia do systemu docelowego, aby projekt ggss mógł być uruchomiony, dostępne są z panelu danego wydania.
+
+%tutaj wstawić rysunek i opisac krótko co jest w wydaniu
+
+Przygotowana w ten sposób infrastruktura pozwala bez większych problemów na szybkie uzyskianie wszystkich potrzebnych zasobów do uruchomienia projektu ggss, a cały proces jest znacznie uproszczony.
