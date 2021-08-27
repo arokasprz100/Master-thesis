@@ -1,0 +1,7 @@
+Polecenie:    hv invalid:* mon vset,vmon
+Wynik:        Error: Invalid module alias: invalid
+Wyjaśnienie:  W systemie nie istnieje zasilacz oznaczony nazwą "invalid".
+
+Polecenie:    hv *:6 mon vset,vmon
+Wynik:        Error: Invalid channel number: 6
+Wyjaśnienie:  Zasilacz posiada jedynie 4 numerowanie od 0 kanały.

@@ -1,0 +1,24 @@
+Polecenie: hv *:* mon vset,vmon
+Znaczenie: pobranie wartości parametrów VSET i VMON dla wszystkich 
+           kanałów wszystkich zasilaczy
+Wynik:     OK: hv_caen_n1470_0:0:VSET:0.0;hv_caen_n1470_0:1:VSET:0.0;
+           hv_caen_n1470_0:2:VSET:0.0;hv_caen_n1470_0:3:VSET:1365.0;
+           hv_caen_n1470_1:0:VSET:1365.0;hv_caen_n1470_1:1:VSET:0.0;
+           hv_caen_n1470_1:2:VSET:1365.0;hv_caen_n1470_1:3:VSET:0.0;
+           hv_caen_n1470_2:0:VSET:0.0;hv_caen_n1470_2:1:VSET:0.0;
+           hv_caen_n1470_2:2:VSET:0.0;hv_caen_n1470_2:3:VSET:0.0;
+           hv_caen_n1470_0:0:VMON:0.0;hv_caen_n1470_0:1:VMON:0.0;
+           hv_caen_n1470_0:2:VMON:0.0;hv_caen_n1470_0:3:VMON:1364.8;
+           hv_caen_n1470_1:0:VMON:1364.4;hv_caen_n1470_1:1:VMON:0.0;
+           hv_caen_n1470_1:2:VMON:1364.8;hv_caen_n1470_1:3:VMON:0.0;
+           hv_caen_n1470_2:0:VMON:0.0;hv_caen_n1470_2:1:VMON:0.0;
+           hv_caen_n1470_2:2:VMON:0.0;hv_caen_n1470_2:3:VMON:0.0;
+
+Polecenie: hv hv_caen_n1470_0:1 set vset 1
+Znaczenie: zmiana wartości napięcia na jednym z kanałów na wartość 1
+Wynik:     OK: hv_caen_n1470_0:1:VSET:OK;
+
+Polecenie: hv hv_caen_n1470_0 raw $BD:00,CMD:MON,CH:0,PAR:IMON
+Znaczenie: pobranie wartości monitorowanego natężenia prądu dla 
+           wybranego kanału i zasilacza (komenda typu RAW)
+Wynik:     OK: hv_caen_n1470_0:#BD:00,CMD:OK,VAL:0000.00

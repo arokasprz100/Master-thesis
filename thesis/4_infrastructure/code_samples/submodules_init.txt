@@ -1,0 +1,18 @@
+user@host:~/$ git clone ssh://git@gitlab.cern.ch:7999/atlas-trt-dcs-ggss/ggss-all.git && cd ggss-all && git submodule update --init --recursive
+Cloning into 'ggss-all/ggss-dim-cs'
+Cloning into 'ggss-all/ggss-driver'
+Cloning into 'ggss-all/ggss-hardware-service-apps'
+Cloning into 'ggss-all/ggss-runner'
+Cloning into 'ggss-all/ggss-dim-cs/external-dim-lib'
+Cloning into 'ggss-all/ggss-dim-cs/ggss-util-libs'
+Cloning into 'ggss-all/ggss-driver/external-n957-lib'
+Cloning into 'ggss-all/ggss-hardware-service-apps/ggss-hardware-libs'
+Cloning into 'ggss-all/ggss-hardware-service-apps/ggss-hardware-libs/ggss-util-libs'
+Cloning into 'ggss-all/ggss-runner/ggss-lib'
+Cloning into 'ggss-all/ggss-runner/ggss-lib/external-dim-lib'
+Cloning into 'ggss-all/ggss-runner/ggss-lib/ggss-hardware-libs'
+Cloning into 'ggss-all/ggss-runner/ggss-lib/ggss-software-libs'
+Cloning into 'ggss-all/ggss-runner/ggss-lib/ggss-hardware-libs/external-n957-lib'
+Cloning into 'ggss-all/ggss-runner/ggss-lib/ggss-hardware-libs/ggss-util-libs'
+Cloning into 'ggss-all/ggss-runner/ggss-lib/ggss-software-libs/ggss-util-libs'
+(8 lines truncated...)

@@ -5,7 +5,11 @@ Niniejszy rozdział stanowi szczegółowy raport z przeprowadzanych w środowisk
 \section{Cykliczne testy systemu (AK)}
 Praca nad projektem stanowiącym część dużego, rozwijanego przez wiele osób systemu, wymaga stosowania metod pozwalających na zapewnienie jego niezawodności. Dlatego też autorzy zdecydowali się na przeprowadzania okresowych testów systemu GGSS, dzięki czemu możliwe było wczesne wykrywanie i eliminowanie pojawiających się w projekcie błędów. Regularne przeprowadzanie weryfikacji poprawności działania najnowszej wersji warstwy oprogramowania systemu GGSS pozwoliło ponadto na wygodne testowanie wprowadzanych przez autorów funkcjonalności - duża częstotliwość oznacza w tym przypadku możliwość testowania niewielkiego zbioru zmian, co znacząco ułatwia wczesne wykrywanie związanych z nimi nieprawidłowości.
 
-Ze względu na fakt, iż autorzy pracują nad systemem GGSS od września 2019 roku, to procedura przeprowadzania tego typu testów zawarta została w manuskrypcie pracy inżynierskiej. Z tego też powodu nie został tutaj zamieszczony szczegółowy opis wykonywanych czynności. Elementem stanowiącym nowość względem procesu przeprowadzanego w ramach pracy inżynierskiej były testy wprowadzanych oraz modyfikowanych funkcjonalności. Zarys procedury testowania przedstawiony został w formie graficznej na rysunku ... 
+Ze względu na fakt, iż autorzy pracują nad systemem GGSS od września 2019 roku, to procedura przeprowadzania tego typu testów zawarta została w manuskrypcie pracy inżynierskiej. Z tego też powodu nie został tutaj zamieszczony szczegółowy opis wykonywanych czynności. Elementem stanowiącym nowość względem procesu przeprowadzanego w ramach pracy inżynierskiej były testy wprowadzanych oraz modyfikowanych funkcjonalności.
+
+
+
+ Zarys procedury testowania przedstawiony został w formie graficznej na rysunku ... 
 
 % dodac diagram i zrobic krotki jego opis 
 
@@ -17,6 +21,29 @@ Ze względu na fakt, iż autorzy pracują nad systemem GGSS od września 2019 ro
 % Uruchomienie glownej aplikacji ggss
 
 \section{Testy wersji finalnej (AK i JC)}
+Niniejsza sekcja opisuje wykonane w sierpniu 2021 roku finalne testy działania systemu GGSS w jego środowisku docelowym. Sprawdzeniu poddane zostały zarówno wszystkie najważniejsze funkcjonalności systemu, jak również elementy infrastruktury projektu oraz wprowadzone przez autorów zmiany. Ponadto zbadane zostało zużycie zasobów systemu, takich jak pamięć, podczas długotrwałego, nieprzerwanego działania aplikacji \emph{ggss-runner}. 
+
+Z punktu widzenia weryfikowanych funkcjonalności systemu autorzy dokonali sprawdzenia zarówno każdego przygotowanego przez nich rozszerzenia, jak i elementów wchodzących w skład projektu od początku prac nad nim. W kolejnych akapitach opisane zostały poszczególne scenariusze testowe wraz z otrzymanymi przez autorów wynikami.
+
+Testom poddana została przygotowana przez autorów składnia komend służących do komunikacji z zasilaczami wysokiego napięcia. Wykonane zostały sprawdzenia wszystkich trzech typów poleceń (MON, SET, RAW) przy zastosowaniu zróżnicowanych konfiguracji opisujących moduły, kanały oraz parametry. Testy przeprowadzane zarówno z wykorzystaniem dostępnego w ramach infrastruktury WinCC OA panelu do wysyłania komend, jak również za pomocą dedykowanego skryptu \lstinline{dimhw.sh}. Listing ... przedstawia wyniki przykładowych trzech zapytań - we wszystkich przypadkach są one zgodne z oczekiwaniami. Ze względu na powtarzalny charakter sprawdzeń, nie zostały tutaj przytoczone wszystkie testowane scenariusze. 
+
+\lstinputlisting[
+    language=Cmd, 
+    caption={aaaa}, 
+    label={lst:test_hw_1}
+]{6_tests/code_samples/dim_hw_ok.txt}
+
+Sprawdzona została ponadto obsługa błędów, wynikających m.in. z niepoprawnego formatu i zawartości przesyłanych poleceń. Listing ... prezentuje dwa tego typu przykłady, gdzie podana została kolejno niepoprawna specyfikacja urządzenia oraz kanału. Podobnego typu testy przeprowadzone zostały m.in. dla komend o niepoprawnej liczbie części czy błędnej specyfikacji parametru lub wartości. 
+
+\lstinputlisting[
+    language=Cmd, 
+    caption={aaaa}, 
+    label={lst:test_hw_2}
+]{6_tests/code_samples/dim_hw_error.txt}
+
+
+Kolejne testy dotyczyły funkcjonalności pozwalającej na zapobieganie przepełnieniu bufora urządzenia MCA. W tym przypadku sprawdzone zostały scenariusze takie jak: działanie programu, gdy w pliku konfiguracyjnym nie została wyspecyfikowana wartość parametru \lstinline{mcaRefreshInterval}, dzialanie gdy taki parametr w pliku został określony oraz wykonywanie pomiarów o zróżnicowanym czasie trwania. Testy tej funkcjonalności zakończyły się powodzeniem ...
+
 % Wstep, kiedy wykonywane, w jakim czasie (AK)
 % Kazda funkcjonalnosc z osobna
 %   - po kolei opis kazdej (np. hvkiller, komendy, skrypty operacyjne itp)
