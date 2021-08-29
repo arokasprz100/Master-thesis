@@ -4,7 +4,71 @@
 % wstep po ang i po polsku, czemu sa po angielsku
 
 \section{Adding modules to the project using existing CMake templates}
+
+\clearpage
 \section{Working with git submodules}
+\label{sec:working-with-git-sudmobules}
+
+\subsection*{Overview}
+This file contains tips for working with complex git structure created within ggss project.
+
+\subsection*{Content}
+This document contains following tips:
+\begin{itemize}
+    \item How to clone whole repository structure of the ggss project
+    \item How to push changes inside component
+    \item How to propagate changes to whole ggss project
+\end{itemize}
+
+\subsubsection*{How to clone whole repository structure of the ggss project}
+\begin{itemize}
+    \item \lstinline{git clone ssh://git@gitlab.cern.ch:7999/atlas-trt-dcs-ggss/ggss-all.git} - to clone main repository
+    \item \lstinline{cd ggss-all}
+    \item \lstinline{git submodule update --init --recursive} - to clone all descendant repositories
+    \item \lstinline{git submodule foreach --recursive git checkout master} - this step is needed because after previous state all submodules heads will be in detached state (1)
+\end{itemize}
+
+\subsubsection*{Notes}
+\begin{itemize}
+    \item \lstinline{M ggss-hardware-libs} - if there is message about modifications it means that parent repository has outdates submodule link. This issue can be solved using gitio to align repositories.
+    \item We can clone part of the ggss-project by changing ggss-all to other repository, for instance ggss-hardware-libs. In such case only repositories descendant to ggss-hardware-libs will be cloned.
+\end{itemize}
+
+\subsubsection*{How to push changes inside component}
+There are few things you have to remember when pushing changes to repository:
+\begin{itemize}
+    \item Make sure that you are using newest version of the repository (newest commit).
+    \item Make sure that your working version is not in HEAD Detached state (git status).
+    \item Before aligning whole project using gitio make sure that your changes do not affect other components and/or align the affected components manually. (e.g. changes in library interface that is used by other components)
+    \item Make sure to merge changes to master branch ONLY after changes were tested.
+    \item Use gitio script ONLY to update links to submodules. Gitio is not intended to push any code changes and it will not allow to do so.
+\end{itemize}
+
+\subsubsection*{How to propagate changes to whole ggss project}
+
+As propagating changes within multi-level submodule based project requires many commits (you have to propagate changes in every dependent repository by making new commit) gitio script has been created to handle the process.
+
+Gitio is mentioned to analyze submodules and their dependencies, create tree structure basing on gathered information and update all the submodule pointers to the newest available versions on master branches.
+
+For detailed usage please read README in ggss-gitio repository.
+
+\clearpage
 \section{Creating proper GGSS Docker image for CI/CD infrastructure}
+
+\subsection*{How to prepare new Docker image for GGSS}
+
+\subsubsection*{Overview}
+This file contains steps needed to create new docker image for GGSS project.
+
+\subsubsection*{Steps}
+\begin{itemize}
+    \item Preapre proper Dockerimage file to create new image. (Dockerfilefrom ggss-aux repository can be used. Please align library/kernel version to your needs and prepare all needed resources for the Dockerfile e.g.: boost)
+    \item Create new image using command \lstinline{docker image build .} in directory containing Dockerfile. Remember image hash which will be visible at the end of the output \lstinline{Successfully built e250289733bd}.
+    \item Properly tag new image \lstinline{docker image tag e250289733bd} \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/ggss-all/centos7:v<new_version>} and \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/ggss-all/centos7:latest}
+    \item Login to gitlab docker image registry \lstinline{docker login gitlab-registry.cern.ch}
+    \item Push image to the registry: \lstinline{docker push gitlab-registry.cern.ch/atlas-trt-dcs-ggss/} \lstinline{ggss-all/centos7:v<new_version>} and \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/} \lstinline{ggss-all/centos7:latest}
+    \item Remember to also update kernel version on registered GitLab Runners for the ggss project to match the version installed in newly created image.
+\end{itemize}
+
 \section{Using new GGSS DIM commands}
 \section{Using GGSS DIM HV commands}

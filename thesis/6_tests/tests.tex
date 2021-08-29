@@ -224,5 +224,61 @@ Przeprowadzone testy wszystkich wyżej wymienionych funkcjonalności przebiegły
 Dodatkowo przeprowadzaono testy aplikacji \emph{device-detector}, której zadaniem jest raportowanie informacji o podłączonych do systemu urządzeniach fizycznych, które wymagane są do działania systemu ggss. Również w tym przypadku proces przebiegł pomyślne. W celu osiągnięcią stu procentowej pewności, iż wszystkie aplikacje związane ze sprzętem fizycznym działają poprawnie w nowym środowisku testom została poddana również aplikacja \emph{mca-service-app}. Uruchomienie tejże aplikacji nie budziło żadnych problemów, a wyniki jej działania były poprawne. Wraz z zakończemiem tego testu wszystkie aplikacje oraz skrypty związane ze sprzętem zostały w pełni przetestowane, dzięki czemu autorzy mogli być pewni poprawności zaimplementowanych funkcjonalności.
 
 
-\subsection{Testy zużycia zasobów}
-% Względem pracy inżynierskiej autorzy dokonali zmian w wykorzystywanych do przeprowadzania testów narzędziach. Jednym z nich był skrypt pozwalający na monitorowanie zużycia zasobów przez aplikację 
+\subsection{Testy zużycia pamięci operacyjnej}
+
+Zwieńczeniem testów, które miało zapewnić długotrwałe, bezpoblemowe działanie projektu GGSS, było monitorowanie, przez długi okres czasu, zasóbów systemowych przypisanych do głównej aplikacji. W tym celu wykorzystano wcześniej opisany skrypt \lstinline{check_resource_usage_ggss.sh}. Najważniejszym monitorowanym parametrem był RSS (\emph{Resident Set Size}), który przedstawiał ilość pamięci RAM wykorzystywanej przez proces. Ze względu na to, że aplikacja \emph{ggss-runner} powinna działać bez zakłóceń przez okres conajmniej kilku miesięcy ważne było, aby test wykazał brak zwiększającego się zużycia pamięci, co w dłuższym okresie czasu mogłoby doprowadzić do wyczerpania jej zasobów w systemie.
+% RSS przypis
+Rysunek \ref{fig:rss-short} przedstawia ilość wykorzystywanej pamięci (RSS) względem czasu. Na rysunku przedstawiony został okres od dnia 10 sierpnia 2021 roku w południe do końca dnia 11 sierpnia 2021 roku. W trakcie tego okresu autorzy przeprowadzali testy z wykorzystaniem platformy Valgrind, co widoczne jest na wykresie w okresach, w których zużycie pamięci znacząco odstaje od normy, która plasuje się w okolicach 6000 kB. Dnia 10 sierpnia 2021 roku autorzy wykonywali testy z wykorzystaniem narzędzia Massif, w trakcie korzystanie z tego narzędzia zużycie pamięci wynosiło niecałe 50 tysięcy kB. W przypadku odstępstwa z dnia 11 sierpnia wykorzystane zostało narzędzie Memcheck, a zużycie pamięci wyniosło znacznie powyżej 200 tysięcy kB. Na wykresie widoczny jest również charakterystyczny ogon związany z ponownym uruchomieniem aplikacji. Wynika on z faktu, iż aplikacja w fazie inicjalizacji oraz w trakcie początkowych pomiarów alokuje pamięć na wszystkie potrzebne zmienne wraz z buforami na przechowywanie danych pozyskanych z urządzeń fizycznych wchodzących w skład systemu GGSS.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{rss_short.pdf}
+    \caption{Wykres przedstawiający zużycie pamięci (RSS) przez aplikację \emph{ggss-runner} względem czasu w okresie od 10 sierpnia 2021 roku do końca 11 sierpnia 2021 roku.}
+    \label{fig:rss-short}
+\end{figure}
+
+W celu dokładniejszej weryfikacji długotrwałego zużycia pamięci przygotowany został również rysunek \ref{fig:rss-long}. Przedstawia on parametr RSS względem czasu dla dłuższego okresu monitorowania. Oprócz charakterystycznych odstępstw od normy związanych z wykorzystaniem platformy Valgrind nie zaobserwowano żadnych anomalii. Zmiany ilości wykorzystywanej pamięci wiązały się jedynie z początkową inicjalizacją zmiennych, buforów na danych, czy też wynikały z interakcji z systemem, np.: poprzez wysłanie do niego komend. W przypadku, gdy aplikacja \emph{ggss-runner} działała bez zewnętrznych poleceń, czy też zakłóceń, to zużycie pamięci nie zwiększało się przez dłuższy okres czasu.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{rss_long.pdf}
+    \caption{Wykres przedstawiający zużycie pamięci (RSS) przez aplikację \emph{ggss-runner} względem czasu w okresie od 5 sierpnia 2021 roku do 25 sierpnia 2021 roku.}
+    \label{fig:rss-long}
+\end{figure}
+
+W celu zbadania występowania potencjalnych błedów w zarządzaniu wykorzystania pamięcią użyto narzędzie Memcheck wchodzące w skład platformy Valgrind. Testy wykazały obecność nieprawidłowości, jednakże wygenerowany raport wskazuje, że pochodzą one z bibliotek zewnętrznych wykorzystywanych w projekcie, w tym przede wszystkim z biblioteki DIM oraz Boost.Log. Na listingu \ref{lst:memcheck-error} umieszczony został fragment raportu z działania narzędzia Memcheck prezentujący przykładowy błąd związany z faktem, że biblioteka DIM nie dokonuje poprawnego zwolnienia alokowanej pamięci. Po analizie wszystkich zgłoszonych przez narzędzie błędów, autorzy stwierdzili, że żaden z nich nie powoduje stopniowego wzrostu wykorzystywanej pamięci operacyjnej. Na tej podstawie zostało stwierdzone, że niezagrażają one bezpieczeństwu długotrwałego działania aplikacji.
+
+\begin{lstlisting}[language=cmd,caption={Przkładowy błąd raportowany przez narzędzie Memcheck},frame=single, label={lst:memcheck-error}]
+==188542== 632 bytes in 1 blocks are still reachable in loss record 17 of 37
+==188542==    at 0x4C29F73: malloc (vg_replace_malloc.c:309)
+==188542==    by 0x6B843E: dis_hash_service_insert (dis.c:3380)
+==188542==    by 0x6B0CC5: do_dis_add_service_dns (dis.c:320)
+==188542==    by 0x6B2B2B: dis_start_serving_dns (dis.c:1253)
+==188542==    by 0x6B2555: dis_start_serving_ (dis.c:1124)
+==188542==    by 0x6AC227: DimServer::start(char const*) (discpp.cxx:476)
+==188542==    by 0x51554F: ggsslib::DimGgssEventListener::DimGgssEventListener(std::string const&, std::string const&) (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
+==188542==    by 0x50C252: ggsslib::GgssEventLoopRunner::GgssEventLoopRunner(boost::asio::io_service&, std::string const&) (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
+==188542==    by 0x500806: main (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
+\end{lstlisting}
+
+Dodatkowym argumentem przemawiającym za poprawnością wyżej przytoczonych wniosków jest fakt, iż niezależnie od długości przeprowadzanego testu z użyciem narzędzia Memcheck rozmiar pamięci oznaczonej jako \lstinline{still reachable} pozostawał niezmienny i wynosił ok 178kB, co zostało zaprezentowane na listingu \ref{lst:memcheck-leak-summary}.
+
+\begin{lstlisting}[language=cmd,caption={Podsumowanie wycieków raportowane przez narzędzie Memcheck},frame=single, label={lst:memcheck-leak-summary}]
+==188542== LEAK SUMMARY:
+==188542==    definitely lost: 0 bytes in 0 blocks
+==188542==    indirectly lost: 0 bytes in 0 blocks
+==188542==      possibly lost: 0 bytes in 0 blocks
+==188542==    still reachable: 178,830 bytes in 106 blocks
+==188542==         suppressed: 0 bytes in 0 blocks
+\end{lstlisting}
+
+Przeprowadzone zostały również, trwające nieco poniżej dwóch godzin, testy zużycia pamięci sterty i stosu z wykorzystaniem narzędzia Massif wchodzącym w skład platformy Valgrind. Wynik zaprezentowany został na rysunku \ref{fig:massif-long}. W początkowym etapie testu widoczne jest stopniowe wzrastanie zużycia pamięci. Wynika ono z  przeprowadzania pierwszych iteracji pomiarów na wszystkich licznikach słomkowych podczas których alokowana jest pamięć pozwalająca na przechowywanie wyników z ostatnich pęciu iteracji dla danego licznika. Następnie zużycie pamięci pozostaje stałe, aż do momentu rozpoczęcia procesu zakańczania działania programu, gdy rośnie ono na krótką chwilę. Przeprowadzony test dowodzi, że w czasie regularnego działania systemu zużycie pamięci pozostaje stałe.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{massif_plot_long.pdf}
+    \caption{Wykres przedstawiający zużycie pamięci sterty i stosu zbadane z wykorzystaniem narzędzia Massif.}
+    \label{fig:massif-long}
+\end{figure}
+
+Przeprowadzone przez autorów testy wskazują na stabilne zachowanie programu pod kątem zużywanych zasobów systemowych, m.in. pamięci operacyjnej. Przeprowadzone zostały ponadto testy wykorzystania czasu procesora, które również wskazują na stabilne działanie programu.
