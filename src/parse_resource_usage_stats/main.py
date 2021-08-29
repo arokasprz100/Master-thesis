@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 def plot_data(x, y, xlabel=None, ylabel=None, title=None):
-    plt.figure(figsize=(10, 8), dpi=400)
+    plt.figure(figsize=(10, 5), dpi=400)
     ax = plt.subplot()
     if xlabel:
         ax.set_ylabel(ylabel)
@@ -12,7 +12,7 @@ def plot_data(x, y, xlabel=None, ylabel=None, title=None):
         ax.set_xlabel(xlabel)
     if title:
         plt.title(title)
-    plt.xticks(rotation='vertical')
+    plt.xticks(rotation=70)
     plt.plot(x, y)
     plt.tight_layout()
 
@@ -24,19 +24,19 @@ data["DATETIME"] = pd.to_datetime(data["DATETIME"], format="%Y.%m.%d-%H:%M:%S")
 
 subdata = data[data["DATETIME"].between(datetime.datetime(2021, 8, 10, 12), datetime.datetime(2021, 8, 12))]
 
-plot_data(data["DATETIME"], data["RSS"], "datetime", "RSS(kB)", "RSS względem czasu")
+plot_data(data["DATETIME"], data["RSS"], "Data", "RSS(kB)", "RSS względem czasu")
+plt.savefig("rss_long.pdf")
+
+plot_data(subdata["DATETIME"], subdata["RSS"], "Data", "RSS(kB)", "RSS względem czasu")
+plt.savefig("rss_short.pdf")
+
+plot_data(data["DATETIME"], data["VSZ"], "Data", "VSZ(kB)", "VSZ względem czasu")
 plt.show()
 
-plot_data(subdata["DATETIME"], subdata["RSS"], "datetime", "RSS(kB)", "RSS względem czasu")
+plot_data(data["DATETIME"], data["CPU"], "Data", "CPU(%)", "CPU względem czasu")
 plt.show()
 
-plot_data(data["DATETIME"], data["VSZ"], "datetime", "VSZ(kB)", "VSZ względem czasu")
-plt.show()
-
-plot_data(data["DATETIME"], data["CPU"], "datetime", "CPU(%)", "CPU względem czasu")
-plt.show()
-
-plot_data(data["DATETIME"], data["MEM"], "datetime", "MEM(%)", "MEM względem czasu")
+plot_data(data["DATETIME"], data["MEM"], "Data", "MEM(%)", "MEM względem czasu")
 plt.show()
 
 exit()

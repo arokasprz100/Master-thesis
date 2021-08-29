@@ -115,7 +115,7 @@ Pliki te nie wchodziły oryginalnie w~skład żadnej z~bibliotek projektu GGSS, 
 Finalna struktura repozytorium \emph{ggss-util-libs} przedstawiona została na listingu \ref{lst:util_final}. Poza wspomnianymi do tej pory zmianami nowość stanowi katalog \lstinline{doxygen-config}, zawierający prosty plik konfigurujący działanie narzędzia Doxygen \cite{doxygen} służącego do generowania dokumentacji programów napisanych w~języku C++. Rozszerzenie projektu o~możliwość generowania dokumentacji zostanie jednak opisane szczegółowo w~dalszej części pracy.
 
 \begin{lstlisting}[
-    caption={Zawartość repozytorium \emph{ggss-util-libs} po wprowadzeniu opisanych zmian. Widoczne są biblioteki wchodzące w~skład repozytorium: \emph{exceptions-lib}, \emph{log-lib} oraz \emph{utils-lib}, katalog \emph{cmake-templates} zawierający szablony wykorzystywane przez system budowania, katalog \emph{doxygen-config} zawierający konfigurację narzędzia Doxygen, nadrzędny plik \emph{CMakeLists.txt} służący do budowania wszystkich bibliotek w~repozytorium oraz plik README.md zawierający opis repozytorium.},
+    caption={Zawartość repozytorium \emph{ggss-util-libs} po wprowadzeniu opisanych zmian. Widoczne są biblioteki wchodzące w~skład repozytorium: \emph{exceptions-lib}, \emph{log-lib} oraz \emph{utils-lib}, katalog \emph{cmake-templates} zawierający szablony wykorzystywane przez system budowania, katalog \emph{doxygen-config} zawierający konfigurację narzędzia Doxygen, nadrzędny plik \emph{CMakeLists.txt} służący do budowania wszystkich bibliotek w~repozytorium oraz plik \emph{README} zawierający opis repozytorium.},
     label={lst:util_final}
 ]
 .
@@ -144,7 +144,7 @@ Możliwość odtworzenia pierwotnej wersji kodu źródłowego osiągnięta zosta
 
 Opisanymi zmianami objęte zostały następujące repozytoria: \emph{ggss-all}, \emph{ggss-runner}, \emph{ggss-lib}, \emph{ggss-software-libs}, \emph{ggss-hardware-libs}, \emph{external-dim-lib}, \emph{external-n957-lib} oraz \emph{ggss-util-libs}. W~przypadku repozytorów o~nazwach zawierających przedrostek \emph{external-} zmiany te polegały jedynie na utworzeniu nowej gałęzi - zawartość bibliotek zewnętrznych nie była przez autorów pracy modyfikowana.
 
-Ostatecznie więc zbudowanie aplikacji \emph{ggss-runner} w~jej pierwotnej wersji jest bardzo proste, z~poziomu repozytorium \emph{ggss-all} sprowadza się do wykonania komend zamieszczonych na listingu \ref{lst:legacy}. Dodatkowo, pliki README.md stanowiące dokumentację poszczególnych repozytoriów zostały na gałęziach \emph{legacy} odpowiednio zmodyfikowane, by opisywać obowiązującą tam procedurę budowania projektu oraz zawartość poszczególnych modułów.
+Ostatecznie więc zbudowanie aplikacji \emph{ggss-runner} w~jej pierwotnej wersji jest bardzo proste, z~poziomu repozytorium \emph{ggss-all} sprowadza się do wykonania komend zamieszczonych na listingu \ref{lst:legacy}. Dodatkowo, pliki \emph{README} stanowiące dokumentację poszczególnych repozytoriów zostały na gałęziach \emph{legacy} odpowiednio zmodyfikowane, by opisywać obowiązującą tam procedurę budowania projektu oraz zawartość poszczególnych modułów.
 
 \begin{lstlisting}[
     caption={Komendy pozwalające na pobranie kodu źródłowego oraz zbudowanie aplikacji \emph{ggss-runner} w~jej oryginalnej wersji. },
