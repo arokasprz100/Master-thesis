@@ -1,15 +1,44 @@
 \chapter{Wybrane poradniki / Selected guides} % po angielsku
 \label{cha:howtos}
 
-% wstep po ang i po polsku, czemu sa po angielsku
+Niniejszy dodatek zawiera przydatne, zdaniem autorów, poradniki opisujące pewne aspekty pracy z systemem GGSS. Część z nich stanowi rozwinięcie lub zaktualizowaną wersję poradników przygotowanych w ramach pracy inżynierskiej. Z uwagi na fakt, iż zaprezentowane treści mogą zostać wykorzystane w charakterze dokumentacji, poradniki załączone zostały w języku angielskim. Znaczą część z nich znaleźć można w repozytorium \emph{ggss-aux} na platformie GitLab.
+
+This appendix contains useful, in the opinion of the authors, guides on certain aspects of working with the GGSS system. Some of them are an extension or an updated version of the guides prepared as part of the engineering thesis. Due to the fact that the presented content can be used as documentation, the guides are included in English. Most of them can be found in the \emph{ggss-aux} repository on the GitLab platform.
 
 \section{Adding modules to the project using existing CMake templates}
+This document describes how to add new static library to the GGSS project using the \lstinline{BuildStaticLibrary.cmake} template that can be found in \emph{ggss-util-libs} repository. To use it, perform following actions:
+\begin{itemize}
+\item add path to the template to \lstinline{CMAKE_MODULE_PATH} variable
+\item include \lstinline{BuildStaticLibrary.cmake} using \lstinline{include} statement
+\item call \lstinline{ggss_build_static_library} with all mandatory and any optional arguments: \begin{itemize}
+    \item \lstinline{TARGET_NAME} - name of project (library) to be created (mandatory argument)
+    \item \lstinline{DEPENDENCY_PREFIX} - contain common part of all dependencies paths (mandatory if any dependencies specified, optional otherwise)
+    \item \lstinline{DEPENDENCIES} - list of library dependencies (optional argument)
+\end{itemize}
+\item one should also consider defining \lstinline{BUILD_OUTPUT_DIRECTORY} variable if using this template in larger project
+\end{itemize}
+
+\noindent
+If target with given name already exists, it will not be created again (there will be no errors) - \lstinline{return()} will be called instead and function execution will silently end. \textbf{Please note} that this function builds all library dependencies and links them to it - there is no need to use both \lstinline{BuildStaticLibrary.cmake} and \lstinline{BuildDependencies.cmake} at the same time. \textbf{Please note} that this function does not handle library tests - they need to be handled separately. Example usage:
+
+\begin{lstlisting}[language=CMake]
+# Set path to CMake templates.
+set(CMAKE_MODULE_PATH ${PATH_TO_CMAKE_TEMPLATES})
+
+# To access ggss_build_static_library function.
+include(BuildStaticLibrary)
+
+# Build target static library.
+ggss_build_static_library(
+    TARGET_NAME "thread"
+    DEPENDENCY_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/.." 
+    DEPENDENCIES "log" "handle"
+)
+\end{lstlisting}
 
 \clearpage
 \section{Working with git submodules}
 \label{sec:working-with-git-sudmobules}
-
-\subsection*{Overview}
 This file contains tips for working with complex git structure created within ggss project.
 
 \subsection*{Content}
@@ -54,21 +83,105 @@ For detailed usage please read README in ggss-gitio repository.
 
 \clearpage
 \section{Creating proper GGSS Docker image for CI/CD infrastructure}
-
-\subsection*{How to prepare new Docker image for GGSS}
-
-\subsubsection*{Overview}
 This file contains steps needed to create new docker image for GGSS project.
 
 \subsubsection*{Steps}
 \begin{itemize}
-    \item Preapre proper Dockerimage file to create new image. (Dockerfilefrom ggss-aux repository can be used. Please align library/kernel version to your needs and prepare all needed resources for the Dockerfile e.g.: boost)
+    \item Prepare proper Dockerimage file to create new image. (Dockerfile from ggss-aux repository can be used. Please align library/kernel version to your needs and prepare all needed resources for the Dockerfile e.g.: Boost)
     \item Create new image using command \lstinline{docker image build .} in directory containing Dockerfile. Remember image hash which will be visible at the end of the output \lstinline{Successfully built e250289733bd}.
-    \item Properly tag new image \lstinline{docker image tag e250289733bd} \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/ggss-all/centos7:v<new_version>} and \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/ggss-all/centos7:latest}
+    \item Properly tag new image:
+    \lstinline{docker image tag e250289733bd} \\
+    \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/ggss-all/centos7:v<new_version>} \\ 
+    and \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/ggss-all/centos7:latest}
     \item Login to gitlab docker image registry \lstinline{docker login gitlab-registry.cern.ch}
     \item Push image to the registry: \lstinline{docker push gitlab-registry.cern.ch/atlas-trt-dcs-ggss/} \lstinline{ggss-all/centos7:v<new_version>} and \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/} \lstinline{ggss-all/centos7:latest}
     \item Remember to also update kernel version on registered GitLab Runners for the ggss project to match the version installed in newly created image.
 \end{itemize}
 
+\clearpage
 \section{Using new GGSS DIM commands}
+This document describes newly introduced or modified GGSS DIM commands.
+
+\begin{itemize}
+\item \lstinline{update} - updates parameters and data for all channels currently included in performing measurements
+\item \lstinline{update channel <channel_no>} - updates parameters and data for a given channel, for example \lstinline{update channel 0:3}
+\item \lstinline{update all_straws} - updates parameters and data for all channels, even if they are not used to perform measurements
+\item \lstinline{update all} - updates parameters and data for all channels included in performing measurements and updates spectrum for current channel
+\item \lstinline{update spectrum} - performs spectrum update for currently measured channel
+\item \lstinline{get mcaRefreshInterval} - gets value of refresh interval used for clearing MCA buffer
+\item \lstinline{set ggss parameter mcaRefreshInterval value <expected_value} - sets value (integer, in seconds) of MCA buffer refresh/clearing interval
+\item \lstinline{reset channelsOrder} - sets channel order to default value, loaded at the start from config file (requires GGSS to be stopped)
+\item \lstinline{get defaultChannelsOrder} - gets default channel orders, loaded from the config file
+\item \lstinline{set ggss parameter smoothingWindowHalf value <expected_value>} - sets value of the half of window width used for performing histogram smoothing (moving average filter) before finding initial peak position
+\item \lstinline{get smoothingWindowHalf} - returns value of the half of window width used for performing histogram smoothing
+\item \lstinline{set ggss parameters kindOfFit value <fit_type>} now supports more types: \lstinline{GaussFitXe}, \lstinline{GaussFitAr}, \lstinline{Gauss2FitXe} and \lstinline{Gauss2FitAr}
+\end{itemize}
+
+\clearpage
 \section{Using GGSS DIM HV commands}
+This file describes new command syntax for CAEN High Voltage Units. All commands are case-insensitive. There are 3 types of supported commands:
+\begin{itemize}
+\item \textbf{MON} - for performing get operations, can refer to channels or modules
+\item \textbf{SET} - for setting parameters, can refer to channels or modules
+\item \textbf{RAW} - for backward compatibility with old command syntax
+\end{itemize}
+
+\dotfill
+
+\subsubsection*{MON Channel Commands}
+\begin{itemize}
+\item \textbf{Syntax:} \lstinline{hv <module_alias>:<channel_number> mon <param[,other_params]>}
+\item \textbf{Output format:} \lstinline{OK: <module_alias>:<channel>:<param>:<value>;[...]}
+\item \textbf{Supported parameters:} VSET, VMIN VMAX, VDEC, VMON, ISET, IMIN, IMAX, ISDEC, IMON,MAXV, MVMIN, MVMAX, MVDEC, RUP, RDW, PDWN, RUPMIN, RUPMAX, RUPDEC, RDWMIN, RDWMAX, RDWDEC, TRIP, TRIPMIN, TRIPMAX, TRIPDEC and POL
+\item \textbf{Example:} \lstinline{hv_caen_n1470_0:2 mon vmon,vset} returns VMON and VSET for given channel (number 2) and module (described by alias \lstinline{hv_caen_n1470_0})
+\item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:2:VMON:1374;hv_caen_n1470_0:2:VSET:1374;}
+\item One can use \lstinline{*} character to specify that command should be performed for all modules/channels. Example: \lstinline{hv *:* mon vmon}
+\item One can use \lstinline{*} to get output for following parameters: VSET, VMON, ISET, IMON, RUP, RDW, TRIP and POL
+\end{itemize}
+
+\dotfill
+
+\subsubsection*{MON Module Commands}
+\begin{itemize}
+\item \textbf{Syntax:} \lstinline{hv <module_alias> mon <param>}
+\item \textbf{Output format:} \lstinline{OK: <module_alias>:<param>:<value>;[...]}
+\item \textbf{Supported parameters:} BDNAME, BDFREL, BDSNUM, BDILK, IDILKM, BDCTR and BDTERM.
+\item \textbf{Example:} \lstinline{hv hv_caen_n1470_0 mon bdctr} returns Control Mode for given module
+\item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:BDCTR:REMOTE;}
+\item One can use \lstinline{*} to specify that all high voltage modules should be used
+\end{itemize}
+
+\dotfill
+
+\subsubsection*{SET Channel Commands}
+\begin{itemize}
+\item \textbf{Syntax:} \lstinline{hv <module_alias>:<channel> set <param> <value>}
+\item \textbf{Output format:} \lstinline{OK: <module_alias>:<channel>:<param>:<result>;[...]}
+\item \textbf{Supported parameters:} VSET, ISET, MAXV and TRIP
+\item \textbf{Example:} \lstinline{hv hv_caen_n1470_0:1 set vset 1} sets voltage on given module (specified by alias \lstinline{hv_caen_n1470_0}) and channel (number 1) to 1
+\item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:1:VSET:OK;}
+\item \textbf{Special case:} enabling/disabling a channel (no value, only parameter: \lstinline{ON} or \lstinline{OFF})
+\item \textbf{Example:} \lstinline{hv hv_caen_n1470_0:1 set on}
+\item One can use \lstinline{*} character to specify that command should be performed for all modules/channels
+\end{itemize}
+
+\dotfill
+
+\subsubsection*{SET Module Commands}
+\begin{itemize}
+\item \textbf{Syntax:} \lstinline{hv <module_alias> set <param> <value>}
+\item \textbf{Output format:} \lstinline{OK: <module_alias>:<param>:<result>;[...]}
+\item \textbf{Supported parameters:} RAMP
+\item One can use \lstinline{*} character to specify that command should be performed for all modules
+\end{itemize}
+
+\dotfill
+
+\subsubsection*{RAW Commands}
+\begin{itemize}
+\item \textbf{Syntax:} \lstinline{hv <module_alias> raw <command_content>}
+\item \textbf{Output format:} \lstinline{OK: <module_alias>:<output_from_hv>}
+\item \textbf{Example:} \lstinline{hv hv_caen_n1470_0 raw $BD:00,CMD:MON,CH:0,PAR:IMON}
+\item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:#BD:00,CMD:OK,VAL:0000.00}
+\item Module number in the command content must match ID of the module with given \lstinline{<module_alias>}
+\end{itemize}

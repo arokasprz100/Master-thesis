@@ -1,0 +1,2 @@
+Polecenie: hv hv_caen_n1470_0:1 set vset 1
+Wynik:     OK: hv_caen_n1470_0:1:VSET:OK;

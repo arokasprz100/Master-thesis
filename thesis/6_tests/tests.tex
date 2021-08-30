@@ -37,41 +37,64 @@ Niniejsza sekcja stanowi opis testów finalnej wersji systemu GGSS wykonanych w 
 Autorzy dokonali szczegółowego sprawdzenia wszystkich przygotowanych modyfikacji i rozszerzeń. Ponadto testowane były elementy wchodzące w skład projektu od początku jego działania. W kolejnych akapitach opisane zostały poszczególne scenariusze testowe wraz z otrzymanymi przez autorów wynikami.
 
 \subsubsection*{Działanie komend dedykowanych zasilaczom wysokiego napięcia}
-Testom poddana została przygotowana przez autorów składnia komend służących do komunikacji z zasilaczami wysokiego napięcia. Wykonane zostały sprawdzenia wszystkich trzech typów poleceń (MON, SET, RAW) przy zastosowaniu zróżnicowanych konfiguracji opisujących moduły, kanały oraz parametry. Listing \ref{lst:test_hw_1} przedstawia wyniki przykładowych trzech zapytań - we wszystkich przypadkach są one zgodne z oczekiwaniami. Ze względu na powtarzalny charakter sprawdzeń, nie zostały tutaj przytoczone wszystkie testowane scenariusze. Sprawdzona została ponadto obsługa błędów, wynikających m.in. z niepoprawnego formatu i zawartości przesyłanych poleceń. Biblioteka dokonuje poprawnej obsługi tego typu sytuacji.
+Testom poddana została przygotowana przez autorów składnia komend służących do komunikacji z zasilaczami wysokiego napięcia. Wykonane zostały sprawdzenia wszystkich trzech typów poleceń (MON, SET, RAW) przy zastosowaniu zróżnicowanych konfiguracji opisujących moduły, kanały oraz parametry. Ze względu na powtarzalny charakter przeprowadzonych sprawdzeń, autorzy zdecydowali się jedynie na przytoczenie wybranych przykładów - wykonane testy obejmowały natomiast wszystkie wspierane parametry komend oraz obsługę wszystkich znanych błędów i sytuacji wyjątkowych, takich jak niepoprawny format komendy czy typ przekazywanej wartości. Weryfikacja wykonywana była zarówno za pomocą paneli w środowisku WinCC OA, jak również za pomocą dedykowanego skryptu \lstinline{dimhw.sh}. Listing \ref{lst:test_hw_1} przedstawia przykład testu komendy typu MON, pobierającej wartość oczekiwanego i monitorowanego napięcia dla wszystkich kanałów każdego z zasilaczy. Listing \ref{lst:test_hw_2} przedstawia natomiast weryfikację komendy typu SET, zmieniającej wartość napięcia na jednym z kanałów na wartość 1. Listing \ref{lst:test_hw_3} zawiera przykład wykorzystania komendy typu RAW. Sprawdzenie obsługi sytuacji wyjątkowych zaprezentowane zostało na listingu \ref{lst:test_hw_4}, gdzie do systemu podawana jest niepoprawna nazwa (alias) zasilacza wysokiego napięcia. Testy zakończyły się powodzeniem - wszystkie sprawdzane scenariusze zwróciły wynik zgodny z oczekiwaniami.
 
 \lstinputlisting[
     language=Cmd, 
-    caption={Przykładowe wyniki działania komend służących do komunikacji z zasilaczami wysokiego napięcia. Otrzymane rezultaty są zgodne z oczekiwaniami.}, 
+    caption={Przykład testu sprawdzającego działanie komendy typu MON, sprawdzającej wartości parametrów VSET i VMON dla wszystkich kanałów każdego z zasilaczy.}, 
     label={lst:test_hw_1}
-]{6_tests/code_samples/dim_hw_ok.txt}
+]{6_tests/code_samples/dim_hw_mon.txt}
+
+\lstinputlisting[
+    language=Cmd, 
+    caption={Przykład testu sprawdzającego działanie komendy typu SET, ustawiającej napięcie na jednym z kanałów na wartość 1.}, 
+    label={lst:test_hw_2}
+]{6_tests/code_samples/dim_hw_set.txt}
+
+\lstinputlisting[
+    language=Cmd, 
+    caption={Przykład testu sprawdzającego działanie komendy typu RAW, sprawdzającej wartość monitorowanego natężenia prądu (parametr IMON) na wybranym kanale.}, 
+    label={lst:test_hw_3}
+]{6_tests/code_samples/dim_hw_raw.txt}
+
+\lstinputlisting[
+    language=Cmd, 
+    caption={Przykład testu sprawdzającego zachowanie systemu w sytuacji, gdy przekazana została niepoprawna nazwa urządzenia.}, 
+    label={lst:test_hw_4}
+]{6_tests/code_samples/dim_hw_error.txt}
 
 \subsubsection*{Opróżnianie bufora urządzenia MCA}
-Sprawdzone zostało poprawne wykonanie algorytmu pozwalającego na zapobieganie przepełnieniu bufora urządzenia MCA poprzez cykliczne przenoszenie jego zawartości do pamięci RAM komputera. 
-
-% Ponieważ funkcjonalność ta jest opcjonalna, działanie systemu zweryfikowane zostało w obu możliwych przypadkach funkcjonowania. Sprawdzeniu zostały poddane zar
-
-% Kolejne testy dotyczyły funkcjonalności pozwalającej na zapobieganie przepełnieniu bufora urządzenia MCA. W tym przypadku sprawdzone zostały scenariusze takie jak: działanie programu, gdy w pliku konfiguracyjnym nie została wyspecyfikowana wartość parametru \lstinline{mcaRefreshInterval}, dzialanie gdy taki parametr w pliku został określony oraz wykonywanie pomiarów o zróżnicowanym czasie trwania. Testy tej funkcjonalności zakończyły się powodzeniem ...
-
-\subsubsection*{Działanie algorytmu dopasowującego funkcję do zebranych danych}
-
+Sprawdzone zostało poprawne wykonanie algorytmu pozwalającego na zapobieganie przepełnieniu bufora urządzenia MCA poprzez cykliczne przenoszenie jego zawartości do pamięci RAM komputera. Weryfikacji poddane zostały zarówno scenariusze, w których mechanizm ten nie jest stosowany (np. gdy wartość parametru \lstinline{mcaRefreshInterval} ustawiona została na 0) - wtedy oczekiwanym rezultatem było przepełnienie bufora, jak również te, gdy algorytm był wykorzystywany. Stosowanie przygotowanego rozszerzenia pozwoliło uniknąć błędu przepełnienia bufora, a zatem umożliwiło pobranie większej ilości danych. Badane były ponadto przypadki specjalne, takie jak wybór większej niż czas pomiaru wartości parametru \lstinline{mcaRefreshInterval} (w tym przypadku system powinien wykonać pobranie danych jedynie przy aktualizacji ELMB w połowie pomiaru oraz po zakończeniu zbierania danych). Wszystkie testy przyniosły oczekiwane rezultaty, a zatem przygotowana funkcjonalność działa w sposób poprawny.
 
 \subsubsection*{Działanie komend sterujących systemem GGSS}
+Autorzy poddali testom działanie wszystkich przygotowanych lub zmodyfikowanych komend sterujących systemem GGSS, takich jak: \lstinline{update}, \lstinline{update spectrum} czy też \lstinline{reset channelsOrder}. Ponieważ ich dokładne działanie przedstawione zostało w części pracy poświęconej przygotowanym ulepszeniom, informacje te nie zostaną tu powtórzone. Podobnie jak w przypadku pozostałych funkcjonalności, sprawdzane były również przypadki specjalne, takie jak wybór nieistniejącej konfiguracji parametrów początkowych przy dopasowywaniu krzywej do zebranych danych czy też próba przywrócenia oryginalnej kolejności liczników słomkowych, gdy system GGSS nie został zatrzymany. Wszystkie testy zakończyły się zgodne z przewidywanym zachowaniem systemu. Ponadto sprawdzeniu poddane zostały niektóre z komend istniejących w systemie przed modyfikacjami - one również działają poprawnie.
 
+\subsubsection*{Działanie algorytmu dopasowującego funkcję do zebranych danych}
+Sprawdzone zostało działanie nowego algorytmu pozwalającego na wyznaczenie parametrów początkowych wykorzystywanych do przeprowadzania dopasowania krzywej do zebranych danych. W tym przypadku wykonane zostały szczególnie kompleksowe testy, ponieważ przygotowany algorytm ma kluczowy, bezpośredni wpływ na działanie całego systemu. Sprawdzone zostały zatem różne wartości opisujące zakres, w jakim poszukiwane ma być maksimum lokalne (tzw. \emph{fit range}) - zarówno obejmujące poszukiwany punkt (wtedy oczekiwano sukcesu), jak i niezawierające go (w takim przypadku oczekiwanym wynikiem był błąd). Ponadto sprawdzone zostały różne wartości parametru \lstinline{smoothingWindowHalf}, odpowiedzialnego za jakość wygładzenia danych za pomocą stosowanego filtru. Szczególnym przypadkiem była tutaj wartość 0 oznaczająca, że algorytm nie powodował zmiany w danych. Testom poddane zostały ponadto wszystkie cztery konfiguracje parametrów początkowych i typów dopasowywanej funkcji: \lstinline{GaussFitXe}, \lstinline{GaussFitAr}, \lstinline{Gauss2FitXe} oraz \lstinline{Gauss2FitAr}. Ponadto działanie przygotowanych modyfikacji sprawdzone zostało w sposób długoterminowy - poprzez monitorowanie poprawności działania systemu w czasie przeprowadzania testów zużycia zasobów. Autorzy nie wykryli niedoskonałości w przygotowanym rozwiązaniu, a zatem uznane zostało ono za poprawne.
 
 \subsubsection*{Pozostałe testy}
-% zmiana wszystkich parametrow
-%
-
-
-
-
+Wykonując opisane do tej pory sprawdzenia, autorzy przeprowadzali ponadto szereg testów weryfikujących działanie innych funkcjonalności, zarówno tych modyfikowanych przez nich w czasie prac nad jakością kodu, jak i tych niezmienionych. Weryfikacji poddane zostało zatem działanie operacji na plikach i strukturze XML (odczyt, modyfikacja), tworzenie dziennika zdarzeń czy modyfikowanie kolejności, w jakiej wykonywany jest pomiar na poszczególnych licznikach słomkowych. Sprawdzane były ponadto funkcjonalności takie jak zerowanie napięć na zasilaczach w momencie, gdy system kończy swoje działanie. Ponadto, za pomocą istniejących w ramach infrastruktury WinCC OA paneli przetestowana została możliwość modyfikacji każdego parametru systemu. Przykład panelu pozwalającego na przeprowadzenie tego typu testów przedstawiony został na rysunku \ref{fig:panel-params}. Autorzy dochodzą zatem do wniosku, że z punktu widzenia oferowanych funkcjonalności system GGSS działa w pełni poprawnie.
 
 \clearpage
-\subsection{Testy aplikacji oraz skryptów do obsługi sprzętu fizycznego}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{panel_params.png}
+    \caption{Wykorzystany podczas testów panel pozwalający na monitorowanie i modyfikację parametrów jednego licznika słomkowego.}
+    \label{fig:panel-params}
+\end{figure}
 
-W ramach testów wersji finalnej przeprowadzono sprawdzenie wszystkich aplikacji do obsługi sprzętu fizycznego, które były modyfikowane, czy też utworzone od zera przez autorów. Teste były przeprowadzane w środowisku produkcyjnym przy wyłączonym systemie ggss, a dokładnie z wyłączoną główną aplikacją projektu. W celu sprawdzenia poprawności działania oraz funkcjonalności wykonano zaówno komendy z użyciem trybu interaktywnego utworzonych aplikacji, jak i trybu scenariuszowego. W pierwszej kolejności testom została poddana aplikacja odpowiedzialna za obsługę zasilacza wysokiego napięcia, czyli \emph{high-voltage-service-app}. Listing \ref{lst:high-voltage-service-app-startup} przedstawia wywołanie aplikacji z wszystkimi wymaganymi argumentami oraz wiadomość powitalną aplikacji. W ramach tejże wiadomości otrzymujemy informację o utworzeniu połączenia z modułem zasilacza, a dokładniej o dodaniu danego modułu do repozytorium. Następnie wyświetlana jest informacja o wykorzystaniu truby interaktywnego wraz z krótką pomocą zawierającą format komend.
 
-\begin{lstlisting}[language=cmd,caption={Uruchomienie aplikacji \emph{high-voltage-service-app} w trybie interaktywnym},label={lst:high-voltage-service-app-startup},frame=single]
+\subsection{Testy aplikacji oraz skryptów do obsługi urządzeń}
+
+W ramach testów wersji finalnej przeprowadzono sprawdzenie wszystkich aplikacji do obsługi sprzętu fizycznego, które były modyfikowane, czy też utworzone od zera przez autorów. Testy były przeprowadzane w środowisku produkcyjnym przy wyłączonym systemie GGSS, a dokładnie z wyłączoną główną aplikacją projektu. W celu sprawdzenia poprawności działania oraz funkcjonalności wykonano zarówno komendy z użyciem trybu interaktywnego utworzonych aplikacji, jak i trybu scenariuszowego. W pierwszej kolejności testom została poddana aplikacja odpowiedzialna za obsługę zasilacza wysokiego napięcia, czyli \emph{high-voltage-service-app}. Listing \ref{lst:high-voltage-service-app-startup} przedstawia wywołanie aplikacji z wszystkimi wymaganymi argumentami oraz jej wiadomość powitalną. W ramach tejże wiadomości prezentowane są informację o utworzeniu połączenia z modułem zasilacza. Następnie wyświetlana jest informacja o wykorzystaniu trybu interaktywnego wraz z krótką pomocą zawierającą format komend.
+
+\clearpage
+\begin{lstlisting}[
+    language=cmd,
+    caption={Uruchomienie aplikacji \emph{high-voltage-service-app} w trybie interaktywnym},
+    label={lst:high-voltage-service-app-startup},
+    frame=single
+]
 [jcierpic@pcatltrt02 high-voltage-service-app]$ ./high-voltage-app --dev-port=/dev/ggss_hv_0 --dev-modules 3
 Connecting to HV using port /dev/ggss_hv_0 ...
 Adding: /dev/ggss_hv_0:0 (alias:module0) to repository
@@ -90,33 +113,45 @@ quit - exit testing app
 ========================================
 \end{lstlisting}
 
-Listing \ref{lst:high-voltage-service-app-commands} zawiera przykład działania komend pozwalających na ustawienie wartości zasilania na wyjściu zasilacza, oraz pobrania tejże wartości wraz z asercją mającą na celu automatyczne sprawdzenie, czy oczekiwana wartość zgadza się z rzeczywistą. Trzecie wywołanie komendy ma za zadania sprawdzenie, czy w przypadku nieotrzymania zadanej wartości aplikacja poprawnie zgłosi błąd. Ostatnie z wywołań sprawdza, czy działająca jest funkcjonalność asercji z toleracją.
+Listing \ref{lst:high-voltage-service-app-commands} zawiera przykład działania komend pozwalających na ustawienie wartości napięcia na wyjściu zasilacza, oraz pobrania tejże wartości wraz z asercją mającą na celu automatyczne sprawdzenie, czy oczekiwana wartość jest zgodna z rzeczywistą. Trzecie wywołanie komendy ma za zadania sprawdzenie, czy w przypadku nieotrzymania zadanej wartości aplikacja poprawnie zgłosi błąd. Ostatnie z wywołań sprawdza poprawność działania asercji z tolerancją.
 
-\begin{lstlisting}[language=cmd,caption={Komendy wykonywane w trybie interaktywnym aplikacji \emph{high-voltage-service-app}},label={lst:high-voltage-service-app-commands},frame=single]
+\begin{lstlisting}[
+    language=cmd,caption={Komendy wykonywane w trybie interaktywnym aplikacji \emph{high-voltage-service-app}},
+    label={lst:high-voltage-service-app-commands},
+    frame=single
+]
 >> hv module0:0 set vset 0
->>hv module0:0 set vset 0
-<<OK: module0:0:VSET:OK;
+>> hv module0:0 set vset 0
+<< OK: module0:0:VSET:OK;
 
 >> assert hv module0:0 mon vmon 0
->>hv module0:0 mon vmon
-<<OK: module0:0:VMON:0.0;
+>> hv module0:0 mon vmon
+<< OK: module0:0:VMON:0.0;
 Assertion successful: target(0.000000) actual(0.000000)
 
 >> assert hv module0:0 mon vmon 1
->>hv module0:0 mon vmon
-<<OK: module0:0:VMON:0.0;
+>> hv module0:0 mon vmon
+<< OK: module0:0:VMON:0.0;
 Error: Assertion failed: target(1.000000) actual(0.000000)
 
 >> assertTol hv module0:0 mon vmon 2 10
->>hv module0:0 mon vmon
-<<OK: module0:0:VMON:0.0;
+>> hv module0:0 mon vmon
+<< OK: module0:0:VMON:0.0;
 Assertion with tolerance (10.000000) successful: target(2.000000) actual(0.000000)
 \end{lstlisting}
 
-Testom poddany został również tryb scenariuszowy, co przedstawia listing \ref{}. W przypadku trybu scenariuszowego zamiast informacji o możliwych do wykonania komendach otrzymujemy informacje o przetorzonych komendach z pliku scenriuszowego, które zostaną wykonane w trakcie działania zasadniczego. Następnie uruchamiane są wszystkie przetworzone scenariusze, których uruchomienia zażądał użytkownik.
+Testom poddany został również tryb scenariuszowy, co przedstawia listing \ref{lst:high-voltage-service-app-scenario}. W tym przypadku najpierw wyświetlane są informacje o komendach przetworzonych w ramach danego pliku scenariuszowego, a dopiero później następuje ich uruchomienie, zgodnie ze specyfikacją zawartą w argumentach wywołania aplikacji.
 
-\begin{lstlisting}[language=cmd,caption={Uruchomienie aplikacji \emph{high-voltage-service-app} w trybie scenariuszowym},label={lst:high-voltage-service-app-commands},frame=single]
-[jcierpic@pcatltrt02 high-voltage-service-app]$ ./high-voltage-app --dev-port=/dev/ggss_hv_0 --dev-modules=3 --scenario-file=./sample_scenario.yml --scenarios=HighVoltageTestScenario
+\begin{lstlisting}[
+    language=cmd,
+    caption={Przykładowe uruchomienie aplikacji \emph{high-voltage-service-app} w trybie scenariuszowym. Zawartość scenariusza została skrócona na potrzeby manuskryptu.},
+    label={lst:high-voltage-service-app-scenario},
+    frame=single
+]
+[jcierpic@pcatltrt02 high-voltage-service-app]$ ./high-voltage-app 
+    --dev-port=/dev/ggss_hv_0 --dev-modules=3 
+    --scenario-file=./sample_scenario.yml 
+    --scenarios=HighVoltageTestScenario
 Connecting to HV using port /dev/ggss_hv_0 ...
 Adding: /dev/ggss_hv_0:0 (alias:module0) to repository
 Adding: /dev/ggss_hv_0:1 (alias:module1) to repository
@@ -127,72 +162,72 @@ Parsing hv module1:3 set vset 10.0 HV command ...
 Parsing sleep 20000 HV command ...
 Parsing assert hv module1:3 mon vset 10.0 HV command ...
 Parsing assertTol hv module1:3 mon vmon 10.0 1.0 HV command ...
-Parsing hv module1:3 set vset 0 HV command ...
-Parsing sleep 20000 HV command ...
-Parsing assert hv module1:3 mon vset 0 HV command ...
-Parsing assert hv module1:3 mon vmon 0 HV command ...
 Running HighVoltageTestScenario HV scenario ...
->>hv module1:3 set vset 10.0
-<<OK: module1:3:VSET:OK;
->>hv module1:3 mon vset
-<<OK: module1:3:VSET:10.0;
+>> hv module1:3 set vset 10.0
+<< OK: module1:3:VSET:OK;
+>> hv module1:3 mon vset
+<< OK: module1:3:VSET:10.0;
 Assertion successful: target(10.000000) actual(10.000000)
->>hv module1:3 mon vmon
-<<OK: module1:3:VMON:10.0;
+>> hv module1:3 mon vmon
+<< OK: module1:3:VMON:10.0;
 Assertion with tolerance (1.000000) successful: target(10.000000) actual(10.000000)
->>hv module1:3 set vset 0
-<<OK: module1:3:VSET:OK;
->>hv module1:3 mon vset
-<<OK: module1:3:VSET:0.0;
-Assertion successful: target(0.000000) actual(0.000000)
->>hv module1:3 mon vmon
-<<OK: module1:3:VMON:0.0;
-Assertion successful: target(0.000000) actual(0.000000)
 \end{lstlisting}
 
 Wszystkie testy aplikacji \emph{high-voltage-service-app} przebiegły pomyślne. Aplikacja wykonała wszystkie żądane czynności, a odpowiednie wartości pojawiły się na zasilaczu wysokiego napięcia. Zarówno tryb interaktywny, jak i scenariuszowy zostały uruchomione bez problemu. Aplikacja zachowywała się poprawnie również w przypadku, gdy oczekiwane było zgłoszenie błędu.
 
-Następnie w podobny sposób przetestowane zostało dzianie aplikacji \emph{multiplexer-service-app}. Przetestowano zarówno jej tryb interaktywny, jak i scenariuszowy. Ze względu na to, że testy wyglądały analogicznie jak w przypadku aplikacji \emph{high-voltage-service-app}, a różnice stanowiły jedynie komendy oraz odpowiedzi od urządzenia, zaprezentowany został jedynie listing \ref{lst:multiplexer-service-app}, który przedstawia widomość powitalną aplikacji do obsługi multipleksera oraz kilka podstawowych komend.
+Następnie w podobny sposób przetestowane zostało dzianie aplikacji \emph{multiplexer-service-app}. Przetestowano zarówno jej tryb interaktywny, jak i scenariuszowy. Ze względu na to, że testy wyglądały analogicznie jak w przypadku aplikacji \emph{high-voltage-service-app}, a różnice stanowiły jedynie komendy oraz odpowiedzi od urządzenia, zaprezentowany został jedynie listing \ref{lst:multiplexer-service-app}, który przedstawia wiadomość powitalną aplikacji do obsługi multipleksera oraz kilka podstawowych komend.
 
-\begin{lstlisting}[language=cmd,caption={Uruchomienie aplikacji \emph{high-voltage-service-app} w trybie scenariuszowym},label={lst:multiplexer-service-app},frame=single]
-    [jcierpic@pcatltrt02 multiplexer-service-app]$ ./multiplexer-app --dev-port /dev/ttyUSB2
-    Connecting to multiplexer using port /dev/ttyUSB2 ...
-    Entering interactive mode ...
-    ========================================
-    Usage:
-    getch - prints active channel
-    setch <channel_number> - set new active channel
-    getsn - prints MUX serial number
-    setgetch <channel_number> - set new active channel and check it
-    help - print help message
-    quit - exit testing app
-    ========================================
-    >> getsn
-    Printing MUX serial number ...
-    Serial number: 260
-    >> getch
-    Trying to get active channel ...
-    Active channel: 2
-    >> setch 0
-    Trying to set active channel ...
-    Active channel set to 0
-    >> getch
-    Trying to get active channel ...
-    Active channel: 0
-    >> setgetch 2
-    Trying to set active channel ...
-    Active channel set to 2
-    Trying to get active channel ...
-    Success: active channel matches desired one
+\clearpage
+\begin{lstlisting}[
+    language=cmd,
+    caption={Przykład działania aplikacji \emph{multiplexer-service-app} - przedstawiona została wiadomość powitalna zawierająca informacje na temat możliwości aplikacji oraz wykonanie kilku przykładowych komend, powodujących pobranie numeru seryjnego urządzenia oraz pobranie i zmianę aktywnego kanału.},
+    label={lst:multiplexer-service-app},
+    frame=single
+]
+[jcierpic@pcatltrt02 multiplexer-service-app]$ ./multiplexer-app 
+    --dev-port /dev/ttyUSB2
+Connecting to multiplexer using port /dev/ttyUSB2 ...
+Entering interactive mode ...
+========================================
+Usage:
+getch - prints active channel
+setch <channel_number> - set new active channel
+getsn - prints MUX serial number
+setgetch <channel_number> - set new active channel and check it
+help - print help message
+quit - exit testing app
+========================================
+>> getsn
+Printing MUX serial number ...
+Serial number: 260
+>> getch
+Trying to get active channel ...
+Active channel: 2
+>> setch 0
+Trying to set active channel ...
+Active channel set to 0
+>> getch
+Trying to get active channel ...
+Active channel: 0
+>> setgetch 2
+Trying to set active channel ...
+Active channel set to 2
+Trying to get active channel ...
+Success: active channel matches desired one
 \end{lstlisting}
 
 W przypadku aplikacji \emph{multiplexer-service-app} wszystkie testy udało się przeprowadzić pomyślnie. Nie stwierdzono żadnych błędów w działaniu wyżej wymienionej aplikacji. Wszystkie funkcjonalności, tryb interaktywny, jak i tryb scenariuszowy działały poprawnie.
 
-Testy aplikacji \emph{high-voltage-killer} oraz skryptów składających się na system awaryjnego wyłączania zasilania wysokiego napięcia polegały na zarówno uruchomieniu samego programu i sprawdzeniu, czy jego działanie jest poprawne oraz na zasymulowaniu rzeczywistych warunków, w ramach których program powinien zostać uruchomiony.
+\clearpage
+Testy aplikacji \emph{high-voltage-killer} oraz skryptów składających się na system awaryjnego wyłączania wysokiego napięcia polegały zarówno na uruchomieniu samego programu i sprawdzeniu, czy jego działanie jest poprawne oraz na symulowaniu rzeczywistych warunków, w ramach których program powinien zostać uruchomiony. 
 
-W pierwszej kolejności wykorzystano wcześniej przetestowaną aplikację \emph{high-voltage-service-app} w celu ustawienia zasilania na zasilaczu wysokiego napięcia na wartość większą niż zero, następnie uruchomiono aplikację \emph{high-voltage-killer}, co przedstawia listing \ref{lst:high-voltage-killer}. W ramach działania aplikacja analizuje znajdujące się w systemie pliki urządzeń, następnie wybiera te, za pomocą których podłączone są zasilacze wysokiego napięcia. Następnie wykorzystując bibliotekę \emph{caenn1470-lib} zerowane są napięcia na wszystkich wyjściach wszystkich podłączonych modułów. Aplikacja prewencyjne próbuje zerować napięcia na modułach od 0 do 7, nawet, gdy tylko 3 moduły są uruchomione, natomiast komendy wysyłane są jedynie do podłączonych modułów.
+W pierwszej kolejności wykorzystano wcześniej przetestowaną aplikację \emph{high-voltage-service-app} w celu ustawienia napięcia na zasilaczu wysokiego napięcia na wartość większą niż zero, następnie uruchomiono aplikację \emph{high-voltage-killer}, co przedstawia listing \ref{lst:high-voltage-killer}. W ramach działania aplikacja analizuje znajdujące się w systemie pliki urządzeń, następnie wybiera te, za pomocą których podłączone są zasilacze wysokiego napięcia. Następnie, wykorzystując bibliotekę \emph{caenn1470-lib}, zerowane są napięcia na wszystkich wyjściach wszystkich podłączonych modułów. Aplikacja prewencyjne próbuje zerować napięcia na modułach od 0 do 7, nawet, gdy tylko 3 moduły są uruchomione, natomiast komendy wysyłane są jedynie do podłączonych modułów.
 
-\begin{lstlisting}[language=cmd,caption={Uruchomienie aplikacji \emph{high-voltage-killer}},label={lst:high-voltage-killer},frame=single]
+\begin{lstlisting}[language=cmd,caption={
+    Uruchomienie aplikacji \emph{high-voltage-killer}},
+    label={lst:high-voltage-killer},
+    frame=single
+]
 [jcierpic@pcatltrt02 high-voltage-killer]$ ./high-voltage-killer
 Running on port: /dev/ggss_hv_0
 Killing voltage on: /dev/ggss_hv_0:0
@@ -210,43 +245,41 @@ Killing voltage on: /dev/ggss_hv_0:7
 [ERROR] Device is not responding.
 \end{lstlisting}
 
-Następnie ponownie wykorzystując aplikację \emph{hgih-voltage-service-app} sprawdzono, czy rzeczywiście napięcie zostało wyzerowane. Wykonując odpowiednie komendy stwierdzono, że test przebiegł pomyślnie.
-
-Oprócz samego działania aplikacji \emph{high-voltage-killer} przetestowano również funkcjonalności dostarczane w skryptach współpracujących z tą aplikacją:
+Następnie ponownie wykorzystując aplikację \emph{high-voltage-service-app} sprawdzono, czy rzeczywiście napięcie zostało wyzerowane. Wykonując odpowiednie komendy stwierdzono, że test przebiegł pomyślnie. Oprócz samego działania aplikacji \emph{high-voltage-killer} przetestowano również funkcjonalności dostarczane w skryptach współpracujących z tą aplikacją:
 \begin{itemize}
-    \item Uruchomienie aplikacji \emph{high-voltage-killer} jeżeli główna aplikacja ggss przestała działać i nie została uruchomiona w przeciągu 5 minut
+    \item Uruchomienie aplikacji \emph{high-voltage-killer} jeżeli główna aplikacja GGSS przestała działać i nie została uruchomiona w przeciągu 5 minut
     \item Możliwość zablokowania systemu awaryjnego wyłączania zasilania poprzez utworzenie pliku blokady.
     \item Ciągłe działanie systemu awaryjnego wyłączania zasilania w przypadku braku pliku blokady.
-    \item Awaryjne wyłączenie zasilania w przypadku otrzymania signału SIGTERM
+    \item Awaryjne wyłączenie zasilania w przypadku otrzymania sygnału SIGTERM
 \end{itemize}
 
-Przeprowadzone testy wszystkich wyżej wymienionych funkcjonalności przebiegły pomyślnie. Nie napotkano żadnych przeszkód w trakcie ich wykonywania.
-Dodatkowo przeprowadzaono testy aplikacji \emph{device-detector}, której zadaniem jest raportowanie informacji o podłączonych do systemu urządzeniach fizycznych, które wymagane są do działania systemu ggss. Również w tym przypadku proces przebiegł pomyślne. W celu osiągnięcią stu procentowej pewności, iż wszystkie aplikacje związane ze sprzętem fizycznym działają poprawnie w nowym środowisku testom została poddana również aplikacja \emph{mca-service-app}. Uruchomienie tejże aplikacji nie budziło żadnych problemów, a wyniki jej działania były poprawne. Wraz z zakończemiem tego testu wszystkie aplikacje oraz skrypty związane ze sprzętem zostały w pełni przetestowane, dzięki czemu autorzy mogli być pewni poprawności zaimplementowanych funkcjonalności.
+Przeprowadzone testy wszystkich wyżej wymienionych funkcjonalności przebiegły pomyślnie. Nie napotkano żadnych przeszkód w trakcie ich wykonywania. Dodatkowo przeprowadzono testy aplikacji \emph{device-detector}, której zadaniem jest raportowanie informacji o podłączonych do systemu urządzeniach, które wymagane są do działania systemu GGSS. Również w tym przypadku proces przebiegł pomyślne. W celu osiągnięcia pewności, iż wszystkie aplikacje związane ze sprzętem fizycznym działają poprawnie w nowym środowisku testom została poddana również aplikacja \emph{mca-service-app}. Uruchomienie tejże aplikacji nie spowodowało żadnych problemów, a wyniki jej działania były poprawne. Wraz z zakończeniem tego testu wszystkie aplikacje oraz skrypty związane ze sprzętem zostały w pełni przetestowane, dzięki czemu autorzy mogli być pewni poprawności zaimplementowanych funkcjonalności.
 
 
 \subsection{Testy zużycia pamięci operacyjnej}
 
-Zwieńczeniem testów, które miało zapewnić długotrwałe, bezpoblemowe działanie projektu GGSS, było monitorowanie, przez długi okres czasu, zasóbów systemowych przypisanych do głównej aplikacji. W tym celu wykorzystano wcześniej opisany skrypt \lstinline{check_resource_usage_ggss.sh}. Najważniejszym monitorowanym parametrem był RSS (\emph{Resident Set Size}), który przedstawiał ilość pamięci RAM wykorzystywanej przez proces. Ze względu na to, że aplikacja \emph{ggss-runner} powinna działać bez zakłóceń przez okres conajmniej kilku miesięcy ważne było, aby test wykazał brak zwiększającego się zużycia pamięci, co w dłuższym okresie czasu mogłoby doprowadzić do wyczerpania jej zasobów w systemie.
+Zwieńczeniem testów, które miało zapewnić długotrwałe, bezproblemowe działanie projektu GGSS, było monitorowanie, przez długi okres czasu, zasobów systemowych przypisanych do głównej aplikacji. W tym celu wykorzystano wcześniej opisany skrypt \lstinline{check_resource_usage_ggss.sh}. Najważniejszym monitorowanym parametrem był RSS (\emph{Resident Set Size}), który przedstawiał ilość pamięci RAM wykorzystywanej przez proces. Ze względu na to, że aplikacja \emph{ggss-runner} powinna działać bez zakłóceń przez okres co najmniej kilku miesięcy ważne było, aby test wykazał brak zwiększającego się zużycia pamięci, co w dłuższym okresie czasu mogłoby doprowadzić do wyczerpania jej zasobów w systemie.
 % RSS przypis
 Rysunek \ref{fig:rss-short} przedstawia ilość wykorzystywanej pamięci (RSS) względem czasu. Na rysunku przedstawiony został okres od dnia 10 sierpnia 2021 roku w południe do końca dnia 11 sierpnia 2021 roku. W trakcie tego okresu autorzy przeprowadzali testy z wykorzystaniem platformy Valgrind, co widoczne jest na wykresie w okresach, w których zużycie pamięci znacząco odstaje od normy, która plasuje się w okolicach 6000 kB. Dnia 10 sierpnia 2021 roku autorzy wykonywali testy z wykorzystaniem narzędzia Massif, w trakcie korzystanie z tego narzędzia zużycie pamięci wynosiło niecałe 50 tysięcy kB. W przypadku odstępstwa z dnia 11 sierpnia wykorzystane zostało narzędzie Memcheck, a zużycie pamięci wyniosło znacznie powyżej 200 tysięcy kB. Na wykresie widoczny jest również charakterystyczny ogon związany z ponownym uruchomieniem aplikacji. Wynika on z faktu, iż aplikacja w fazie inicjalizacji oraz w trakcie początkowych pomiarów alokuje pamięć na wszystkie potrzebne zmienne wraz z buforami na przechowywanie danych pozyskanych z urządzeń fizycznych wchodzących w skład systemu GGSS.
 
+\clearpage
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{rss_short.pdf}
+    \includegraphics[width=0.9\textwidth]{rss_short.pdf}
     \caption{Wykres przedstawiający zużycie pamięci (RSS) przez aplikację \emph{ggss-runner} względem czasu w okresie od 10 sierpnia 2021 roku do końca 11 sierpnia 2021 roku.}
     \label{fig:rss-short}
 \end{figure}
 
-W celu dokładniejszej weryfikacji długotrwałego zużycia pamięci przygotowany został również rysunek \ref{fig:rss-long}. Przedstawia on parametr RSS względem czasu dla dłuższego okresu monitorowania. Oprócz charakterystycznych odstępstw od normy związanych z wykorzystaniem platformy Valgrind nie zaobserwowano żadnych anomalii. Zmiany ilości wykorzystywanej pamięci wiązały się jedynie z początkową inicjalizacją zmiennych, buforów na danych, czy też wynikały z interakcji z systemem, np.: poprzez wysłanie do niego komend. W przypadku, gdy aplikacja \emph{ggss-runner} działała bez zewnętrznych poleceń, czy też zakłóceń, to zużycie pamięci nie zwiększało się przez dłuższy okres czasu.
+W celu dokładniejszej weryfikacji długotrwałego zużycia pamięci przygotowany został również rysunek \ref{fig:rss-long}. Przedstawia on parametr RSS względem czasu dla dłuższego okresu monitorowania. Oprócz charakterystycznych odstępstw od normy związanych z wykorzystaniem platformy Valgrind nie zaobserwowano żadnych anomalii. Zmiany ilości wykorzystywanej pamięci wiązały się jedynie z początkową inicjalizacją zmiennych, buforów na dane, czy też wynikały z interakcji z systemem, np.: poprzez wysłanie do niego komend. W przypadku, gdy aplikacja \emph{ggss-runner} działała bez zewnętrznych poleceń, czy też zakłóceń, to zużycie pamięci nie zwiększało się przez dłuższy okres czasu.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{rss_long.pdf}
+    \includegraphics[width=0.9\textwidth]{rss_long.pdf}
     \caption{Wykres przedstawiający zużycie pamięci (RSS) przez aplikację \emph{ggss-runner} względem czasu w okresie od 5 sierpnia 2021 roku do 25 sierpnia 2021 roku.}
     \label{fig:rss-long}
 \end{figure}
 
-W celu zbadania występowania potencjalnych błedów w zarządzaniu wykorzystania pamięcią użyto narzędzie Memcheck wchodzące w skład platformy Valgrind. Testy wykazały obecność nieprawidłowości, jednakże wygenerowany raport wskazuje, że pochodzą one z bibliotek zewnętrznych wykorzystywanych w projekcie, w tym przede wszystkim z biblioteki DIM oraz Boost.Log. Na listingu \ref{lst:memcheck-error} umieszczony został fragment raportu z działania narzędzia Memcheck prezentujący przykładowy błąd związany z faktem, że biblioteka DIM nie dokonuje poprawnego zwolnienia alokowanej pamięci. Po analizie wszystkich zgłoszonych przez narzędzie błędów, autorzy stwierdzili, że żaden z nich nie powoduje stopniowego wzrostu wykorzystywanej pamięci operacyjnej. Na tej podstawie zostało stwierdzone, że niezagrażają one bezpieczeństwu długotrwałego działania aplikacji.
+W celu zbadania występowania potencjalnych błędów w zarządzaniu wykorzystania pamięcią użyto narzędzie Memcheck wchodzące w skład platformy Valgrind. Testy wykazały obecność nieprawidłowości, jednakże wygenerowany raport wskazuje, że pochodzą one z bibliotek zewnętrznych wykorzystywanych w projekcie, w tym przede wszystkim z biblioteki DIM oraz Boost.Log. Na listingu \ref{lst:memcheck-error} umieszczony został fragment raportu z działania narzędzia Memcheck prezentujący przykładowy błąd związany z faktem, że biblioteka DIM nie dokonuje poprawnego zwolnienia alokowanej pamięci. Po analizie wszystkich zgłoszonych przez narzędzie błędów, autorzy stwierdzili, że żaden z nich nie powoduje stopniowego wzrostu wykorzystywanej pamięci operacyjnej. Na tej podstawie zostało stwierdzone, że nie zagrażają one bezpieczeństwu długotrwałego działania aplikacji.
 
 \begin{lstlisting}[language=cmd,caption={Przkładowy błąd raportowany przez narzędzie Memcheck},frame=single, label={lst:memcheck-error}]
 ==188542== 632 bytes in 1 blocks are still reachable in loss record 17 of 37
@@ -256,8 +289,12 @@ W celu zbadania występowania potencjalnych błedów w zarządzaniu wykorzystani
 ==188542==    by 0x6B2B2B: dis_start_serving_dns (dis.c:1253)
 ==188542==    by 0x6B2555: dis_start_serving_ (dis.c:1124)
 ==188542==    by 0x6AC227: DimServer::start(char const*) (discpp.cxx:476)
-==188542==    by 0x51554F: ggsslib::DimGgssEventListener::DimGgssEventListener(std::string const&, std::string const&) (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
-==188542==    by 0x50C252: ggsslib::GgssEventLoopRunner::GgssEventLoopRunner(boost::asio::io_service&, std::string const&) (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
+==188542==    by 0x51554F: 
+    ggsslib::DimGgssEventListener::DimGgssEventListener(std::string const&, 
+    std::string const&) (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
+==188542==    by 0x50C252: 
+    ggsslib::GgssEventLoopRunner::GgssEventLoopRunner(boost::asio::io_service&, 
+    std::string const&) (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
 ==188542==    by 0x500806: main (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
 \end{lstlisting}
 
@@ -272,7 +309,7 @@ Dodatkowym argumentem przemawiającym za poprawnością wyżej przytoczonych wni
 ==188542==         suppressed: 0 bytes in 0 blocks
 \end{lstlisting}
 
-Przeprowadzone zostały również, trwające nieco poniżej dwóch godzin, testy zużycia pamięci sterty i stosu z wykorzystaniem narzędzia Massif wchodzącym w skład platformy Valgrind. Wynik zaprezentowany został na rysunku \ref{fig:massif-long}. W początkowym etapie testu widoczne jest stopniowe wzrastanie zużycia pamięci. Wynika ono z  przeprowadzania pierwszych iteracji pomiarów na wszystkich licznikach słomkowych podczas których alokowana jest pamięć pozwalająca na przechowywanie wyników z ostatnich pęciu iteracji dla danego licznika. Następnie zużycie pamięci pozostaje stałe, aż do momentu rozpoczęcia procesu zakańczania działania programu, gdy rośnie ono na krótką chwilę. Przeprowadzony test dowodzi, że w czasie regularnego działania systemu zużycie pamięci pozostaje stałe.
+Przeprowadzone zostały również, trwające nieco poniżej dwóch godzin, testy zużycia pamięci sterty i stosu z wykorzystaniem narzędzia Massif wchodzącym w skład platformy Valgrind. Wynik zaprezentowany został na rysunku \ref{fig:massif-long}. W początkowym etapie testu widoczne jest stopniowe wzrastanie zużycia pamięci. Wynika ono z  przeprowadzania pierwszych iteracji pomiarów na wszystkich licznikach słomkowych podczas których alokowana jest pamięć pozwalająca na przechowywanie wyników z ostatnich pięciu iteracji dla danego licznika. Następnie zużycie pamięci pozostaje stałe, aż do momentu rozpoczęcia procesu zakańczania działania programu, gdy rośnie ono na krótką chwilę. Przeprowadzony test dowodzi, że w czasie regularnego działania systemu zużycie pamięci pozostaje stałe.
 
 \begin{figure}[H]
     \centering

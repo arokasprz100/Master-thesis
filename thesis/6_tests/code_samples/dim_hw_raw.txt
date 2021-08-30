@@ -1,0 +1,2 @@
+Polecenie: hv hv_caen_n1470_0 raw $BD:00,CMD:MON,CH:0,PAR:IMON
+Wynik:     OK: hv_caen_n1470_0:#BD:00,CMD:OK,VAL:0000.00
