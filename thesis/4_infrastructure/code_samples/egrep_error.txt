@@ -1,0 +1,2 @@
+user@host:~$ ps afux | egrep "ggssrunner"
+user  461  0.0  0.0  8160  732 pts/3   S+  14:20  0:00 \_ grep -E --color=auto ggssrunner

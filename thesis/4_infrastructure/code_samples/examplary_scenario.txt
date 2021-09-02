@@ -1,0 +1,15 @@
+SetAndCheckActiveChannelsScenario:
+- getsn         # Get serial number
+- setgetch 0    # Switch to channel 0 and check
+- setgetch 1    # Switch to channel 1 and check
+- setgetch 2    # Switch to channel 2 and check
+- setgetch 3    # Switch to channel 3 and check
+- setgetch 4    # Switch to channel 4 and check
+- setgetch 5    # Switch to channel 5 and check
+- setgetch 6    # Switch to channel 6 and check
+- setgetch 7    # Switch to channel 7 and check
+- setgetch 8    # Switch to channel 8 and check
+
+ReadSerialNumberAndActiveChannelScenario:
+- getsn         # Get serial number
+- getch         # Get current channel

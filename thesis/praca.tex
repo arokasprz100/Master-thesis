@@ -1,10 +1,8 @@
 \documentclass[11pt]{aghdpl}
 
 \usepackage[english,polish]{babel}
-\usepackage{polski} % Użyj polskiego łamania wyrazów (zamiast domyślnego angielskiego).
+\usepackage{polski}
 \usepackage[utf8]{inputenc}
-
-% dodatkowe pakiety
 \usepackage{afterpage}
 \usepackage{mathtools}
 \usepackage{amsfonts}
@@ -13,13 +11,10 @@
 \usepackage{float} 
 \usepackage{realboxes}
 \usepackage{xpatch}
-\usepackage{lscape} % landscape
-\usepackage{pdfpages} % Do dodawnaie stron pdf jako część dokumentu (nie lstlisting)
-\usepackage{emptypage} % Paczka wyłącza pokazywanie numeru strony oraz nagłówków na pustych stronach
+\usepackage{lscape}
+\usepackage{pdfpages}
+\usepackage{emptypage}
 \usepackage{siunitx}
-
-% Dzięki temu będzie się dało kopiować tekst który ma polskie literki
-% see: https://tex.stackexchange.com/questions/57915/cannot-copy-letters-with-diacritics-from-pdflatex-pdf
 \usepackage{lmodern}
 \usepackage{listings}
 \usepackage{multicol}
@@ -115,61 +110,30 @@
 \captionsetup[figure]{ margin=0pt}
 \captionsetup[table]{ margin=0pt}
 
-
-
 \makeatletter
 \xpretocmd\lstinline{\Colorbox{lgray}\bgroup\appto\lst@DeInit{\egroup}}{}{}
 \makeatother
 
 \usepackage[hidelinks]{hyperref}
 
-% --- < bibliografia > ---
-%
-% TODO: Dla TeXstudio warto przeczytać poniższe!
-% UWAGA: Żeby bibliografia działała gdy używamy TeXstudio, to należy zmodyfikować quick build w opcjach, tak aby wykonywane były polecenia:
-% 	PdfLaTeX
-% 	BibTeX
-% 	PdfLaTeX
-% 	PdfLaTeX
-%
-% Więcej informacji na:
-% 	https://tex.stackexchange.com/a/216325
-%
 
 \usepackage[
 	backend=bibtex,
 	style=numeric,
 	sorting=none,
-	% Zastosuj styl wpisu bibliograficznego właściwy językowi publikacji.
 	language=autobib,
 	autolang=other,
-	% Zapisuj datę dostępu do strony WWW w formacie RRRR-MM-DD.
 	urldate=iso8601,
-	% Nie dodawaj numerów stron, na których występuje cytowanie.
 	backref=false,
-	% Podawaj ISBN.
 	isbn=true,
-	% Nie podawaj URL-i, o ile nie jest to konieczne.
 	url=false,
-	% Ustawienia związane z polskimi normami dla bibliografii.
 	maxnames=50,
 ]{biblatex}
 
 \usepackage{csquotes}
-% Ponieważ `csquotes` nie posiada polskiego stylu, można skorzystać z mocno zbliżonego stylu chorwackiego.
 \DeclareQuoteAlias{croatian}{polish}
-
-% Bibliografia musi być uzupełniona w tym pliku:
 \addbibresource{bibliografia.bib}
 
-% Nie wyświetlaj wybranych pól.
-%\AtEveryBibitem{\clearfield{note}}
-
-
-% ------------------------
-% --- < listingi > ---
-
-% Użyj czcionki kroju Courier.
 \usepackage{courier}
 
 \lstloadlanguages{TeX}

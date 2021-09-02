@@ -1,0 +1,7 @@
+[@semantic-release/commit-analyzer] > Analyzing commit: 
+                                      Breaking: This is for presentation reasons
+[@semantic-release/commit-analyzer] > The release type for the commit is major
+[@semantic-release/commit-analyzer] > Analysis of 29 commits complete: major release
+[semantic-release] > Completed step "analyzeCommits" of plugin 
+                     "@semantic-release/commit-analyzer"
+[semantic-release] > The next release version is 1.0.0

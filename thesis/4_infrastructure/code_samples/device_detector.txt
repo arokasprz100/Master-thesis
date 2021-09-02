@@ -1,0 +1,23 @@
+user@host:~/$ python detect_all_devices.py
+Detected following devices:
+-----------------------------------
+High Voltage
+--------------
+device_path:/dev/ttyUSB0
+-----------------------------------
+
+-----------------------------------
+Multi Channel Analyzer
+--------------
+device_path:/dev/v1718_1
+device_path:/dev/v1718_0
+-----------------------------------
+
+-----------------------------------
+Multiplexer
+--------------
+serial:USBRM0104
+device_path:/dev/ttyUSB2
+serial:USBRM0103
+device_path:/dev/ttyUSB1
+-----------------------------------

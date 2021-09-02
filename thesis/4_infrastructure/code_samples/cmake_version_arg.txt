@@ -1,0 +1,9 @@
+if(NOT VERSION)
+    set(VERSION "no-version")
+endif()
+
+message(STATUS "ggss-driver version: ${VERSION}")
+
+#parameter initialization
+set(CPACK_PACKAGE_NAME "ggss-driver-cc7")
+set(CPACK_PACKAGE_VERSION ${VERSION})
