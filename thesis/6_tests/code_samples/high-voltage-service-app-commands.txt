@@ -1,0 +1,18 @@
+>> hv module0:0 set vset 0
+>> hv module0:0 set vset 0
+<< OK: module0:0:VSET:OK;
+
+>> assert hv module0:0 mon vmon 0
+>> hv module0:0 mon vmon
+<< OK: module0:0:VMON:0.0;
+Assertion successful: target(0.000000) actual(0.000000)
+
+>> assert hv module0:0 mon vmon 1
+>> hv module0:0 mon vmon
+<< OK: module0:0:VMON:0.0;
+Error: Assertion failed: target(1.000000) actual(0.000000)
+
+>> assertTol hv module0:0 mon vmon 2 10
+>> hv module0:0 mon vmon
+<< OK: module0:0:VMON:0.0;
+Assertion with tolerance (10.000000) successful: target(2.000000) actual(0.000000)

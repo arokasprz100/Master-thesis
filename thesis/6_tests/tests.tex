@@ -89,132 +89,38 @@ Wykonując opisane do tej pory sprawdzenia, autorzy przeprowadzali ponadto szere
 W ramach testów wersji finalnej przeprowadzono sprawdzenie wszystkich aplikacji do obsługi sprzętu fizycznego, które były modyfikowane, czy też utworzone od zera przez autorów. Testy były przeprowadzane w środowisku produkcyjnym przy wyłączonym systemie GGSS, a dokładnie z wyłączoną główną aplikacją projektu. W celu sprawdzenia poprawności działania oraz funkcjonalności wykonano zarówno komendy z użyciem trybu interaktywnego utworzonych aplikacji, jak i trybu scenariuszowego. W pierwszej kolejności testom została poddana aplikacja odpowiedzialna za obsługę zasilacza wysokiego napięcia, czyli \emph{high-voltage-service-app}. Listing \ref{lst:high-voltage-service-app-startup} przedstawia wywołanie aplikacji z wszystkimi wymaganymi argumentami oraz jej wiadomość powitalną. W ramach tejże wiadomości prezentowane są informację o utworzeniu połączenia z modułem zasilacza. Następnie wyświetlana jest informacja o wykorzystaniu trybu interaktywnego wraz z krótką pomocą zawierającą format komend.
 
 \clearpage
-\begin{lstlisting}[
-    language=cmd,
-    caption={Uruchomienie aplikacji \emph{high-voltage-service-app} w trybie interaktywnym},
-    label={lst:high-voltage-service-app-startup},
-    frame=single
-]
-[jcierpic@pcatltrt02 high-voltage-service-app]$ ./high-voltage-app --dev-port=/dev/ggss_hv_0 --dev-modules 3
-Connecting to HV using port /dev/ggss_hv_0 ...
-Adding: /dev/ggss_hv_0:0 (alias:module0) to repository
-Adding: /dev/ggss_hv_0:1 (alias:module1) to repository
-Adding: /dev/ggss_hv_0:2 (alias:module2) to repository
-Entering interactive mode ...
-========================================
-Usage:
-<module_alias> - moduleX, where X is between 0 and given --dev-modules exclusive
-hv <module_alias>:<channel_number> mon <param[,other_params]> - mon channel command
-hv <module_alias> mon <param> - mon module command
-hv <module_alias>:<channel> set <param> <value> - set channel command
-hv <module_alias> raw <command_content> - raw command
-help - print help message
-quit - exit testing app
-========================================
-\end{lstlisting}
+\lstinputlisting[
+    language=Cmd,
+    caption={Uruchomienie aplikacji \emph{high-voltage-service-app} w trybie interaktywnym.},
+    label={lst:high-voltage-service-app-startup}
+]{6_tests/code_samples/high-voltage-service-app-startup.txt}
 
 Listing \ref{lst:high-voltage-service-app-commands} zawiera przykład działania komend pozwalających na ustawienie wartości napięcia na wyjściu zasilacza, oraz pobrania tejże wartości wraz z asercją mającą na celu automatyczne sprawdzenie, czy oczekiwana wartość jest zgodna z rzeczywistą. Trzecie wywołanie komendy ma za zadania sprawdzenie, czy w przypadku nieotrzymania zadanej wartości aplikacja poprawnie zgłosi błąd. Ostatnie z wywołań sprawdza poprawność działania asercji z tolerancją.
 
-\begin{lstlisting}[
-    language=cmd,caption={Komendy wykonywane w trybie interaktywnym aplikacji \emph{high-voltage-service-app}},
-    label={lst:high-voltage-service-app-commands},
-    frame=single
-]
->> hv module0:0 set vset 0
->> hv module0:0 set vset 0
-<< OK: module0:0:VSET:OK;
-
->> assert hv module0:0 mon vmon 0
->> hv module0:0 mon vmon
-<< OK: module0:0:VMON:0.0;
-Assertion successful: target(0.000000) actual(0.000000)
-
->> assert hv module0:0 mon vmon 1
->> hv module0:0 mon vmon
-<< OK: module0:0:VMON:0.0;
-Error: Assertion failed: target(1.000000) actual(0.000000)
-
->> assertTol hv module0:0 mon vmon 2 10
->> hv module0:0 mon vmon
-<< OK: module0:0:VMON:0.0;
-Assertion with tolerance (10.000000) successful: target(2.000000) actual(0.000000)
-\end{lstlisting}
+\lstinputlisting[
+    language=Cmd,
+    caption={Komendy wykonywane w trybie interaktywnym aplikacji \emph{high-voltage-service-app}.},
+    label={lst:high-voltage-service-app-commands}
+]{6_tests/code_samples/high-voltage-service-app-commands.txt}
 
 Testom poddany został również tryb scenariuszowy, co przedstawia listing \ref{lst:high-voltage-service-app-scenario}. W tym przypadku najpierw wyświetlane są informacje o komendach przetworzonych w ramach danego pliku scenariuszowego, a dopiero później następuje ich uruchomienie, zgodnie ze specyfikacją zawartą w argumentach wywołania aplikacji.
 
-\begin{lstlisting}[
-    language=cmd,
+\lstinputlisting[
+    language=Cmd,
     caption={Przykładowe uruchomienie aplikacji \emph{high-voltage-service-app} w trybie scenariuszowym. Zawartość scenariusza została skrócona na potrzeby manuskryptu.},
-    label={lst:high-voltage-service-app-scenario},
-    frame=single
-]
-[jcierpic@pcatltrt02 high-voltage-service-app]$ ./high-voltage-app 
-    --dev-port=/dev/ggss_hv_0 --dev-modules=3 
-    --scenario-file=./sample_scenario.yml 
-    --scenarios=HighVoltageTestScenario
-Connecting to HV using port /dev/ggss_hv_0 ...
-Adding: /dev/ggss_hv_0:0 (alias:module0) to repository
-Adding: /dev/ggss_hv_0:1 (alias:module1) to repository
-Adding: /dev/ggss_hv_0:2 (alias:module2) to repository
-Entering scenario mode ...
-Parsing HighVoltageTestScenario HV scenario ...
-Parsing hv module1:3 set vset 10.0 HV command ...
-Parsing sleep 20000 HV command ...
-Parsing assert hv module1:3 mon vset 10.0 HV command ...
-Parsing assertTol hv module1:3 mon vmon 10.0 1.0 HV command ...
-Running HighVoltageTestScenario HV scenario ...
->> hv module1:3 set vset 10.0
-<< OK: module1:3:VSET:OK;
->> hv module1:3 mon vset
-<< OK: module1:3:VSET:10.0;
-Assertion successful: target(10.000000) actual(10.000000)
->> hv module1:3 mon vmon
-<< OK: module1:3:VMON:10.0;
-Assertion with tolerance (1.000000) successful: target(10.000000) actual(10.000000)
-\end{lstlisting}
+    label={lst:high-voltage-service-app-scenario}
+]{6_tests/code_samples/high-voltage-service-app-scenario.txt}
 
 Wszystkie testy aplikacji \emph{high-voltage-service-app} przebiegły pomyślne. Aplikacja wykonała wszystkie żądane czynności, a odpowiednie wartości pojawiły się na zasilaczu wysokiego napięcia. Zarówno tryb interaktywny, jak i scenariuszowy zostały uruchomione bez problemu. Aplikacja zachowywała się poprawnie również w przypadku, gdy oczekiwane było zgłoszenie błędu.
 
 Następnie w podobny sposób przetestowane zostało dzianie aplikacji \emph{multiplexer-service-app}. Przetestowano zarówno jej tryb interaktywny, jak i scenariuszowy. Ze względu na to, że testy wyglądały analogicznie jak w przypadku aplikacji \emph{high-voltage-service-app}, a różnice stanowiły jedynie komendy oraz odpowiedzi od urządzenia, zaprezentowany został jedynie listing \ref{lst:multiplexer-service-app}, który przedstawia wiadomość powitalną aplikacji do obsługi multipleksera oraz kilka podstawowych komend.
 
 \clearpage
-\begin{lstlisting}[
-    language=cmd,
+\lstinputlisting[
+    language=Cmd,
     caption={Przykład działania aplikacji \emph{multiplexer-service-app} - przedstawiona została wiadomość powitalna zawierająca informacje na temat możliwości aplikacji oraz wykonanie kilku przykładowych komend, powodujących pobranie numeru seryjnego urządzenia oraz pobranie i zmianę aktywnego kanału.},
-    label={lst:multiplexer-service-app},
-    frame=single
-]
-[jcierpic@pcatltrt02 multiplexer-service-app]$ ./multiplexer-app 
-    --dev-port /dev/ttyUSB2
-Connecting to multiplexer using port /dev/ttyUSB2 ...
-Entering interactive mode ...
-========================================
-Usage:
-getch - prints active channel
-setch <channel_number> - set new active channel
-getsn - prints MUX serial number
-setgetch <channel_number> - set new active channel and check it
-help - print help message
-quit - exit testing app
-========================================
->> getsn
-Printing MUX serial number ...
-Serial number: 260
->> getch
-Trying to get active channel ...
-Active channel: 2
->> setch 0
-Trying to set active channel ...
-Active channel set to 0
->> getch
-Trying to get active channel ...
-Active channel: 0
->> setgetch 2
-Trying to set active channel ...
-Active channel set to 2
-Trying to get active channel ...
-Success: active channel matches desired one
-\end{lstlisting}
+    label={lst:multiplexer-service-app}
+]{6_tests/code_samples/multiplexer-service-app.txt}
 
 W przypadku aplikacji \emph{multiplexer-service-app} wszystkie testy udało się przeprowadzić pomyślnie. Nie stwierdzono żadnych błędów w działaniu wyżej wymienionej aplikacji. Wszystkie funkcjonalności, tryb interaktywny, jak i tryb scenariuszowy działały poprawnie.
 
@@ -223,27 +129,11 @@ Testy aplikacji \emph{high-voltage-killer} oraz skryptów składających się na
 
 W pierwszej kolejności wykorzystano wcześniej przetestowaną aplikację \emph{high-voltage-service-app} w celu ustawienia napięcia na zasilaczu wysokiego napięcia na wartość większą niż zero, następnie uruchomiono aplikację \emph{high-voltage-killer}, co przedstawia listing \ref{lst:high-voltage-killer}. W ramach działania aplikacja analizuje znajdujące się w systemie pliki urządzeń, następnie wybiera te, za pomocą których podłączone są zasilacze wysokiego napięcia. Następnie, wykorzystując bibliotekę \emph{caenn1470-lib}, zerowane są napięcia na wszystkich wyjściach wszystkich podłączonych modułów. Aplikacja prewencyjne próbuje zerować napięcia na modułach od 0 do 7, nawet, gdy tylko 3 moduły są uruchomione, natomiast komendy wysyłane są jedynie do podłączonych modułów.
 
-\begin{lstlisting}[language=cmd,caption={
-    Uruchomienie aplikacji \emph{high-voltage-killer}},
-    label={lst:high-voltage-killer},
-    frame=single
-]
-[jcierpic@pcatltrt02 high-voltage-killer]$ ./high-voltage-killer
-Running on port: /dev/ggss_hv_0
-Killing voltage on: /dev/ggss_hv_0:0
-Killing voltage on: /dev/ggss_hv_0:1
-Killing voltage on: /dev/ggss_hv_0:2
-Killing voltage on: /dev/ggss_hv_0:3
-[ERROR] Device is not responding.
-Killing voltage on: /dev/ggss_hv_0:4
-[ERROR] Device is not responding.
-Killing voltage on: /dev/ggss_hv_0:5
-[ERROR] Device is not responding.
-Killing voltage on: /dev/ggss_hv_0:6
-[ERROR] Device is not responding.
-Killing voltage on: /dev/ggss_hv_0:7
-[ERROR] Device is not responding.
-\end{lstlisting}
+\lstinputlisting[
+    language=Cmd,
+    caption={Uruchomienie aplikacji \emph{high-voltage-killer}},
+    label={lst:high-voltage-killer}
+]{6_tests/code_samples/high-voltage-killer.txt}
 
 Następnie ponownie wykorzystując aplikację \emph{high-voltage-service-app} sprawdzono, czy rzeczywiście napięcie zostało wyzerowane. Wykonując odpowiednie komendy stwierdzono, że test przebiegł pomyślnie. Oprócz samego działania aplikacji \emph{high-voltage-killer} przetestowano również funkcjonalności dostarczane w skryptach współpracujących z tą aplikacją:
 \begin{itemize}
@@ -281,33 +171,19 @@ W celu dokładniejszej weryfikacji długotrwałego zużycia pamięci przygotowan
 
 W celu zbadania występowania potencjalnych błędów w zarządzaniu wykorzystania pamięcią użyto narzędzie Memcheck wchodzące w skład platformy Valgrind. Testy wykazały obecność nieprawidłowości, jednakże wygenerowany raport wskazuje, że pochodzą one z bibliotek zewnętrznych wykorzystywanych w projekcie, w tym przede wszystkim z biblioteki DIM oraz Boost.Log. Na listingu \ref{lst:memcheck-error} umieszczony został fragment raportu z działania narzędzia Memcheck prezentujący przykładowy błąd związany z faktem, że biblioteka DIM nie dokonuje poprawnego zwolnienia alokowanej pamięci. Po analizie wszystkich zgłoszonych przez narzędzie błędów, autorzy stwierdzili, że żaden z nich nie powoduje stopniowego wzrostu wykorzystywanej pamięci operacyjnej. Na tej podstawie zostało stwierdzone, że nie zagrażają one bezpieczeństwu długotrwałego działania aplikacji.
 
-\begin{lstlisting}[language=cmd,caption={Przykładowy, powodowany przez bibliotekę DIM, błąd raportowany przez narzędzie Memcheck},frame=single, label={lst:memcheck-error}]
-==188542== 632 bytes in 1 blocks are still reachable in loss record 17 of 37
-==188542==    at 0x4C29F73: malloc (vg_replace_malloc.c:309)
-==188542==    by 0x6B843E: dis_hash_service_insert (dis.c:3380)
-==188542==    by 0x6B0CC5: do_dis_add_service_dns (dis.c:320)
-==188542==    by 0x6B2B2B: dis_start_serving_dns (dis.c:1253)
-==188542==    by 0x6B2555: dis_start_serving_ (dis.c:1124)
-==188542==    by 0x6AC227: DimServer::start(char const*) (discpp.cxx:476)
-==188542==    by 0x51554F: 
-    ggsslib::DimGgssEventListener::DimGgssEventListener(std::string const&, 
-    std::string const&) (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
-==188542==    by 0x50C252: 
-    ggsslib::GgssEventLoopRunner::GgssEventLoopRunner(boost::asio::io_service&, 
-    std::string const&) (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
-==188542==    by 0x500806: main (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
-\end{lstlisting}
+\lstinputlisting[
+    language=Cmd,
+    caption={Przykładowy, powodowany przez bibliotekę DIM, błąd raportowany przez narzędzie Memcheck.},
+    label={lst:memcheck-error}
+]{6_tests/code_samples/memcheck-error.txt}
 
 Dodatkowym argumentem przemawiającym za poprawnością wyżej przytoczonych wniosków jest fakt, iż niezależnie od długości przeprowadzanego testu z użyciem narzędzia Memcheck rozmiar pamięci oznaczonej jako \lstinline{still reachable} pozostawał niezmienny i wynosił ok 178kB, co zostało zaprezentowane na listingu \ref{lst:memcheck-leak-summary}.
 
-\begin{lstlisting}[language=cmd,caption={Podsumowanie wycieków pamięci raportowane przez narzędzie Memcheck},frame=single, label={lst:memcheck-leak-summary}]
-==188542== LEAK SUMMARY:
-==188542==    definitely lost: 0 bytes in 0 blocks
-==188542==    indirectly lost: 0 bytes in 0 blocks
-==188542==      possibly lost: 0 bytes in 0 blocks
-==188542==    still reachable: 178,830 bytes in 106 blocks
-==188542==         suppressed: 0 bytes in 0 blocks
-\end{lstlisting}
+\lstinputlisting[
+    language=Cmd,
+    caption={Podsumowanie wycieków pamięci raportowane przez narzędzie Memcheck.},
+    label={lst:memcheck-leak-summary}
+]{6_tests/code_samples/memcheck-leak-summary.txt}
 
 Przeprowadzone zostały również, trwające nieco poniżej dwóch godzin, testy zużycia pamięci sterty i stosu z wykorzystaniem narzędzia Massif wchodzącym w skład platformy Valgrind. Wynik zaprezentowany został na rysunku \ref{fig:massif-long}. W początkowym etapie testu widoczne jest stopniowe wzrastanie zużycia pamięci. Wynika ono z  przeprowadzania pierwszych iteracji pomiarów na wszystkich licznikach słomkowych podczas których alokowana jest pamięć pozwalająca na przechowywanie wyników z ostatnich kilku iteracji dla danego licznika. Następnie zużycie pamięci pozostaje stałe, aż do momentu rozpoczęcia procesu zakańczania działania programu, gdy rośnie ono na krótką chwilę. Przeprowadzony test dowodzi, że w czasie regularnego działania systemu zużycie pamięci pozostaje stałe.
 

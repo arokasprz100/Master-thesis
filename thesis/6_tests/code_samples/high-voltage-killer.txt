@@ -1,0 +1,15 @@
+user@host:~/$  ./high-voltage-killer
+Running on port: /dev/ggss_hv_0
+Killing voltage on: /dev/ggss_hv_0:0
+Killing voltage on: /dev/ggss_hv_0:1
+Killing voltage on: /dev/ggss_hv_0:2
+Killing voltage on: /dev/ggss_hv_0:3
+[ERROR] Device is not responding.
+Killing voltage on: /dev/ggss_hv_0:4
+[ERROR] Device is not responding.
+Killing voltage on: /dev/ggss_hv_0:5
+[ERROR] Device is not responding.
+Killing voltage on: /dev/ggss_hv_0:6
+[ERROR] Device is not responding.
+Killing voltage on: /dev/ggss_hv_0:7
+[ERROR] Device is not responding.
