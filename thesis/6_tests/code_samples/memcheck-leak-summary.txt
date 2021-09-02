@@ -1,0 +1,6 @@
+==188542== LEAK SUMMARY:
+==188542==    definitely lost: 0 bytes in 0 blocks
+==188542==    indirectly lost: 0 bytes in 0 blocks
+==188542==      possibly lost: 0 bytes in 0 blocks
+==188542==    still reachable: 178,830 bytes in 106 blocks
+==188542==         suppressed: 0 bytes in 0 blocks

@@ -1,0 +1,14 @@
+==188542== 632 bytes in 1 blocks are still reachable in loss record 17 of 37
+==188542==    at 0x4C29F73: malloc (vg_replace_malloc.c:309)
+==188542==    by 0x6B843E: dis_hash_service_insert (dis.c:3380)
+==188542==    by 0x6B0CC5: do_dis_add_service_dns (dis.c:320)
+==188542==    by 0x6B2B2B: dis_start_serving_dns (dis.c:1253)
+==188542==    by 0x6B2555: dis_start_serving_ (dis.c:1124)
+==188542==    by 0x6AC227: DimServer::start(char const*) (discpp.cxx:476)
+==188542==    by 0x51554F:
+    ggsslib::DimGgssEventListener::DimGgssEventListener(std::string const&,
+    std::string const&) (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
+==188542==    by 0x50C252:
+    ggsslib::GgssEventLoopRunner::GgssEventLoopRunner(boost::asio::io_service&,
+    std::string const&) (in /localdisk/ggss/bin/ggss-runner-09-08-2021)
+==188542==    by 0x500806: main (in /localdisk/ggss/bin/ggss-runner-09-08-2021)

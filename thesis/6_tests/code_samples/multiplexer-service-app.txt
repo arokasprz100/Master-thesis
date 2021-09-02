@@ -1,0 +1,30 @@
+user@host:~/$ ./multiplexer-app
+    --dev-port /dev/ttyUSB2
+Connecting to multiplexer using port /dev/ttyUSB2 ...
+Entering interactive mode ...
+========================================
+Usage:
+getch - prints active channel
+setch <channel_number> - set new active channel
+getsn - prints MUX serial number
+setgetch <channel_number> - set new active channel and check it
+help - print help message
+quit - exit testing app
+========================================
+>> getsn
+Printing MUX serial number ...
+Serial number: 260
+>> getch
+Trying to get active channel ...
+Active channel: 2
+>> setch 0
+Trying to set active channel ...
+Active channel set to 0
+>> getch
+Trying to get active channel ...
+Active channel: 0
+>> setgetch 2
+Trying to set active channel ...
+Active channel set to 2
+Trying to get active channel ...
+Success: active channel matches desired one

@@ -1,0 +1,16 @@
+user@host:~/$ ./high-voltage-app --dev-port=/dev/ggss_hv_0 --dev-modules 3
+Connecting to HV using port /dev/ggss_hv_0 ...
+Adding: /dev/ggss_hv_0:0 (alias:module0) to repository
+Adding: /dev/ggss_hv_0:1 (alias:module1) to repository
+Adding: /dev/ggss_hv_0:2 (alias:module2) to repository
+Entering interactive mode ...
+========================================
+Usage:
+<module_alias> - moduleX, where X is between 0 and given --dev-modules exclusive
+hv <module_alias>:<channel_number> mon <param[,other_params]> - mon channel command
+hv <module_alias> mon <param> - mon module command
+hv <module_alias>:<channel> set <param> <value> - set channel command
+hv <module_alias> raw <command_content> - raw command
+help - print help message
+quit - exit testing app
+========================================
