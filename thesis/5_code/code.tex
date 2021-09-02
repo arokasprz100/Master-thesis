@@ -356,61 +356,46 @@ Biblioteka implementowała dwie możliwości dopasowywania krzywej: dla rozkład
     label={lst:fit_initializer}
 ]{5_code/code_samples/fit_initializer.cpp}
 
-
-Jednym z parametrów początkowych przeprowadzanego dopasowania jest umiejscowienie maksimum lokalnego, oznaczane w kodzie nazwą \lstinline{pp0}. W oryginalnej wersji algorytm jego znajdowania był stosunkowo prymitywny: polegał na iteracji po dziedzinie funkcji za pomocą okna o danej szerokości i poszukiwaniu takiego umiejscowienia, gdzie pole pod wykresem jest największe. Algorytm ten pozwalał na wykrycie jedynie jednego ekstremum, nie sprawdzał się więc dobrze w sytuacjach, w których analizowane dane charakteryzowały się wysokim poziomem zaszumienia, powodującym powstanie drugiego maksimum lokalnego - przykład tego typu sytuacji, powodujący w oryginalnej wersji aplikacji \emph{ggss-runner} błąd, przedstawiony został na rysunku \ref{fig:spectrum_error}.
+Algorytmy przeprowadzające dopasowanie krzywej do zebranych danych nie zostały przez autorów zmodyfikowane, dlatego też w niniejszej pracy nie został zawarty opis ich działania. na rysunku \ref{fig:fit_example_good_1} przedstawiony został natomiast zrzut ekranu zawierający fragment panelu dostępnego w ramach systemu WinCC OA - zaprezentowane zostało na nim poprawne działanie algorytmu w przypadku dopasowania dla rozkładu jednomodalnego. Na załączonym zrzucie ekranu zaobserwować można m.in. wykres przedstawiający zebrane dane wraz z dopasowaną funkcją (oznaczoną kolorem niebieskim), wzór dopasowywanej krzywej oraz właściwości zebranego widma.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.75\textwidth]{spectrum_error.png}
-\caption{Przykład zebranych przez aplikację \emph{ggss-runner} danych. Ich znaczące zaszumienie spowodowało uformowanie się nieoczekiwanego ekstremum lokalnego na przedziale $[90, 150]$. W pierwotnej wersji aplikacji tego typu dane powodowały błąd, ponieważ algorytm poszukujący maksimum lokalnego znajdował je właśnie w tym przedziale, nie zaś, zgodnie z oczekiwaniami, na przedziale $[450, 550]$.}
+\includegraphics[width=0.85\textwidth]{gaussfitxe.png}
+\caption{Fragment panelu dostępnego w ramach systemu WinCC OA, przedstawiający poprawne działanie algorytmu dopasowującego krzywą do zebranych danych (rozkład jednomodalny). Poza wykresem widoczne są elementy takie jak wzór dopasowanej funkcji oraz właściwości zebranego widma, w tym położenie maksimum lokalnego.}
+\label{fig:fit_example_good_1}
+\end{figure}
+
+
+Jednym z parametrów początkowych przeprowadzanego dopasowania jest umiejscowienie maksimum lokalnego, oznaczane w kodzie nazwą \lstinline{pp0} (w przypadku rozkładu dwumodalnego wyznaczane jest również na jego podstawie położenie drugiego maksimum, oznaczane jako \lstinline{pp1}). W oryginalnej wersji algorytm jego znajdowania był stosunkowo prymitywny: polegał na iteracji po dziedzinie funkcji za pomocą okna o danej szerokości i poszukiwaniu takiego umiejscowienia, gdzie pole pod wykresem jest największe. Algorytm ten pozwalał na wykrycie jedynie jednego ekstremum, nie sprawdzał się więc dobrze w sytuacjach, w których analizowane dane charakteryzowały się wysokim poziomem zaszumienia - przykład tego typu sytuacji, powodujący w oryginalnej wersji aplikacji \emph{ggss-runner} błąd, przedstawiony został na rysunku \ref{fig:spectrum_error}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{spectrum_error.png}
+\caption{Przykład zebranych przez aplikację \emph{ggss-runner} danych. Ich znaczące zaszumienie spowodowało uformowanie się nieoczekiwanego ekstremum lokalnego na przedziale $[90, 150]$. W pierwotnej wersji aplikacji tego typu dane powodowały błąd (co jest widoczne na rysunku), ponieważ algorytm poszukujący maksimum lokalnego znajdował je właśnie w tym przedziale, nie zaś, zgodnie z oczekiwaniami, na przedziale $[450, 550]$.}
 \label{fig:spectrum_error}
 \end{figure}
 
 Z tego też powodu konieczne było zaimplementowanie nowego algorytmu poszukującego maksimum lokalnego. Autorzy oparli swoje rozwiązanie o dwie funkcjonalności: 
 \begin{itemize}
-    \item przeprowadzanie poszukiwań tylko na określonym przez użytkownika obszarze (tzw. \emph{fit range}) - możliwy jest taki jego dobór, by nie zawierał w sobie drugiego, nieporządnego maksimum lokalnego
+    \item przeprowadzanie poszukiwań tylko na określonym przez użytkownika przedziale (tzw. \emph{fit range}) - możliwy jest taki jego dobór, by nie zawierał w sobie drugiego, nieporządnego maksimum lokalnego
     \item przeprowadzenie tzw. wygładzenia danych (ang. \emph{smoothing}), mającego na celu eliminację szumów oraz zastosowanie bardziej rozbudowanego algorytmu poszukującego maksimum
 \end{itemize}
 
-Implementacja poszukiwania na określonym zakresie była stosunkowo prosta - jego modyfikacja możliwa jest z poziomu pliku konfiguracyjnego systemu GGSS lub poprzez wysłanie komendy za pośrednictwem interfejsu DIM. Rozwiązanie to okazało się wystarczające, by zaprezentowany powyżej błąd został naprawiony - dobór odpowiedniego zakresu, na którym przeprowadzane jest poszukiwanie pozwolił uniknąć sytuacji, w której znajdowane było ekstremum powstałe na skutek działania szumów. 
+Implementacja poszukiwania na określonym przedziale była stosunkowo prosta, ponieważ w systemie istniały już parametry \lstinline{fitLowerBound} oraz \lstinline{fitUpperBound}, wykorzystywane bezpośrednio przez algorytm dopasowujący krzywą (ale nie przez algorytm poszukujący ekstremum). Zadaniem autorów było zatem jedynie ograniczenie przedziału poszukiwania maksimum lokalnego za pomocą tych parametrów. Ich modyfikacja możliwa jest z poziomu pliku konfiguracyjnego systemu GGSS lub poprzez wysłanie komendy za pośrednictwem interfejsu DIM. Rozwiązanie to okazało się wystarczające, by zaprezentowany powyżej błąd został naprawiony - dobór odpowiedniego zakresu, na którym przeprowadzane jest poszukiwanie pozwolił uniknąć sytuacji, w której znajdowane było ekstremum powstałe na skutek działania szumów. 
 
-Nowy algorytm poszukujący maksimum lokalnego zaprezentowany został na listingu \ref{lst:pseudo_fit} \cite{baeldung_fit}. Jego działanie opiera się na zastosowaniu prostego filtru średniej ruchomej (ang. \emph{moving average filter}) w celu początkowej redukcji szumów. Następnie wyznaczana jest średnia z danych na obszarze poszukiwań. Algorytm wykonuje następnie iterację po tymże przedziale. Znajdowane są jedynie te maksima, których wartość przekracza wyznaczoną wcześniej średnia. Ponadto, przechowywana w danym momencie wartość maksimum jest dodawana do tablicy znalezionych ekstremów tylko wtedy, gdy algorytm znajduje punkt o wartości mniejszej niż wyznaczona średnia na zakresie - dzięki temu możliwe jest uniknięcie sytuacji, w której pojedyncze maksimum znajdowane jest, z uwagi na zaszumienie wokół niego, wiele razy. Jeśli algorytm znajdzie wiele maksimów, co możliwe jest np. gdy użytkownik niepoprawnie dobierze zakres poszukiwań w sytuacji podobnej do tej zaprezentowanej na rysunku \ref{fig:spectrum_error}, to ostatecznie wybierane jest to położone najbliżej prawej strony przedziału poszukiwań. Jeśli nie zostanie znalezione żadne maksimum, to zwracana jest wartość domyślna, równa 500. 
+Nowy algorytm poszukiwania maksimum lokalnego działa w sposób dwuetapowy. Najpierw tworzona jest kopia zebranych danych, która poddawana jest na, w celu początkowej redukcji zaszumienia, działaniu symetrycznego filtru średniej ruchomej (ang. \emph{moving average filter}) \cite{smoothing}, danego następującym wzorem:
+\begin{equation}
+y_f(i) = \frac{1}{2n + 1} \cdot \left(\sum_{m=1}^{n} y(i - m) + y(i) + \sum_{m=1}^{n} y(i + m) \right)
+\end{equation}
+Filtr stosowany jest na przedziale $[0, 1023]$ - na jego brzegach danym przypisywana jest jednak wartość 0 (warunki brzegowe). Następnie algorytm wyznacza średnią arytmetyczną zebranych danych na wskazanym przez użytkownika przedziale poszukiwań i przeprowadza iterację po tymże przedziale. Na listingu \ref{lst:pseudo_fit} zaprezentowany został fragment kodu implementujący wspomnianą iterację \cite{baeldung_fit}. Znajdowane są jedynie te maksima, których wartość przekracza wyznaczoną wcześniej średnia. Ponadto, przechowywana w danym momencie wartość maksimum jest dodawana do tablicy znalezionych ekstremów tylko wtedy, gdy algorytm znajduje punkt o wartości mniejszej niż wyznaczona średnia - dzięki temu możliwe jest uniknięcie sytuacji, w której pojedyncze maksimum znajdowane jest, z uwagi na zaszumienie wokół niego, wiele razy. Jeśli algorytm znajdzie wiele maksimów, co możliwe jest np. gdy użytkownik niepoprawnie dobierze zakres poszukiwań w sytuacji podobnej do tej zaprezentowanej na rysunku \ref{fig:spectrum_error}, to ostatecznie wybierane jest to położone najbliżej prawej strony przedziału poszukiwań. Jeśli nie zostanie znalezione żadne maksimum, to zwracana jest wartość domyślna, równa 500. 
 
-\begin{lstlisting}[
-    language = C++,
-    caption = {Fragment kodu w języku C++ prezentujący algorytm pozwalający na znajdowanie maksimum lokalnego na zadanym obszarze poszukiwań.},
+\lstinputlisting[
+    language=C++, 
+    caption={Fragment kodu w języku C++ prezentujący algorytm pozwalający na znajdowanie maksimum lokalnego na zadanym obszarze poszukiwań.}, 
     label={lst:pseudo_fit}
-]
-auto smoothData = movingAverageFilter(fitData, fitParams);
-auto meanInRange = calculateMeanInRange(smoothData, fitParams);
-boost::optional<unsigned> peakIndex{boost::none};
-boost::optional<unsigned> peakValue{boost::none};
-std::vector<double> foundPeaks{};
-for(size_t i{fitParams.lowerRange}; i < fitParams.upperRange; ++i)
-{
-    if(smoothData.at(i) > meanInRange)
-    {
-        if(peakValue == boost::none || smoothData.at(i) > peakValue)
-        {
-            peakValue = smoothData.at(i);
-            peakIndex = i;
-        }
-    }
-    else if(smoothData.at(i) < meanInRange && peakIndex != boost::none)
-    {
-        foundPeaks.push_back(peakIndex.value());
-        peakIndex = boost::none;
-        peakValue = boost::none;
-    }
-}
-if(peakIndex != boost::none)
-{
-    foundPeaks.push_back(peakIndex.value());
-}
-return foundPeaks.empty() ? DEFAULT_PEAK_POSITION : foundPeaks.back();
-\end{lstlisting}
+]{5_code/code_samples/new_peak_finder.cpp}
 
-Bardzo istotnym parametrem zaimplementowanego algorytmu jest szerokość okna wykorzystywana przez filtr ruchomej średniej. Aby umożliwić użytkownikowi dostosowanie algorytmu do swoich potrzeb, autorzy przygotowali komendy pozwalające na pobranie oraz modyfikację tego parametru, co zostało przedstawione na rysunku \ref{fig:smoothing_param}. Parametr ten możliwy jest również do przekazania za pośrednictwem pliku konfiguracyjnego systemu GGSS. Jego obecność, z uwagi na konieczność zachowania kompatybilności wstecznej, nie jest jednak wymagana - w przypadku jego braku stosowana jest wartość domyślna.
+Bardzo istotnym parametrem nowego algorytmu jest szerokość przedziału wykorzystywanego przez filtr ruchomej średniej (tzn. wartość $2n + 1$, zgodnie z oznaczeniami przyjętymi na zaprezentowanym wcześniej wzorze). Autorzy zdecydowali się umożliwić użytkownikowi dostosowanie algorytmu do jego potrzeb, dodając do systemu GGSS nowy parametr \lstinline{smoothingWindowHalf}. Odpowiada on bezpośrednio obecnej we wzorze wartości $n$, tzn. połowie przedziału wykorzystywanego przez filtr. Dzięki temu możliwe jest m.in. łatwe wyłączenie mechanizmu wygładzania (poprzez przypisanie parametrowi wartości 0). Autorzy przygotowali komendy pozwalające na pobranie oraz modyfikację tego parametru, co zostało przedstawione na rysunku \ref{fig:smoothing_param}. Parametr ten możliwy jest również do przekazania za pośrednictwem pliku konfiguracyjnego systemu GGSS. Jego obecność, z uwagi na konieczność zachowania kompatybilności wstecznej, nie jest jednak wymagana - w przypadku jego braku stosowana jest wartość domyślna.
 
 \begin{figure}[H]
 \centering
@@ -428,11 +413,11 @@ Bardzo istotnym parametrem zaimplementowanego algorytmu jest szerokość okna wy
 \label{fig:smoothing_set}
 \end{subfigure}
 
-\caption{Przykład zastosowania przesyłanych do systemu GGSS za pomocą protokołu DIM komend w celu pobranie oraz modyfikacji parametru \lstinline{smoothingWindowHalf}, reprezentującego połowę szerokości przedziału wykorzystywanego podczas wykonywania wygładzenia danych za pomocą filtru ruchomej średniej.}
+\caption{Przykład zastosowania przesyłanych do systemu GGSS za pomocą protokołu DIM komend w celu pobranie oraz modyfikacji parametru \lstinline{smoothingWindowHalf}.}
 \label{fig:smoothing_param}
 \end{figure}
 
-Zaimplementowane rozwiązanie zostało szczegółowo przetestowane, zarówno w przypadku wykonywania dopasowania dla rozkładów jednomodalnych, jak i dwumodalnych. Przeprowadzone testy pozwoliły autorom stwierdzić, że zaprezentowane rozwiązanie sprawdza się dobrze i nie powoduje żadnych błędów, rozwiązując jednocześnie zaprezentowany powyżej problem.
+Zaimplementowane rozwiązanie zostało szczegółowo przetestowane, zarówno w przypadku wykonywania dopasowania dla rozkładów jednomodalnych, jak i dwumodalnych. Przeprowadzone testy pozwoliły autorom stwierdzić, że sprawdza się ono dobrze i nie powoduje żadnych błędów, rozwiązując jednocześnie zaprezentowany powyżej problem.
 
 
 \clearpage
