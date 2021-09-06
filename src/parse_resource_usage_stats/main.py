@@ -6,9 +6,10 @@ import matplotlib.pyplot as plt
 def plot_data(x, y, xlabel=None, ylabel=None, title=None):
     plt.figure(figsize=(10, 5), dpi=400)
     ax = plt.subplot()
-    if xlabel:
-        ax.set_ylabel(ylabel)
+    plt.yscale("log")
     if ylabel:
+        ax.set_ylabel(ylabel)
+    if xlabel:
         ax.set_xlabel(xlabel)
     if title:
         plt.title(title)
@@ -31,12 +32,12 @@ plot_data(subdata["DATETIME"], subdata["RSS"], "Data", "RSS(kB)", "RSS względem
 plt.savefig("rss_short.pdf")
 
 plot_data(data["DATETIME"], data["VSZ"], "Data", "VSZ(kB)", "VSZ względem czasu")
-plt.show()
+plt.savefig("vsz.pdf")
 
 plot_data(data["DATETIME"], data["CPU"], "Data", "CPU(%)", "CPU względem czasu")
-plt.show()
+plt.savefig("cpu.pdf")
 
 plot_data(data["DATETIME"], data["MEM"], "Data", "MEM(%)", "MEM względem czasu")
-plt.show()
+plt.savefig("mem.pdf")
 
 exit()
