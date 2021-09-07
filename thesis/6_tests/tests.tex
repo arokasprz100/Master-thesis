@@ -107,15 +107,15 @@ Testom poddany został również tryb scenariuszowy, co przedstawia listing \ref
 
 \lstinputlisting[
     language=Cmd,
-    caption={Przykładowe uruchomienie aplikacji \emph{high-voltage-service-app} w~trybie scenariuszowym. Zawartość scenariusza została skrócona na potrzeby manuskryptu.},
+    caption={Przykładowe uruchomienie aplikacji \emph{high-voltage-service-app} w~trybie scenariuszowym. Zawartość scenariusza została skrócona na potrzeby manuskryptu i przedstawiona poprzez wcześniejsze wykonanie polecenia \lstinline{cat}.},
     label={lst:high-voltage-service-app-scenario}
 ]{6_tests/code_samples/high-voltage-service-app-scenario.txt}
 
 Wszystkie testy aplikacji \emph{high-voltage-service-app} przebiegły pomyślne. Aplikacja wykonała wszystkie żądane czynności, a~odpowiednie wartości pojawiły się na zasilaczu wysokiego napięcia. Zarówno tryb interaktywny, jak i~scenariuszowy zostały uruchomione bez problemu. Aplikacja zachowywała się poprawnie również w~przypadku, gdy oczekiwane było zgłoszenie błędu.
 
+\clearpage
 Następnie w~podobny sposób przetestowane zostało dzianie aplikacji \emph{multiplexer-service-app}. Przetestowano zarówno jej tryb interaktywny, jak i~scenariuszowy. Ze względu na to, że testy wyglądały analogicznie jak w~przypadku aplikacji \emph{high-voltage-service-app}, a~różnice stanowiły jedynie komendy oraz odpowiedzi od urządzenia, zaprezentowany został jedynie listing \ref{lst:multiplexer-service-app}, który przedstawia wiadomość powitalną aplikacji do obsługi multipleksera oraz kilka podstawowych komend.
 
-\clearpage
 \lstinputlisting[
     language=Cmd,
     caption={Przykład działania aplikacji \emph{multiplexer-service-app} - przedstawiona została wiadomość powitalna zawierająca informacje na temat możliwości aplikacji oraz wykonanie kilku przykładowych komend, powodujących pobranie numeru seryjnego urządzenia oraz pobranie i~zmianę aktywnego kanału.},
@@ -131,7 +131,7 @@ W~pierwszej kolejności wykorzystano wcześniej przetestowaną aplikację \emph{
 
 \lstinputlisting[
     language=Cmd,
-    caption={Uruchomienie aplikacji \emph{high-voltage-killer}},
+    caption={Uruchomienie aplikacji \emph{high-voltage-killer}. Błędy wynikają z obecności 3 zasilaczy, podczas gdy aplikacja prewencyjnie próbuje zerować napięcia na modułach od 0~do 7.},
     label={lst:high-voltage-killer}
 ]{6_tests/code_samples/high-voltage-killer.txt}
 
@@ -152,20 +152,19 @@ Zwieńczeniem testów, które miało zapewnić długotrwałe, bezproblemowe dzia
 
 Rysunek \ref{fig:rss-short} przedstawia ilość wykorzystywanej pamięci (RSS) względem czasu. Na rysunku przedstawiony został okres od dnia 10 sierpnia 2021 roku w~południe do końca dnia 11 sierpnia 2021 roku. W~trakcie tego okresu autorzy przeprowadzali testy z~wykorzystaniem platformy Valgrind, co widoczne jest na wykresie w~okresach, w~których zużycie pamięci znacząco odstaje od normy, która plasuje się w~okolicach 6000 kB. Dnia 10 sierpnia 2021 roku autorzy wykonywali testy z~wykorzystaniem narzędzia Massif - w~trakcie korzystania z~tego narzędzia zużycie pamięci wynosiło niecałe 50 tysięcy kB. W~przypadku odstępstwa z~dnia 11 sierpnia wykorzystane zostało narzędzie Memcheck, a~zużycie pamięci wyniosło znacznie powyżej 200 tysięcy kB. Na wykresie widoczny jest również charakterystyczny ogon związany z~ponownym uruchomieniem aplikacji. Wynika on z~faktu, iż aplikacja w~fazie inicjalizacji oraz w~trakcie początkowych pomiarów alokuje pamięć na wszystkie potrzebne zmienne wraz z~buforami na przechowywanie danych pozyskanych z~urządzeń fizycznych wchodzących w~skład systemu GGSS.
 
-\clearpage
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{rss_short.pdf}
-    \caption{Wykres przedstawiający zużycie pamięci (RSS) przez aplikację \emph{ggss-runner} względem czasu w~okresie od 10 sierpnia 2021 roku do końca 11 sierpnia 2021 roku.}
-    \label{fig:rss-short}
-\end{figure}
-
 W~celu dokładniejszej weryfikacji długotrwałego zużycia pamięci przygotowany został również rysunek \ref{fig:rss-long}. Przedstawia on parametr RSS względem czasu dla dłuższego okresu monitorowania. Oprócz charakterystycznych odstępstw od normy związanych z~wykorzystaniem platformy Valgrind nie zaobserwowano żadnych anomalii. Zmiany ilości wykorzystywanej pamięci wiązały się jedynie z~początkową inicjalizacją zmiennych, buforów na dane, czy też wynikały z~interakcji z~systemem, np.: poprzez wysłanie do niego komend. W~przypadku, gdy aplikacja \emph{ggss-runner} działała bez zewnętrznych poleceń, czy też zakłóceń, to zużycie pamięci nie zwiększało się przez dłuższy okres czasu.
 
 \begin{figure}[H]
     \centering
+    \includegraphics[width=0.9\textwidth]{rss_short.pdf}
+    \caption{Wykres przedstawiający zużycie pamięci (RSS) przez aplikację \emph{ggss-runner} względem czasu w~okresie od 10 sierpnia 2021 roku do końca 11 sierpnia 2021 roku. Kolorami oznaczone zostały poszczególne uruchomienia aplikacji, w tym te z wykorzystaniem narzędzi platformy Valgrind (powodujące znaczący wzrost zużycia zasobów). Przy każdym uruchomieniu widoczny jest stopniowy wzrost zużycia pamięci wynikający w postępującego procesu inicjalizacji.}
+    \label{fig:rss-short}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
     \includegraphics[width=0.9\textwidth]{rss_long.pdf}
-    \caption{Wykres przedstawiający zużycie pamięci (RSS) przez aplikację \emph{ggss-runner} względem czasu w~okresie od 5~sierpnia 2021 roku do 25 sierpnia 2021 roku.}
+    \caption{Wykres przedstawiający zużycie pamięci (RSS) przez aplikację \emph{ggss-runner} względem czasu w~okresie od 5~sierpnia 2021 roku do 25 sierpnia 2021 roku. Kolorem czerwonym oznaczone uruchomienia aplikacji z wykorzystaniem narzędzi platformy Valgrind (powodujące znaczący wzrost zużycia zasobów). Przy każdym uruchomieniu widoczny jest stopniowy wzrost zużycia pamięci wynikający w postępującego procesu inicjalizacji. Niewielkie wzrosty zużycia pamięci w trakcie działania aplikacji wynikają z wykorzystywania funkcjonalności takich jak zmiana kolejności liczników słomkowych.}
     \label{fig:rss-long}
 \end{figure}
 
@@ -190,7 +189,7 @@ Przeprowadzone zostały również, trwające nieco poniżej dwóch godzin, testy
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{massif_plot_long.pdf}
-    \caption{Wykres przedstawiający zużycie pamięci sterty i~stosu zbadane z~wykorzystaniem narzędzia Massif.}
+    \caption{Wykres przedstawiający zużycie pamięci sterty i~stosu zbadane z~wykorzystaniem narzędzia Massif. Widoczny jest charakterystyczny, stopniowy wzrost zużycia pamięci podczas procesu inicjalizacji aplikacji. Ponadto widoczny jest krótkotrwały wzrost zużycia zasobu podczas procesu zakańczania działania aplikacji.}
     \label{fig:massif-long}
 \end{figure}
 

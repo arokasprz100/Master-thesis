@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def plot_data(x, y, xlabel=None, ylabel=None, title=None):
+def plot_data(x, y, xlabel=None, ylabel=None, title=None, verticals=list(), legend_pos='upper left'):
     plt.figure(figsize=(10, 5), dpi=400)
     ax = plt.subplot()
     plt.yscale("log")
@@ -13,8 +13,11 @@ def plot_data(x, y, xlabel=None, ylabel=None, title=None):
         ax.set_xlabel(xlabel)
     if title:
         plt.title(title)
+    for vertical in verticals:
+        plt.axvline(vertical[0], linestyle='dotted', linewidth=0.5, color=vertical[1], label=vertical[2])
     plt.xticks(rotation=70)
-    plt.plot(x, y)
+    plt.plot(x, y, label=ylabel)
+    plt.legend(loc=legend_pos)
     plt.tight_layout()
 
 
@@ -25,10 +28,21 @@ data["DATETIME"] = pd.to_datetime(data["DATETIME"], format="%Y.%m.%d-%H:%M:%S")
 
 subdata = data[data["DATETIME"].between(datetime.datetime(2021, 8, 10, 12), datetime.datetime(2021, 8, 12))]
 
-plot_data(data["DATETIME"], data["RSS"], "Data", "RSS(kB)", "RSS względem czasu")
+verticals = [
+    (datetime.datetime(2021, 8, 10, 18, 14), 'red', 'Rozpoczęcie testu z użyciem Valgrind'),
+    (datetime.datetime(2021, 8, 11, 13, 44), 'red', ''),
+    (datetime.datetime(2021, 8, 9, 19, 42), 'red', '')
+]
+plot_data(data["DATETIME"], data["RSS"], "Data", "RSS(kB)", "RSS względem czasu", verticals=verticals, legend_pos='upper right')
 plt.savefig("rss_long.pdf")
 
-plot_data(subdata["DATETIME"], subdata["RSS"], "Data", "RSS(kB)", "RSS względem czasu")
+verticals = [
+    (datetime.datetime(2021, 8, 10, 20, 40), 'green', 'Uruchomienie aplikacji'),
+    (datetime.datetime(2021, 8, 11, 16, 42), 'green', ''),
+    (datetime.datetime(2021, 8, 10, 18, 14), 'red', 'Rozpoczęcie testu z użyciem Massif'),
+    (datetime.datetime(2021, 8, 11, 13, 44), 'purple', 'Rozpoczęcie testu z użyciem Memcheck')
+]
+plot_data(subdata["DATETIME"], subdata["RSS"], "Data", "RSS(kB)", "RSS względem czasu", verticals=verticals)
 plt.savefig("rss_short.pdf")
 
 plot_data(data["DATETIME"], data["VSZ"], "Data", "VSZ(kB)", "VSZ względem czasu")

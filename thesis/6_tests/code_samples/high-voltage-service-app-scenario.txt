@@ -1,3 +1,10 @@
+user@host:~/$ cat ./sample_scenario.yml
+HighVoltageTestScenario:
+  - hv module1:3 set vset 10.0
+  - sleep 20000
+  - assert hv module1:3 mon vset 10.0
+  - assertTol hv module1:3 mon vmon 10.0 1.0
+
 user@host:~/$ ./high-voltage-app
     --dev-port=/dev/ggss_hv_0 --dev-modules=3
     --scenario-file=./sample_scenario.yml
