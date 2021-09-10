@@ -1,4 +1,4 @@
-\chapter{Wykorzystane technologie (AK i~JC)}
+\chapter{Wykorzystane technologie}
 \label{ch:technologies}
 
 % setup
@@ -8,7 +8,7 @@
 W~niniejszym rozdziale zawarty został opis stosowanych przez autorów pracy technologii. Przedstawione informacje obejmują zarówno wykorzystane języki programowania, jak również narzędzia, których zadaniem jest ułatwienie tworzenia wysokiej jakości kodu źródłowego, czy też automatyzacja procesów zachodzących na różnych etapach cyklu życia oprogramowania. Niniejszy rozdział stanowi krótkie wprowadzenie do każdego z~omawianych zagadnień - zaawansowane aspekty każdej z~opisywanych technologii przedstawione zostały w~dalszej części pracy, podczas omawiania konkretnych, osiągniętych za ich pomocą, rozwiązań. 
 
 
-\section{Język C++ (AK)}
+\section{Język C++}
 C++ \cite{Bjarne} \cite{cpp_reference} to stworzony w~latach 80-tych XX wieku wszechstronny język programowania, oryginalnie mający stanowić rozszerzenie popularnego języka C~\cite{c_book} o~mechanizmy pozwalające na programowanie obiektowe. Wraz z~jego rozwojem pojawiło się natomiast wsparcie dla innych paradygmatów programowania, dzięki czemu nowoczesny C++ pozwala stosować (poza paradygmatem proceduralnym oraz obiektowym) programowanie funkcyjne oraz generyczne. Z~tego też powodu język ten znajduje współcześnie bardzo szerokie zastosowanie, od rozwiązań telekomunikacyjnych po oprogramowanie dla eksperymentów fizycznych, takich jak detektor ATLAS w~CERN. Jest on ponadto bardzo istotny z~punktu widzenia niniejszej pracy, ponieważ za jego pomocą napisana została większość oprogramowania systemu GGSS.
 
 C++ jest wydajnym językiem kompilowanym, opartym o~statyczne typowanie. Udostępnia mechanizmy pozwalające programiście na działanie na wielu poziomach abstrakcji - możliwe są zarówno niskopoziomowe operacje, takie jak manualne zarządzanie pamięcią, jak również modelowanie wysokopoziomowej logiki biznesowej. W~ciągu ostatnich dziesięciu lat miał miejsce szczególnie intensywny rozwój języka, czego początek stanowi pojawienie się przełomowego standardu C++11. Od tego czasu regularnie, co trzy lata, wydawana jest nowa wersja standardu języka, a~zatem od 2011 roku pojawiły się następujące wydania:
@@ -56,22 +56,21 @@ GNU Scientific Library (GSL) to napisana w~języku C~biblioteka udostępniająca
 Qt jest zestawem narzędzi programistycznych umożliwiających tworzenie przenośnych aplikacji okienkowych z~wykorzystaniem języka C++. Technologia ta nie została zastosowana w~rdzeniu oprogramowania systemu GGSS, natomiast przy jej pomocy stworzone zostały pomniejsze narzędzia wchodzące w~skład projektu. Opisane w~niniejszej pracy rozwiązania nie są oparte o~Qt, dlatego też szczegółowy opis dostarczanych przez zestaw narzędzi nie zostanie w~niej zamieszczony.
 
 
-\section{Język Python (AK)}
+\section{Język Python}
 Python \cite{Python_main} \cite{Lutz} jest opartym na dynamicznym systemie typów językiem programowania ogólnego przeznaczenia, charakteryzującym się bardzo szerokim obszarem zastosowań, obejmującym m.in. automatyzację za pomocą skryptów, tworzenie aplikacji internetowych czy eksplorację danych. Cechą najczęściej kojarzoną z~tym językiem jest intuicyjna składnia, ułatwiająca zarówno jego naukę, jak i~zrozumienie napisanych z~jego pomocą programów. Python jest językiem wieloparadygmatowym, pozwalającym pisać zarówno w~sposób proceduralny, jak i~obiektowo i~funkcyjnie. W~systemie GGSS język ten stosowany jest jako narzędzie pomocnicze, rozumiane przede wszystkim jako język skryptowy wykorzystywany do tworzenia infrastruktury projektu.
 
 Obecnie język Python istnieje w~dwóch szeroko stosowanych wersjach: Python 2~oraz Python 3. Oficjalnie wspieraną wersją jest wydanie trzecie (wsparcie dla Pythona w~wersji drugiej zakończone zostało na początku 2020 roku), w~rzeczywistości jednak, ze względu na fakt, iż wersje te nie są ze sobą w~pełni kompatybilne, oprogramowanie napisane za pomocą Pythona 2~wciąż znaleźć można w~wielu projektach. Z~punktu widzenia systemu GGSS różnice między tymi wydaniami nie są w~dużym stopniu znaczące (ponieważ język ten używany jest jako pomocnicze narzędzie), jednakże preferowana jest wersja trzecia.
 
-Na listingu \ref{lst:python} przedstawiony został prosty przykład zastosowania języka Python jako narzędzia do tworzenia skryptów. W~tym przypadku jest to prosty skrypt, generujący sto pierwszych elementów ciągu Fibonacciego i~zapisujący je do pliku tekstowego w~postaci kolumny. Przykład obrazuje wykorzystanie takich elementów języka jak generatory, pętle oraz operacje na plikach.
-
+Na listingu \ref{lst:python} przedstawiony został prosty przykład zastosowania języka Python jako narzędzia do tworzenia skryptów. W tym przypadku jest to prosta funkcja zwracająca wpisy ze słownika wejściowego, których wartość zawiera pewne słowa kluczowe. Przykład obrazuje wykorzystanie takich elementów języka jak pętle, słowniki oraz funkcje.
 
 \lstinputlisting[
     language=Python, 
-    caption={Przykładowy skrypt napisany w~języku Python, którego działanie polega na wygenerowaniu stu pierwszych elementów ciągu Fibonacciego i~zapisaniu otrzymanego wyniku do pliku tekstowego.}, 
+    caption={Przykładowy fragment skryptu napisanego w~języku Python, obrazujący funkcję zwracającą wpisy ze słownika wejściowego, których wartość zawiera pewne określone słowa kluczowe.}, 
     label={lst:python}
 ]{2_technologies/code_samples/python_example.py}
 
 
-\section{Narzędzia do analizy oprogramowania (AK)}
+\section{Narzędzia do analizy oprogramowania}
 Podczas prac nad systemem GGSS autorzy wykorzystali szereg narzędzi ułatwiających utrzymanie jakości oraz niezawodności tworzonego oprogramowania. Współcześnie, wraz z~rosnącym skomplikowaniem powstających projektów informatycznych, rośnie zapotrzebowanie na narzędzia wspierające analizę tworzonego oraz rozwijanego oprogramowania - jest ono często utrzymywane przez wiele osób, przez co zachowanie jego wysokiej jakości staje się coraz bardziej wymagającym zadaniem. Opisywane narzędzia charakteryzują się szerokim zakresem oferowanych możliwości, m.in. monitorowanie zużycia zasobów czy też badanie kodu źródłowego pod kątem zgodności z~pewnymi przyjętymi standardami, oraz wspierają wykonywanie analizy programu na wiele zróżnicowanych sposobów. W~najprostszym ujęciu wskazać można dwie możliwości klasyfikacji technik analizy oprogramowania:
 \begin{itemize}
     \item analiza kodu źródłowego (ang. \emph{source analysis}) oraz analiza kodu maszynowego (ang. \emph{binary analysis}) - w~przypadku pierwszego typu badaniom poddawany jest kod źródłowy, napisany np. z~wykorzystaniem języka C++, drugie podejście polega natomiast na analizie programu na poziomie kodu maszynowego lub reprezentacji pośredniej, takiej jak kod bajtowy (ang. \emph{bytecode}).
@@ -122,7 +121,7 @@ Na rysunku \ref{fig:massif_plot} przedstawiony został natomiast wykres wykonany
 Innym typem narzędzi wykorzystywanych przez autorów niniejszej pracy są te służące do statycznej analizy kodu źródłowego w~celu określenia jego zgodności z~przyjętymi konwencjami. Wykonywane w~ten sposób badanie pozwala wykryć nieprawidłowości związane zarówno z~tak prostymi zagadnieniami jak przyjęty styl (np. nazewnictwo zmiennych czy kolejność załączania plików nagłówkowych), jak również z~wykorzystaniem poszczególnych elementów języka programowania (np. wykrywanie przestarzałych, niezalecanych konstrukcji, takich jak wspomniany w~części opisującej język C++ wskaźnik \lstinline{std::auto_ptr}). Tego typu narzędzia w~znaczącym stopniu ułatwiają refaktoryzację (ang. \emph{refactoring}), czyli proces wprowadzania w~istniejącym kodzie źródłowym zmian, których celem jest zwiększenie jego jakości bez zmiany funkcjonalności. Przykładem bardzo popularnego wśród programistów C++ narzędzia przeprowadzającego statyczną analizę kodu źródłowego jest Clang-Tidy \cite{clang-tidy}, oparty na kompilatorze Clang \cite{clang}. Ponadto nowoczesne środowiska programistyczne bardzo często posiadają zintegrowaną funkcjonalność pozwalającą przeprowadzić tego typu badanie. Tego typu środowiskiem jest, wykorzystywany przez autorów do pracy nad systemem GGSS, CLion stworzony przez firmę JetBrains \cite{clion}.
 
 
-\section{System kontroli wersji Git (JC)}
+\section{System kontroli wersji Git}
 Git \cite{progit} jest narzędziem służącym do śledzenia zmian dokonywanych na zadanym zbiorze plików. Głównym celem jest umożliwienie programistom sprawnej współpracy w~ramach procesu wytwarzania i~rozwoju oprogramowania. Git pozwala m.in. na śledzenie zmian dokonywanych równolegle przez wielu deweloperów na jednym zestawie plików, zarządzanie skomplikowaną hierarchią zależności pomiędzy poszczególnymi komponentami projektu czy też wersjonowanie zmian wprowadzanych w~projekcie. Cechą wyróżniającą Git od innych systemów kontroli wersji jest jego wydajność, osiągnięta poprzez zastosowanie innego, w~stosunku do systemów takich jak CVS czy Subversion, podejścia do przechowywania informacji o~wprowadzanych zmianach. Technologia ta pozwala ponadto na stosowanie wielu zróżnicowanych podejść do zarządzania przepływem pracy (ang. \emph{workflow}), dzięki czemu znalazła zastosowanie w~wielu rozwijanych współcześnie projektach.
 
 Jednym z~podstawowych i~najważniejszych elementów technologii Git są tzw. repozytoria (ang. \emph{repository}), definiowane przez ukryty katalog \lstinline{.git}, tworzony w~momencie aktywowania systemu kontroli wersji w~projekcie. Katalog ten znajduje się w~głównej ścieżce projektu i~zawarte są w~nim wszystkie informacje niezbędne do poprawnego działania technologii Git, takie jak: historia zmian wprowadzonych w~poszczególnych plikach w~ramach każdej rewizji (ang. \emph{commit}), dane na temat gałęzi (ang. \emph{branch}) projektu oraz informacje o~zmianach wprowadzonych lokalnie i~o etapie (ang. \emph{stage}), w~jakim się one znajdują. Takie repozytorium wraz z~samą zawartością projektu można zdeponować w~jednym z~portali obsługujących technologię Git, np. w~wykorzystywanym w~ramach niniejszej pracy portalu GitLab. 
@@ -132,11 +131,8 @@ Chcąc utrwalić zmiany w~kodzie wykorzystując technologię Git należy skorzys
 W~przypadku równoległego prowadzenia przez wielu programistów prac nad tym samym zestawem plików, szczególnie przydatna staje się oferowana przez Git funkcjonalność gałęzi. Pozwalają one na odseparowanie zmian wprowadzanych przez różnych deweloperów w~ramach tworzonych przez nich rewizji, dzięki czemu mogą oni prowadzić pracę w~sposób niezależny od siebie. W~momencie zakończenia prac, programiści mogą połączyć (ang. \emph{merge}) rozwijane przez siebie gałęzie (lub dołączyć je do gałęzi głównej), w~wyniku czego zachowane zostaną wszystkie wykonane przez nich zmiany. W~przypadku wystąpienia zmian konfliktujących ze sobą (np. zmiana tej samej linii kodu na obydwu gałęziach), istnieje możliwość manualnego rozwiązania problemu - osoba dokonująca połączenia wybiera, która wersja powinna zostać zachowana.
 
 Poza opisanymi do tej pory podstawowymi funkcjonalnościami, Git oferuje szereg zaawansowanych możliwości. Jedną z~nich są wykorzystywane w~warstwie oprogramowania systemu GGSS submoduły (ang. \emph{submodules}). Pozwalają ona na utworzenie hierarchicznego powiązania pomiędzy dwoma repozytoriami. Aby tego dokonać należy wykonać w~repozytorium nadrzędnym komendę \lstinline{git submodule add <adres_zależności>}. Powoduje ona dodanie innego, zewnętrznego repozytorium jako podkatalog w~repozytorium nadrzędnym. Wytwarzanie nowych rewizji w~repozytorium nadrzędnym, oprócz zapisania stanu plików w~tymże repozytorium, skutkuje zachowaniem informacji o~identyfikatorze rewizji submodułu. Dzięki temu możliwe jest wprowadzenie do projektu mechanizmu wersjonowania, pozwalającego na przechowywanie, poza informacjami o~stanie plików wchodzących w~skład repozytorium nadrzędnego, informacji o~wersji wykorzystywanej zależności. Mechanizm submodułów pozwala na łatwą inicjalizację oraz zarządzanie projektem składającym się z~wielu repozytoriów tworzących strukturę hierarchiczną. 
-%https://git-scm.com/
 
-
-\section{Portal GitLab (JC)}
-
+\section{Portal GitLab}
 GitLab jest to serwis hostujący repozytoria Git oparty o~graficzny interfejs użytkownika w~postaci portalu internetowego. Rozwiązanie to oferuje możliwość zdalnego przechowywania oraz udostępniania repozytoriów Git, np. w~obrębie określonej grupy programistów. Rysunek \ref{fig:gitlab} przedstawia panel istniejącej w~ramach projektu GGSS grupy wraz z~kilkoma rozwijanymi przez jej członków repozytoriami.
 
 \begin{figure}[H]
@@ -160,7 +156,7 @@ Wraz ze wzrostem popularności portali takich jak GitLab zaczęto wprowadzać do
 Wszystkie akcje zawarte w~ramach wyżej opisanej automatyzacji wykonywane są na specjalnie przygotowanych maszynach wirtualnych zarejestrowanych w~portalu GitLab, czyli tzw. \emph{GitLab Runners}. Maszyny te posiadają zainstalowane odpowiednie rozszerzenia oraz oprogramowanie Docker \cite{docker_main}, ponieważ większość akcji wykonywana jest w~ramach kontenerów.
 
 
-\section{Narzędzie CMake (AK)}
+\section{Narzędzie CMake}
 CMake jest rozwijanym przez firmę \emph{Kitware} narzędziem automatyzującym procesy związane z~cyklem życia oprogramowania, w~tym przede wszystkim jego budowanie, testowanie, instalację oraz tworzenie pakietów. Udostępnia intuicyjny, oparty o~prosty język skryptowy interfejs, umożliwiający tworzenie konfiguracji w~sposób niezależny od docelowej platformy, dzięki czemu możliwe jest konstruowanie zaawansowanych, dostosowanych do potrzeb konkretnego projektu systemów budowania. Stanowi trzon systemu budowania i~pakietowania przygotowanego na potrzeby systemu GGSS przez autorów niniejszego manuskryptu w~ramach napisanej przez nich pracy inżynierskiej. Z~narzędziem CMake ściśle zintegrowane są systemy CPack oraz CTest, który zadaniem jest kolejno: tworzenie pakietów instalacyjnych z~oprogramowaniem (np. \lstinline{.rpm}) oraz tworzenie konfiguracji umożliwiających testowanie automatyczne.
 
 Na listingu \ref{lst:cmake_example} przedstawiony został bardzo prosty przykład pliku \lstinline{CMakeLists.txt}, zawierającego konfigurację pozwalająca na zbudowanie aplikacji napisanej w~języku C++. Na załączonym fragmencie kodu widoczne są komendy pozwalające określić informacje takie jak: minimalna wersja narzędzia CMake, nazwa oraz wersja projektu czy lista plików wchodzących w~skład tworzonej aplikacji.
@@ -171,7 +167,7 @@ Na listingu \ref{lst:cmake_example} przedstawiony został bardzo prosty przykła
     label={lst:cmake_example}
 ]{2_technologies/code_samples/cmake_example.cmake}
 
-\section{Menadżer pakietów RPM (JC)}
+\section{Menadżer pakietów RPM}
 \emph{RPM Package Manager} \cite{rpm} \cite{rpm_wiki} jest systemem do zarządzania pakietami na systemach z~rodziny Red Hat, Fedora, CentOS, OpenSUSE. Posługuje się on pakietami z~rozszerzeniem \lstinline{.rpm}. W~ramach takiego pakietu zawarte są:
 \begin{itemize}
     \item główna zawartość, np. skompilowana aplikacja czy gotowy skrypt powłoki Bash \cite{bash}

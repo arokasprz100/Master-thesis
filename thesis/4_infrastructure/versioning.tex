@@ -1,5 +1,5 @@
 \clearpage
-\section{Automatyzacja i centralizacja wersjonowania projektu (JC)}
+\section{Automatyzacja i centralizacja wersjonowania projektu}
 \label{ch:versioning}
 
 Niniejsza część pracy traktuje o~systemie wersjonowania stosowanym w~projekcie GGSS. Zaprezentowane zostały: sposób nadawania wersji stosowany w~projekcie przed rozpoczęciem prac, wymagania postawione przed przygotowanym przez autorów systemem oraz sposób jego implementacji.
@@ -24,6 +24,7 @@ W~celu zapewnienia automatycznego, scentralizowanego wersjonowania należało wy
 \subsection{Zmiany w~systemie opartym o~narzędzie CMake}
 W~przypadku plików \lstinline{.cmake} zastosowano podobne podejście, jak w~przypadku pliku \lstinline{build.py}, tzn. dodano argument wejściowy w~postaci parametru \lstinline{VERSION}. Pozwala to na odebranie wartości wersji od skryptów zewnętrznych, jak i~manualne wpisanej przez użytkownika. W~przypadku nieustawienia wartości wyżej wymienionego parametru stosowana jest wartość domyślna: \lstinline{no-version}. Listing \ref{lst:cmake_version_arg} przedstawia przykładowe zastosowanie tego systemu w~przypadku repozytorium \emph{ggss-driver}.
 
+\clearpage
 \lstinputlisting[
     language=CMake, 
     caption={Zastosowanie parametru \lstinline{VERSION} w~repozytorium \emph{ggss-driver}.}, 

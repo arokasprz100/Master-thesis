@@ -1,4 +1,4 @@
-\chapter{Budowa i~działanie systemu GGSS (AK)}
+\chapter{Budowa i~działanie systemu GGSS}
 \label{cha:ggss}
 
 % setup
@@ -30,7 +30,7 @@ Szczegóły działania najważniejszych z~punktu widzenia niniejszej pracy eleme
 
 
 \section{Urządzenia elektroniczne}
-Z~punktu widzenia warstwy sprzętowej system GGSS składa się z~zestawu tzw. słomkowych liczników proporcjonalnych, zasilanych za pomocą 4-kanałowych zasilaczy wysokiego napięcia. Sygnały generowane przez liczniki przetwarzane są przez wielokanałowy analizator amplitudy (MCA - \emph{Multi-Channel Analyzer}), natomiast wybór licznika słomkowego używanego do wykonania pomiarów następuje za pomocą 8-kanałowego multipleksera sygnałów analogowych \cite{ZadrozniakInz} \cite{ZadrozniakMgr}. Urządzenia podłączone są do komputera PC, który steruje nimi za pomocą oprogramowania systemu GGSS. W~tabeli \ref{tab:devices} zamieszczone zostało zestawienie informacji na temat wykorzystywanych przez projekt urządzeń. Sposób działania systemu (jego podstawa fizyczna oraz znaczenie przeprowadzanych pomiarów) wykracza poza zakres niniejszej pracy, został natomiast szczegółowo opisany w~pracy \emph{Wybrane zagadnienia związane z~pracą słomkowych liczników proporcjonalnych w~detektorze TRT eksperymentu ATLAS} \cite{mindur_phd}, której autorem jest dr hab. inż. Bartosz Mindur, prof. AGH.
+Z~punktu widzenia warstwy sprzętowej system GGSS składa się z~zestawu tzw. słomkowych liczników proporcjonalnych \cite{mindur_phd} \cite{GGSS_jinst}, zasilanych za pomocą 4-kanałowych zasilaczy wysokiego napięcia. Sygnały generowane przez liczniki przetwarzane są przez wielokanałowy analizator amplitudy (MCA - \emph{Multi-Channel Analyzer}), natomiast wybór licznika słomkowego używanego do wykonania pomiarów następuje za pomocą 8-kanałowego multipleksera sygnałów analogowych \cite{ZadrozniakInz} \cite{ZadrozniakMgr}. Urządzenia podłączone są do komputera PC, który steruje nimi za pomocą oprogramowania systemu GGSS. W~tabeli \ref{tab:devices} zamieszczone zostało zestawienie informacji na temat wykorzystywanych przez projekt urządzeń. Sposób działania systemu (jego podstawa fizyczna oraz znaczenie przeprowadzanych pomiarów) wykracza poza zakres niniejszej pracy, został natomiast szczegółowo opisany w~pracy \emph{Wybrane zagadnienia związane z~pracą słomkowych liczników proporcjonalnych w~detektorze TRT eksperymentu ATLAS} \cite{mindur_phd}, której autorem jest dr hab. inż. Bartosz Mindur, prof. AGH oraz w publikacji \emph{Gas gain stabilisation in the ATLAS TRT detector} \cite{GGSS_jinst}.
 
 \clearpage
 
@@ -38,14 +38,14 @@ Z~punktu widzenia warstwy sprzętowej system GGSS składa się z~zestawu tzw. s�
 \centering
 \caption{Zestawienie istotnych z~punktu widzenia niniejszej pracy urządzeń wchodzących w~skład systemu GGSS.}
 \label{tab:devices}
-\begin{tabularx}{\textwidth}{@{}XX@{}}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
 \toprule
 Urządzenie &
 Informacje \\
 \midrule
-4-kanałowy zasilacz wysokiego napięcia & CAEN N1470 \cite{caen} \\
-wielokanałowy analizator amplitudy & CAEN N957 \cite{caen} \\
-multiplekser sygnałów analogowych & urządzenie autorstwa Pana Pawła Zadrożniaka\\
+4-kanałowy zasilacz wysokiego napięcia & CAEN N1470 \cite{caen_n1470} \\
+wielokanałowy analizator amplitudy & CAEN N957 \cite{caen_n957} \\
+multiplekser sygnałów analogowych & urządzenie autorstwa pana Pawła Zadrożniaka \cite{ZadrozniakInz}\\
 \bottomrule
 \end{tabularx}
 \end{table*}

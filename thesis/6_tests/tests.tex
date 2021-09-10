@@ -1,4 +1,4 @@
-\chapter{Testy systemu (AK i JC)}
+\chapter{Testy systemu}
 \label{cha:tests}
 
 % setup
@@ -7,7 +7,7 @@
 % content
 Niniejszy rozdział stanowi szczegółowy raport z~przeprowadzanych w~środowisku docelowym testów systemu GGSS. Został on podzielony na trzy części, opisujące różne rodzaje przeprowadzanych przez autorów sprawdzeń. Pierwsza z~nich przybliża informacje dotyczące przeprowadzanych w~sposób cykliczny testów - nacisk położony został tutaj przede wszystkim na opis powtarzanej w~każdej iteracji procedury pozwalającej zweryfikować poprawność działania systemu. Druga część stanowi opis sprawdzeń wykonywanych w~czasie mającej miejsce w~lipcu 2021 roku migracji systemu do nowego środowiska docelowego. Zamieszczone w~niej informacje dotyczą wkładu autorów we wspomnianą migrację, obejmującego m.in. wykonanie testów warstwy sprzętowej systemu GGSS. Ostatnia część niniejszego rozdziału opisuje wykonane w~sierpniu 2021 roku testy finalnej wersji projektu. W~tym przypadku przedstawiony został szczegółowy raport, obejmujący weryfikację poprawności działania każdej wprowadzonej do systemu lub zmodyfikowanej funkcjonalności, badanie stabilności systemu ze względu na wykorzystywane zasoby oraz testy nowych elementów infrastruktury, takich jak skryptu zarządzające środowiskiem docelowym.
 
-\section{Cykliczne testy systemu (AK)}
+\section{Cykliczne testy systemu}
 Praca nad projektem stanowiącym część dużego, rozwijanego przez wiele osób systemu wymaga, w~celu zapewnienia poprawności działania, przeprowadzania cyklicznych testów w~środowisku docelowym. Pozwala to na wczesne wykrywanie i~eliminowanie pojawiających się w~projekcie błędów. Regularne przeprowadzanie weryfikacji poprawności działania najnowszej wersji warstwy oprogramowania systemu GGSS pozwoliło ponadto na wygodne testowanie wprowadzanych przez autorów funkcjonalności - duża częstotliwość oznacza w~tym przypadku możliwość testowania niewielkiego zbioru zmian.
 
 Ze względu na fakt, iż autorzy pracują nad systemem GGSS od września 2019 roku, to procedura przeprowadzania tego typu testów zawarta została w~manuskrypcie pracy inżynierskiej. Z~tego też powodu nie został tutaj zamieszczony szczegółowy opis wykonywanych czynności. Elementem stanowiącym nowość względem procesu przeprowadzanego w~ramach pracy inżynierskiej były testy wprowadzanych oraz modyfikowanych funkcjonalności. 
@@ -22,7 +22,7 @@ Na rysunku \ref{fig:tests_1} przedstawiony został stosowany przez autorów cykl
 \label{fig:tests_1}
 \end{figure}
 
-\section{Testy po migracji systemu (JC)}
+\section{Testy po migracji systemu}
 
 Jednym z~ważniejszych etapów pracy magisterskiej była migracja całego systemu GGSS wraz ze sprzętem elektronicznym do nowego środowiska uruchomieniowego. Polegała ona na przeniesieniu kopii oprogramowania na nowy komputer oraz podłączeniu do niego wykorzystywanych urządzeń.
 
@@ -30,7 +30,7 @@ Cała operacja miała odbywać się w~ramach wyjazdu autorów do CERN, natomiast
 
 Po sprawdzeniu wszystkich wymaganych elementów środowiska autorzy rozpoczęli proces uruchamiania projektu GGSS wraz z~jego główną aplikacją. W~jego trakcie dokładnie monitorowano zachowanie warstwy oprogramowania oraz urządzeń elektronicznych. Oprócz zachowania aplikacji sprawdzane było również zużycie zasobów oraz ewentualne błędy, które mogły wystąpić ze względu na migrację. Po uruchomieniu projektu monitorowano jego działanie przez kilka godzin, a~następnego dnia dokonano sprawdzenia dziennika zdarzeń. Nie stwierdzono żadnych problemów z~systemem, a~całość działała poprawnie. Migracja została uznana za zakończoną z~sukcesem.
 
-\section{Testy wersji finalnej (AK i~JC)}
+\section{Testy wersji finalnej}
 Niniejsza sekcja stanowi opis testów finalnej wersji systemu GGSS wykonanych w~sierpniu 2021 roku. Sprawdzeniu poddane zostały zarówno wszystkie najważniejsze funkcjonalności systemu, jak również elementy infrastruktury projektu oraz wprowadzone przez autorów zmiany. Ponadto zbadane zostało zużycie zasobów systemu, takich jak pamięć, podczas długotrwałego, nieprzerwanego działania aplikacji \emph{ggss-runner}. 
 
 \subsection{Testy funkcjonalności głównej aplikacji}
