@@ -11,9 +11,9 @@ This document describes how to add new static library to the GGSS project using 
     \item add path to the template to \lstinline{CMAKE_MODULE_PATH} variable
     \item include \lstinline{BuildStaticLibrary.cmake} using \lstinline{include} statement
     \item call \lstinline{ggss_build_static_library} with all mandatory and any optional arguments: \begin{itemize}
-                                                                                                        \item \lstinline{TARGET_NAME} - name of project (library) to be created (mandatory argument)
-                                                                                                        \item \lstinline{DEPENDENCY_PREFIX} - contain common part of all dependencies paths (mandatory if any dependencies specified, optional otherwise)
-                                                                                                        \item \lstinline{DEPENDENCIES} - list of library dependencies (optional argument)
+        \item \lstinline{TARGET_NAME} - name of project (library) to be created (mandatory argument)
+        \item \lstinline{DEPENDENCY_PREFIX} - contain common part of all dependencies paths (mandatory if any dependencies specified, optional otherwise)
+        \item \lstinline{DEPENDENCIES} - list of library dependencies (optional argument)
     \end{itemize}
     \item one should also consider defining \lstinline{BUILD_OUTPUT_DIRECTORY} variable if using this template in larger project
 \end{itemize}
@@ -87,7 +87,7 @@ This file contains steps needed to create new docker image for GGSS project.
 
 \subsubsection*{Steps}
 \begin{itemize}
-    \item Prepare proper Dockerimage file to create new image. (Dockerfile from ggss-aux repository can be used. Please align library/kernel version to your needs and prepare all needed resources for the Dockerfile e.g.: Boost)
+    \item Prepare proper Docker image file to create new image. (Dockerfile from ggss-aux repository can be used. Please align library/kernel version to your needs and prepare all needed resources for the Dockerfile e.g.: Boost)
     \item Create new image using command \lstinline{docker image build .} in directory containing Dockerfile. Remember image hash which will be visible at the end of the output \lstinline{Successfully built e250289733bd}.
     \item Properly tag new image:
     \lstinline{docker image tag e250289733bd} \\
@@ -97,6 +97,170 @@ This file contains steps needed to create new docker image for GGSS project.
     \item Push image to the registry: \lstinline{docker push gitlab-registry.cern.ch/atlas-trt-dcs-ggss/} \lstinline{ggss-all/centos7:v<new_version>} and \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/} \lstinline{ggss-all/centos7:latest}
     \item Remember to also update kernel version on registered GitLab Runners for the ggss project to match the version installed in newly created image.
 \end{itemize}
+
+\clearpage
+
+\section{Adding GitLab runner for GGSS project}
+This file describes steps needed to setup your own Virtual Machine as a GitLab CI/CD runner. The manual assumes that you have already created your own Virtual Machine with Centos7 as an operating system.
+
+\subsubsection*{GGSS project-specific notes}
+
+\begin{itemize}
+    \item Remember to install proper kernel version on your Virtual Machine (it should be the same as in production environment and the same as specified in Dockerfile)
+    \item You can use \lstinline{CERN OPENSTACK} services to create your own Virtual Machine
+    \item Remember to use \lstinline{ggss-builder} tag while registering GitLab Runner
+\end{itemize}
+
+\subsubsection*{Set up Docker}
+
+\noindent
+Remove old docker versions:
+\begin{lstlisting}
+sudo yum remove docker \
+docker-client \
+docker-client-latest \
+docker-common \
+docker-latest \
+docker-latest-logrotate \
+docker-logrotate \
+docker-engine
+\end{lstlisting}
+
+\subsubsection*{Install new docker engine and CLI using official repository}
+
+\noindent
+Install required packages:
+\begin{lstlisting}
+sudo yum install -y yum-utils \
+device-mapper-persistent-data \
+lvm2
+\end{lstlisting}
+
+\noindent
+Set up the repository:
+\begin{lstlisting}
+sudo yum-config-manager \
+--add-repo \
+https://download.docker.com/linux/centos/docker-ce.repo
+\end{lstlisting}
+
+\noindent
+Install Docker Engine and CLI:
+\begin{lstlisting}
+sudo yum install docker-ce docker-ce-cli containerd.io
+\end{lstlisting}
+
+\noindent
+Start Docker:
+\begin{lstlisting}
+sudo systemctl start docker
+\end{lstlisting}
+
+\noindent
+Verify if Docker works properly:
+\begin{lstlisting}
+sudo docker run hello-world
+\end{lstlisting}
+
+\subsubsection*{Register virtual machine as a GitLab CI/CD runner}
+
+\noindent
+Download appropriate packages:
+\begin{lstlisting}
+curl -LJO \
+https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_amd64.rpm
+\end{lstlisting}
+
+\noindent
+Install the packages:
+\begin{lstlisting}
+sudo yum install gitlab-runner_amd64.rpm
+\end{lstlisting}
+
+\noindent
+If you want to update runner packages use following command instead:
+\begin{lstlisting}
+rpm -Uvh gitlab-runner_amd64.rpm
+\end{lstlisting}
+
+\noindent
+Download gitlab-runner binary file:
+\begin{lstlisting}
+sudo curl -L --output /usr/local/bin/gitlab-runner \
+gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
+\end{lstlisting}
+
+\noindent
+Give proper permissions for the binary file:
+\begin{lstlisting}
+sudo chmod +x /usr/local/bin/gitlab-runner
+\end{lstlisting}
+
+\noindent
+Create a GitLab CI user:
+\begin{lstlisting}
+sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+\end{lstlisting}
+
+\noindent
+Install application and run as a service:
+\begin{lstlisting}
+sudo gitlab-runner install --user=gitlab-runner\
+--working-directory=/home/gitlab-runner
+sudo gitlab-runner start
+\end{lstlisting}
+
+\subsubsection*{Register the runner}
+
+\noindent
+Register using gitlab-runner:
+\begin{lstlisting}
+sudo gitlab-runner register
+\end{lstlisting}
+
+\noindent
+Enter proper GitLab instance URL:
+\begin{lstlisting}
+Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com )
+https://gitlab.cern.ch
+\end{lstlisting}
+
+\noindent
+Enter token obtained from your GitLab group page > settings > CI/CD > Runners:
+\begin{lstlisting}
+Please enter the gitlab-ci token for this runner
+<your_token_here>
+\end{lstlisting}
+
+\noindent
+Enter a description for the runner (this can be changed later):
+\begin{lstlisting}
+Please enter the gitlab-ci description for this runner
+[hostname] my-runner
+\end{lstlisting}
+
+\noindent
+Enter proper tags (this can be changed later):
+\begin{lstlisting}
+Please enter the gitlab-ci tags for this runner (comma separated):
+ggss-builder
+\end{lstlisting}
+
+\noindent
+Enter runner executor:
+\begin{lstlisting}
+Please enter the executor: ssh, docker+machine, docker-ssh+machine,\
+kubernetes, docker, parallels, virtualbox, docker-ssh, shell:
+docker
+\end{lstlisting}
+
+\noindent
+Enter default image (if not defined in \lstinline{.gitlab-ci.yml}):
+\begin{lstlisting}
+Please enter the Docker image (eg. ruby:2.1):
+cern/cc7-base:latest
+\end{lstlisting}
+
 
 \clearpage
 \section{Using new GGSS DIM commands}
@@ -185,153 +349,3 @@ This file describes new command syntax for CAEN High Voltage Units. All commands
     \item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:#BD:00,CMD:OK,VAL:0000.00}
     \item Module number in the command content must match ID of the module with given \lstinline{<module_alias>}
 \end{itemize}
-
-
-\clearpage
-
-\section{How to add GitLab runner for GGSS project}
-
-\subsubsection*{Description}
-
-This file describes steps needed to setup your own Virtual Machine as a GitLab CI/CD runner. The manual assumes that you have already created your own Virtual Machine with Centos7 as a operating system.
-
-\subsubsection*{GGSS project specific notes}
-
-\begin{itemize}
-    \item Remember to install proper kernel version on Your Virtual Machine (it should be the same as in production environment and the same as in specified in Dockerfile)
-    \item You can use \lstinline{CERN OPENSTACK} services to create your own Virtual Machine
-    \item Remember to use \lstinline{ggss-builder} tag while registering GitLab Runner
-\end{itemize}
-
-\section*{Manual}
-
-\subsubsection*{Setting up Docker}
-
-Remove old docker versions
-
-\begin{lstlisting}
-sudo yum remove docker \
-docker-client \
-docker-client-latest \
-docker-common \
-docker-latest \
-docker-latest-logrotate \
-docker-logrotate \
-docker-engine
-\end{lstlisting}
-
-\subsubsection*{Install new docker engine and CLI using official repository}
-
-Install required packages
-\begin{lstlisting}
-sudo yum install -y yum-utils \
-device-mapper-persistent-data \
-lvm2
-\end{lstlisting}
-
-Set up the repository
-\begin{lstlisting}
-sudo yum-config-manager \
---add-repo \
-https://download.docker.com/linux/centos/docker-ce.repo
-\end{lstlisting}
-
-Install Docker Engine and CLI
-\begin{lstlisting}
-sudo yum install docker-ce docker-ce-cli containerd.io
-\end{lstlisting}
-
-Start Docker
-\begin{lstlisting}
-sudo systemctl start docker
-\end{lstlisting}
-
-Verify if Docker works properly
-\begin{lstlisting}
-sudo docker run hello-world
-\end{lstlisting}
-
-\subsubsection*{Register virtual machine as a GitLab CI/CD runner}
-
-Download appropriate packages
-\begin{lstlisting}
-curl -LJO \
-https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_amd64.rpm
-\end{lstlisting}
-
-Install the packages
-\begin{lstlisting}
-sudo yum install gitlab-runner_amd64.rpm
-\end{lstlisting}
-
-If you want to update runner packages use following command instead:
-\begin{lstlisting}
-rpm -Uvh gitlab-runner_amd64.rpm
-\end{lstlisting}
-
-Download gitlab-runner binary file
-\begin{lstlisting}
-sudo curl -L --output /usr/local/bin/gitlab-runner \
-gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
-\end{lstlisting}
-
-Give proper permissions to the binary file
-\begin{lstlisting}
-sudo chmod +x /usr/local/bin/gitlab-runner
-\end{lstlisting}
-
-Create a GitLab CI user
-\begin{lstlisting}
-sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
-\end{lstlisting}
-
-Install application and run as a service
-\begin{lstlisting}
-sudo gitlab-runner install --user=gitlab-runner\
---working-directory=/home/gitlab-runner
-sudo gitlab-runner start
-\end{lstlisting}
-
-\subsubsection*{Register the runner}
-
-Register using gitlab-runner
-\begin{lstlisting}
-sudo gitlab-runner register
-\end{lstlisting}
-
-Enter proper GitLab instance URL
-\begin{lstlisting}
-Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com )
-https://gitlab.cern.ch
-\end{lstlisting}
-
-Enter token obtained from your GitLab group page > settings > CI/CD > Runners
-\begin{lstlisting}
-Please enter the gitlab-ci token for this runner
-<your_token_here>
-\end{lstlisting}
-
-Enter a description for the runner (this can be changed later)
-\begin{lstlisting}
-Please enter the gitlab-ci description for this runner
-[hostname] my-runner
-\end{lstlisting}
-
-Enter proper tags (this can be changed later)
-\begin{lstlisting}
-Please enter the gitlab-ci tags for this runner (comma separated):
-ggss-builder
-\end{lstlisting}
-
-Enter runner executor
-\begin{lstlisting}
-Please enter the executor: ssh, docker+machine, docker-ssh+machine,\
-kubernetes, docker, parallels, virtualbox, docker-ssh, shell:
-docker
-\end{lstlisting}
-
-Enter default image (if not defined in .gitlab-ci.yml)
-\begin{lstlisting}
-Please enter the Docker image (eg. ruby:2.1):
-cern/cc7-base:latest
-\end{lstlisting}
