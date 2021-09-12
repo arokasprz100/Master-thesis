@@ -8,14 +8,14 @@ This appendix contains useful, in the opinion of the authors, guides on certain 
 \section{Adding modules to the project using existing CMake templates}
 This document describes how to add new static library to the GGSS project using the \lstinline{BuildStaticLibrary.cmake} template that can be found in \emph{ggss-util-libs} repository. To use it, perform following actions:
 \begin{itemize}
-\item add path to the template to \lstinline{CMAKE_MODULE_PATH} variable
-\item include \lstinline{BuildStaticLibrary.cmake} using \lstinline{include} statement
-\item call \lstinline{ggss_build_static_library} with all mandatory and any optional arguments: \begin{itemize}
-    \item \lstinline{TARGET_NAME} - name of project (library) to be created (mandatory argument)
-    \item \lstinline{DEPENDENCY_PREFIX} - contain common part of all dependencies paths (mandatory if any dependencies specified, optional otherwise)
-    \item \lstinline{DEPENDENCIES} - list of library dependencies (optional argument)
-\end{itemize}
-\item one should also consider defining \lstinline{BUILD_OUTPUT_DIRECTORY} variable if using this template in larger project
+    \item add path to the template to \lstinline{CMAKE_MODULE_PATH} variable
+    \item include \lstinline{BuildStaticLibrary.cmake} using \lstinline{include} statement
+    \item call \lstinline{ggss_build_static_library} with all mandatory and any optional arguments: \begin{itemize}
+                                                                                                        \item \lstinline{TARGET_NAME} - name of project (library) to be created (mandatory argument)
+                                                                                                        \item \lstinline{DEPENDENCY_PREFIX} - contain common part of all dependencies paths (mandatory if any dependencies specified, optional otherwise)
+                                                                                                        \item \lstinline{DEPENDENCIES} - list of library dependencies (optional argument)
+    \end{itemize}
+    \item one should also consider defining \lstinline{BUILD_OUTPUT_DIRECTORY} variable if using this template in larger project
 \end{itemize}
 
 \noindent
@@ -91,7 +91,7 @@ This file contains steps needed to create new docker image for GGSS project.
     \item Create new image using command \lstinline{docker image build .} in directory containing Dockerfile. Remember image hash which will be visible at the end of the output \lstinline{Successfully built e250289733bd}.
     \item Properly tag new image:
     \lstinline{docker image tag e250289733bd} \\
-    \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/ggss-all/centos7:v<new_version>} \\ 
+    \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/ggss-all/centos7:v<new_version>} \\
     and \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/ggss-all/centos7:latest}
     \item Login to gitlab docker image registry \lstinline{docker login gitlab-registry.cern.ch}
     \item Push image to the registry: \lstinline{docker push gitlab-registry.cern.ch/atlas-trt-dcs-ggss/} \lstinline{ggss-all/centos7:v<new_version>} and \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/} \lstinline{ggss-all/centos7:latest}
@@ -103,85 +103,235 @@ This file contains steps needed to create new docker image for GGSS project.
 This document describes newly introduced or modified GGSS DIM commands.
 
 \begin{itemize}
-\item \lstinline{update} - updates parameters and data for all channels currently included in performing measurements
-\item \lstinline{update channel <channel_no>} - updates parameters and data for a given channel, for example \lstinline{update channel 0:3}
-\item \lstinline{update all_straws} - updates parameters and data for all channels, even if they are not used to perform measurements
-\item \lstinline{update all} - updates parameters and data for all channels included in performing measurements and updates spectrum for current channel
-\item \lstinline{update spectrum} - performs spectrum update for currently measured channel
-\item \lstinline{get mcaRefreshInterval} - gets value of refresh interval used for clearing MCA buffer
-\item \lstinline{set ggss parameter mcaRefreshInterval value <expected_value} - sets value (integer, in seconds) of MCA buffer refresh/clearing interval
-\item \lstinline{reset channelsOrder} - sets channel order to default value, loaded at the start from config file (requires GGSS to be stopped)
-\item \lstinline{get defaultChannelsOrder} - gets default channel orders, loaded from the config file
-\item \lstinline{set ggss parameter smoothingWindowHalf value <expected_value>} - sets value of the half of window width used for performing histogram smoothing (moving average filter) before finding initial peak position
-\item \lstinline{get smoothingWindowHalf} - returns value of the half of window width used for performing histogram smoothing
-\item \lstinline{set ggss parameters kindOfFit value <fit_type>} now supports more types: \lstinline{GaussFitXe}, \lstinline{GaussFitAr}, \lstinline{Gauss2FitXe} and \lstinline{Gauss2FitAr}
+    \item \lstinline{update} - updates parameters and data for all channels currently included in performing measurements
+    \item \lstinline{update channel <channel_no>} - updates parameters and data for a given channel, for example \lstinline{update channel 0:3}
+    \item \lstinline{update all_straws} - updates parameters and data for all channels, even if they are not used to perform measurements
+    \item \lstinline{update all} - updates parameters and data for all channels included in performing measurements and updates spectrum for current channel
+    \item \lstinline{update spectrum} - performs spectrum update for currently measured channel
+    \item \lstinline{get mcaRefreshInterval} - gets value of refresh interval used for clearing MCA buffer
+    \item \lstinline{set ggss parameter mcaRefreshInterval value <expected_value} - sets value (integer, in seconds) of MCA buffer refresh/clearing interval
+    \item \lstinline{reset channelsOrder} - sets channel order to default value, loaded at the start from config file (requires GGSS to be stopped)
+    \item \lstinline{get defaultChannelsOrder} - gets default channel orders, loaded from the config file
+    \item \lstinline{set ggss parameter smoothingWindowHalf value <expected_value>} - sets value of the half of window width used for performing histogram smoothing (moving average filter) before finding initial peak position
+    \item \lstinline{get smoothingWindowHalf} - returns value of the half of window width used for performing histogram smoothing
+    \item \lstinline{set ggss parameters kindOfFit value <fit_type>} now supports more types: \lstinline{GaussFitXe}, \lstinline{GaussFitAr}, \lstinline{Gauss2FitXe} and \lstinline{Gauss2FitAr}
 \end{itemize}
 
 \clearpage
 \section{Using GGSS DIM HV commands}
 This file describes new command syntax for CAEN High Voltage Units. All commands are case-insensitive. There are 3 types of supported commands:
 \begin{itemize}
-\item \textbf{MON} - for performing get operations, can refer to channels or modules
-\item \textbf{SET} - for setting parameters, can refer to channels or modules
-\item \textbf{RAW} - for backward compatibility with old command syntax
+    \item \textbf{MON} - for performing get operations, can refer to channels or modules
+    \item \textbf{SET} - for setting parameters, can refer to channels or modules
+    \item \textbf{RAW} - for backward compatibility with old command syntax
 \end{itemize}
 
 \dotfill
 
 \subsubsection*{MON Channel Commands}
 \begin{itemize}
-\item \textbf{Syntax:} \lstinline{hv <module_alias>:<channel_number> mon <param[,other_params]>}
-\item \textbf{Output format:} \lstinline{OK: <module_alias>:<channel>:<param>:<value>;[...]}
-\item \textbf{Supported parameters:} VSET, VMIN VMAX, VDEC, VMON, ISET, IMIN, IMAX, ISDEC, IMON,MAXV, MVMIN, MVMAX, MVDEC, RUP, RDW, PDWN, RUPMIN, RUPMAX, RUPDEC, RDWMIN, RDWMAX, RDWDEC, TRIP, TRIPMIN, TRIPMAX, TRIPDEC and POL
-\item \textbf{Example:} \lstinline{hv_caen_n1470_0:2 mon vmon,vset} returns VMON and VSET for given channel (number 2) and module (described by alias \lstinline{hv_caen_n1470_0})
-\item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:2:VMON:1374;hv_caen_n1470_0:2:VSET:1374;}
-\item One can use \lstinline{*} character to specify that command should be performed for all modules/channels. Example: \lstinline{hv *:* mon vmon}
-\item One can use \lstinline{*} to get output for following parameters: VSET, VMON, ISET, IMON, RUP, RDW, TRIP and POL
+    \item \textbf{Syntax:} \lstinline{hv <module_alias>:<channel_number> mon <param[,other_params]>}
+    \item \textbf{Output format:} \lstinline{OK: <module_alias>:<channel>:<param>:<value>;[...]}
+    \item \textbf{Supported parameters:} VSET, VMIN VMAX, VDEC, VMON, ISET, IMIN, IMAX, ISDEC, IMON,MAXV, MVMIN, MVMAX, MVDEC, RUP, RDW, PDWN, RUPMIN, RUPMAX, RUPDEC, RDWMIN, RDWMAX, RDWDEC, TRIP, TRIPMIN, TRIPMAX, TRIPDEC and POL
+    \item \textbf{Example:} \lstinline{hv_caen_n1470_0:2 mon vmon,vset} returns VMON and VSET for given channel (number 2) and module (described by alias \lstinline{hv_caen_n1470_0})
+    \item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:2:VMON:1374;hv_caen_n1470_0:2:VSET:1374;}
+    \item One can use \lstinline{*} character to specify that command should be performed for all modules/channels. Example: \lstinline{hv *:* mon vmon}
+    \item One can use \lstinline{*} to get output for following parameters: VSET, VMON, ISET, IMON, RUP, RDW, TRIP and POL
 \end{itemize}
 
 \dotfill
 
 \subsubsection*{MON Module Commands}
 \begin{itemize}
-\item \textbf{Syntax:} \lstinline{hv <module_alias> mon <param>}
-\item \textbf{Output format:} \lstinline{OK: <module_alias>:<param>:<value>;[...]}
-\item \textbf{Supported parameters:} BDNAME, BDFREL, BDSNUM, BDILK, IDILKM, BDCTR and BDTERM.
-\item \textbf{Example:} \lstinline{hv hv_caen_n1470_0 mon bdctr} returns Control Mode for given module
-\item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:BDCTR:REMOTE;}
-\item One can use \lstinline{*} to specify that all high voltage modules should be used
+    \item \textbf{Syntax:} \lstinline{hv <module_alias> mon <param>}
+    \item \textbf{Output format:} \lstinline{OK: <module_alias>:<param>:<value>;[...]}
+    \item \textbf{Supported parameters:} BDNAME, BDFREL, BDSNUM, BDILK, IDILKM, BDCTR and BDTERM.
+    \item \textbf{Example:} \lstinline{hv hv_caen_n1470_0 mon bdctr} returns Control Mode for given module
+    \item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:BDCTR:REMOTE;}
+    \item One can use \lstinline{*} to specify that all high voltage modules should be used
 \end{itemize}
 
 \dotfill
 
 \subsubsection*{SET Channel Commands}
 \begin{itemize}
-\item \textbf{Syntax:} \lstinline{hv <module_alias>:<channel> set <param> <value>}
-\item \textbf{Output format:} \lstinline{OK: <module_alias>:<channel>:<param>:<result>;[...]}
-\item \textbf{Supported parameters:} VSET, ISET, MAXV and TRIP
-\item \textbf{Example:} \lstinline{hv hv_caen_n1470_0:1 set vset 1} sets voltage on given module (specified by alias \lstinline{hv_caen_n1470_0}) and channel (number 1) to 1
-\item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:1:VSET:OK;}
-\item \textbf{Special case:} enabling/disabling a channel (no value, only parameter: \lstinline{ON} or \lstinline{OFF})
-\item \textbf{Example:} \lstinline{hv hv_caen_n1470_0:1 set on}
-\item One can use \lstinline{*} character to specify that command should be performed for all modules/channels
+    \item \textbf{Syntax:} \lstinline{hv <module_alias>:<channel> set <param> <value>}
+    \item \textbf{Output format:} \lstinline{OK: <module_alias>:<channel>:<param>:<result>;[...]}
+    \item \textbf{Supported parameters:} VSET, ISET, MAXV and TRIP
+    \item \textbf{Example:} \lstinline{hv hv_caen_n1470_0:1 set vset 1} sets voltage on given module (specified by alias \lstinline{hv_caen_n1470_0}) and channel (number 1) to 1
+    \item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:1:VSET:OK;}
+    \item \textbf{Special case:} enabling/disabling a channel (no value, only parameter: \lstinline{ON} or \lstinline{OFF})
+    \item \textbf{Example:} \lstinline{hv hv_caen_n1470_0:1 set on}
+    \item One can use \lstinline{*} character to specify that command should be performed for all modules/channels
 \end{itemize}
 
 \dotfill
 
 \subsubsection*{SET Module Commands}
 \begin{itemize}
-\item \textbf{Syntax:} \lstinline{hv <module_alias> set <param> <value>}
-\item \textbf{Output format:} \lstinline{OK: <module_alias>:<param>:<result>;[...]}
-\item \textbf{Supported parameters:} RAMP
-\item One can use \lstinline{*} character to specify that command should be performed for all modules
+    \item \textbf{Syntax:} \lstinline{hv <module_alias> set <param> <value>}
+    \item \textbf{Output format:} \lstinline{OK: <module_alias>:<param>:<result>;[...]}
+    \item \textbf{Supported parameters:} RAMP
+    \item One can use \lstinline{*} character to specify that command should be performed for all modules
 \end{itemize}
 
 \dotfill
 
 \subsubsection*{RAW Commands}
 \begin{itemize}
-\item \textbf{Syntax:} \lstinline{hv <module_alias> raw <command_content>}
-\item \textbf{Output format:} \lstinline{OK: <module_alias>:<output_from_hv>}
-\item \textbf{Example:} \lstinline{hv hv_caen_n1470_0 raw $BD:00,CMD:MON,CH:0,PAR:IMON}
-\item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:#BD:00,CMD:OK,VAL:0000.00}
-\item Module number in the command content must match ID of the module with given \lstinline{<module_alias>}
+    \item \textbf{Syntax:} \lstinline{hv <module_alias> raw <command_content>}
+    \item \textbf{Output format:} \lstinline{OK: <module_alias>:<output_from_hv>}
+    \item \textbf{Example:} \lstinline{hv hv_caen_n1470_0 raw $BD:00,CMD:MON,CH:0,PAR:IMON}
+    \item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:#BD:00,CMD:OK,VAL:0000.00}
+    \item Module number in the command content must match ID of the module with given \lstinline{<module_alias>}
 \end{itemize}
+
+
+\clearpage
+
+\section{How to add GitLab runner for GGSS project}
+
+\subsubsection*{Description}
+
+This file describes steps needed to setup your own Virtual Machine as a GitLab CI/CD runner. The manual assumes that you have already created your own Virtual Machine with Centos7 as a operating system.
+
+\subsubsection*{GGSS project specific notes}
+
+\begin{itemize}
+    \item Remember to install proper kernel version on Your Virtual Machine (it should be the same as in production environment and the same as in specified in Dockerfile)
+    \item You can use \lstinline{CERN OPENSTACK} services to create your own Virtual Machine
+    \item Remember to use \lstinline{ggss-builder} tag while registering GitLab Runner
+\end{itemize}
+
+\section*{Manual}
+
+\subsubsection*{Setting up Docker}
+
+Remove old docker versions
+
+\begin{lstlisting}
+sudo yum remove docker \
+docker-client \
+docker-client-latest \
+docker-common \
+docker-latest \
+docker-latest-logrotate \
+docker-logrotate \
+docker-engine
+\end{lstlisting}
+
+\subsubsection*{Install new docker engine and CLI using official repository}
+
+Install required packages
+\begin{lstlisting}
+sudo yum install -y yum-utils \
+device-mapper-persistent-data \
+lvm2
+\end{lstlisting}
+
+Set up the repository
+\begin{lstlisting}
+sudo yum-config-manager \
+--add-repo \
+https://download.docker.com/linux/centos/docker-ce.repo
+\end{lstlisting}
+
+Install Docker Engine and CLI
+\begin{lstlisting}
+sudo yum install docker-ce docker-ce-cli containerd.io
+\end{lstlisting}
+
+Start Docker
+\begin{lstlisting}
+sudo systemctl start docker
+\end{lstlisting}
+
+Verify if Docker works properly
+\begin{lstlisting}
+sudo docker run hello-world
+\end{lstlisting}
+
+\subsubsection*{Register virtual machine as a GitLab CI/CD runner}
+
+Download appropriate packages
+\begin{lstlisting}
+curl -LJO \
+https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_amd64.rpm
+\end{lstlisting}
+
+Install the packages
+\begin{lstlisting}
+sudo yum install gitlab-runner_amd64.rpm
+\end{lstlisting}
+
+If you want to update runner packages use following command instead:
+\begin{lstlisting}
+rpm -Uvh gitlab-runner_amd64.rpm
+\end{lstlisting}
+
+Download gitlab-runner binary file
+\begin{lstlisting}
+sudo curl -L --output /usr/local/bin/gitlab-runner \
+gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
+\end{lstlisting}
+
+Give proper permissions to the binary file
+\begin{lstlisting}
+sudo chmod +x /usr/local/bin/gitlab-runner
+\end{lstlisting}
+
+Create a GitLab CI user
+\begin{lstlisting}
+sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+\end{lstlisting}
+
+Install application and run as a service
+\begin{lstlisting}
+sudo gitlab-runner install --user=gitlab-runner\
+--working-directory=/home/gitlab-runner
+sudo gitlab-runner start
+\end{lstlisting}
+
+\subsubsection*{Register the runner}
+
+Register using gitlab-runner
+\begin{lstlisting}
+sudo gitlab-runner register
+\end{lstlisting}
+
+Enter proper GitLab instance URL
+\begin{lstlisting}
+Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com )
+https://gitlab.cern.ch
+\end{lstlisting}
+
+Enter token obtained from your GitLab group page > settings > CI/CD > Runners
+\begin{lstlisting}
+Please enter the gitlab-ci token for this runner
+<your_token_here>
+\end{lstlisting}
+
+Enter a description for the runner (this can be changed later)
+\begin{lstlisting}
+Please enter the gitlab-ci description for this runner
+[hostname] my-runner
+\end{lstlisting}
+
+Enter proper tags (this can be changed later)
+\begin{lstlisting}
+Please enter the gitlab-ci tags for this runner (comma separated):
+ggss-builder
+\end{lstlisting}
+
+Enter runner executor
+\begin{lstlisting}
+Please enter the executor: ssh, docker+machine, docker-ssh+machine,\
+kubernetes, docker, parallels, virtualbox, docker-ssh, shell:
+docker
+\end{lstlisting}
+
+Enter default image (if not defined in .gitlab-ci.yml)
+\begin{lstlisting}
+Please enter the Docker image (eg. ruby:2.1):
+cern/cc7-base:latest
+\end{lstlisting}
