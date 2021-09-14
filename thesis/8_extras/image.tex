@@ -1,0 +1,16 @@
+\clearpage
+\section{Creating proper GGSS Docker image for CI/CD infrastructure}
+This file contains steps needed to create new docker image for GGSS project.
+
+\subsubsection*{Steps}
+\begin{itemize}
+    \item Prepare proper Docker image file to create new image. (Dockerfile from ggss-aux repository can be used. Please align library/kernel version to your needs and prepare all needed resources for the Dockerfile e.g.: Boost)
+    \item Create new image using command \lstinline{docker image build .} in directory containing Dockerfile. Remember image hash which will be visible at the end of the output \lstinline{Successfully built e250289733bd}.
+    \item Properly tag new image:
+    \lstinline{docker image tag e250289733bd} \\
+    \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/ggss-all/centos7:v<new_version>} \\
+    and \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/ggss-all/centos7:latest}
+    \item Login to gitlab docker image registry \lstinline{docker login gitlab-registry.cern.ch}
+    \item Push image to the registry: \lstinline{docker push gitlab-registry.cern.ch/atlas-trt-dcs-ggss/} \lstinline{ggss-all/centos7:v<new_version>} and \lstinline{gitlab-registry.cern.ch/atlas-trt-dcs-ggss/} \lstinline{ggss-all/centos7:latest}
+    \item Remember to also update kernel version on registered GitLab Runners for the ggss project to match the version installed in newly created image.
+\end{itemize}

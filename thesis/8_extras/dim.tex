@@ -1,0 +1,18 @@
+\clearpage
+\section{Using new GGSS DIM commands}
+This document describes newly introduced or modified GGSS DIM commands.
+
+\begin{itemize}
+    \item \lstinline{update} - updates parameters and data for all channels currently included in performing measurements
+    \item \lstinline{update channel <channel_no>} - updates parameters and data for a given channel, for example \lstinline{update channel 0:3}
+    \item \lstinline{update all_straws} - updates parameters and data for all channels, even if they are not used to perform measurements
+    \item \lstinline{update all} - updates parameters and data for all channels included in performing measurements and updates spectrum for current channel
+    \item \lstinline{update spectrum} - performs spectrum update for currently measured channel
+    \item \lstinline{get mcaRefreshInterval} - gets value of refresh interval used for clearing MCA buffer
+    \item \lstinline{set ggss parameter mcaRefreshInterval value <expected_value} - sets value (integer, in seconds) of MCA buffer refresh/clearing interval
+    \item \lstinline{reset channelsOrder} - sets channel order to default value, loaded at the start from config file (requires GGSS to be stopped)
+    \item \lstinline{get defaultChannelsOrder} - gets default channel orders, loaded from the config file
+    \item \lstinline{set ggss parameter smoothingWindowHalf value <expected_value>} - sets value of the half of window width used for performing histogram smoothing (moving average filter) before finding initial peak position
+    \item \lstinline{get smoothingWindowHalf} - returns value of the half of window width used for performing histogram smoothing
+    \item \lstinline{set ggss parameters kindOfFit value <fit_type>} now supports more types: \lstinline{GaussFitXe}, \lstinline{GaussFitAr}, \lstinline{Gauss2FitXe} and \lstinline{Gauss2FitAr}
+\end{itemize}

@@ -1,0 +1,74 @@
+\clearpage
+\section{Working with git submodules and releasing GGSS}
+\label{sec:working-with-git-sudmobules}
+This file contains tips for working with complex git structure created within GGSS project.
+
+\subsection*{Content}
+This document contains following tips:
+\begin{itemize}
+    \item How to clone whole repository structure of the GGSS project.
+    \item How to push changes inside component.
+    \item How to propagate changes to whole GGSS project.
+    \item How to release new GGSS version.
+\end{itemize}
+
+\subsubsection*{How to clone whole repository structure of the GGSS project}
+\begin{itemize}
+    \item \lstinline{git clone ssh://git@gitlab.cern.ch:7999/atlas-trt-dcs-ggss/ggss-all.git} - to clone main repository
+    \item \lstinline{cd ggss-all}
+    \item \lstinline{git submodule update --init --recursive} - to clone all descendant repositories
+    \item \lstinline{git submodule foreach --recursive git checkout master} - this step is needed because after previous state all submodules heads will be in detached state
+\end{itemize}
+
+\subsubsection*{Notes}
+\begin{itemize}
+    \item \lstinline{M ggss-hardware-libs} - if there is message about modifications it means that parent repository has outdates submodule link. This issue can be solved using gitio to align repositories.
+    \item We can clone part of the ggss-project by changing ggss-all to other repository, for instance ggss-hardware-libs. In such case only repositories descendant to ggss-hardware-libs will be cloned.
+\end{itemize}
+
+\subsubsection*{How to push changes inside component}
+There are few things you have to remember when pushing changes to repository:
+\begin{itemize}
+    \item Make sure that you are using newest version of the repository (newest commit).
+    \item Make sure that your working version is not in HEAD Detached state: \lstinline{git status}. You can attach it again with \lstinline{git checkout master/<other-branch>} command.
+    \item Stage all changes for commit \lstinline{git add .} or \lstinline{git rm <file path>}
+    \item Create new commit \lstinline{git commit -m <commit message>}
+    \item Push changes to master or side branch: \lstinline{git push origin master/<other-branch>}
+\end{itemize}
+
+\subsubsection*{How to propagate changes to whole GGSS project}
+\begin{itemize}
+    \item As propagating changes within multi-level submodule based project requires many commits (you have to propagate changes in every dependent repository by making new commit) gitio script has been created to handle the process.
+    \item Gitio is meant to analyze submodules and their dependencies, create tree structure basing on gathered information and update all the submodule pointers to the newest available versions on master branches.
+    \item For detailed usage please read README in gitio repository.
+    \item \textbf{Important} \lstinline{gitio} requires Python3 installed to be working properly. Install \lstinline{python3-pip} package on your machine to use the script. You may also consider using \lstinline{virtualenv}.
+\end{itemize}
+
+\subsubsection*{Gitio quick usage guide:}
+\begin{itemize}
+    \item Clone whole GGSS project or use already cloned repositories.
+    \item Clone \lstinline{ggss-gitio} repository: \\\lstinline{git clone ssh://git@gitlab.cern.ch:7999/atlas-trt-dcs-ggss/ggss-gitio.git}
+    \item Enter \lstinline{ggss-gitio} directory \lstinline{cd ggss-gitio}
+    \item (Optional) Install requirements if they are not preset in your environment \lstinline{pip3 install -r requirements.txt}
+    \item Use \lstinline{ggss-gitio} to align repositories \lstinline{python3 gitio.py -p <path-to-repository-root>} (repository root may be relative path to \lstinline{ggss-all} repository e.g.: \lstinline{../ggss-all})
+\end{itemize}
+
+
+\subsubsection*{Notes}
+There are few things you have to remember when pushing changes to repository:
+\begin{itemize}
+    \item Make sure that you are using newest version of the repository (newest commit).
+    \item Make sure that your working version is not in HEAD Detached state (git status).
+    \item Use gitio script ONLY to update links to submodules. Gitio is not intended to push any code changes and it will not allow to do so.
+\end{itemize}
+
+\subsubsection*{How to release new GGSS version}
+\begin{itemize}
+    \item To release new GGSS project version all changes that are mentioned to be within new release should be pushed to \lstinline{master} branches in corresponding repositories.
+    \item All repositories should be aligned using \lstinline{ggss-gitio} script.
+    \item After all changes were aligned and pipeline in \lstinline{ggss-all} repository has finished: \begin{itemize}
+        \item Create new empty commit with message that follows eslint-semantic-release (\href{https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-eslint}{\textbf{link}}) convention \lstinline{git commit -m <commit-message> --allow-empty}
+        \item Push the commit to remote \lstinline{git push origin master}
+    \end{itemize}
+    \item After pipeline for the created commit finishes release should be available \href{https://gitlab.cern.ch/atlas-trt-dcs-ggss/ggss-all/-/releases}{\textbf{here}} 
+\end{itemize}

@@ -1,0 +1,68 @@
+\clearpage
+\section{Using GGSS DIM HV commands}
+This file describes new command syntax for CAEN High Voltage Units. All commands are case-insensitive. There are 3 types of supported commands:
+\begin{itemize}
+    \item \textbf{MON} - for performing get operations, can refer to channels or modules
+    \item \textbf{SET} - for setting parameters, can refer to channels or modules
+    \item \textbf{RAW} - for backward compatibility with old command syntax
+\end{itemize}
+
+\dotfill
+
+\subsubsection*{MON Channel Commands}
+\begin{itemize}
+    \item \textbf{Syntax:} \lstinline{hv <module_alias>:<channel_number> mon <param[,other_params]>}
+    \item \textbf{Output format:} \lstinline{OK: <module_alias>:<channel>:<param>:<value>;[...]}
+    \item \textbf{Supported parameters:} VSET, VMIN VMAX, VDEC, VMON, ISET, IMIN, IMAX, ISDEC, IMON,MAXV, MVMIN, MVMAX, MVDEC, RUP, RDW, PDWN, RUPMIN, RUPMAX, RUPDEC, RDWMIN, RDWMAX, RDWDEC, TRIP, TRIPMIN, TRIPMAX, TRIPDEC and POL
+    \item \textbf{Example:} \lstinline{hv_caen_n1470_0:2 mon vmon,vset} returns VMON and VSET for given channel (number 2) and module (described by alias \lstinline{hv_caen_n1470_0})
+    \item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:2:VMON:1374;hv_caen_n1470_0:2:VSET:1374;}
+    \item One can use \lstinline{*} character to specify that command should be performed for all modules/channels. Example: \lstinline{hv *:* mon vmon}
+    \item One can use \lstinline{*} to get output for following parameters: VSET, VMON, ISET, IMON, RUP, RDW, TRIP and POL
+\end{itemize}
+
+\dotfill
+
+\subsubsection*{MON Module Commands}
+\begin{itemize}
+    \item \textbf{Syntax:} \lstinline{hv <module_alias> mon <param>}
+    \item \textbf{Output format:} \lstinline{OK: <module_alias>:<param>:<value>;[...]}
+    \item \textbf{Supported parameters:} BDNAME, BDFREL, BDSNUM, BDILK, IDILKM, BDCTR and BDTERM.
+    \item \textbf{Example:} \lstinline{hv hv_caen_n1470_0 mon bdctr} returns Control Mode for given module
+    \item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:BDCTR:REMOTE;}
+    \item One can use \lstinline{*} to specify that all high voltage modules should be used
+\end{itemize}
+
+\dotfill
+
+\subsubsection*{SET Channel Commands}
+\begin{itemize}
+    \item \textbf{Syntax:} \lstinline{hv <module_alias>:<channel> set <param> <value>}
+    \item \textbf{Output format:} \lstinline{OK: <module_alias>:<channel>:<param>:<result>;[...]}
+    \item \textbf{Supported parameters:} VSET, ISET, MAXV and TRIP
+    \item \textbf{Example:} \lstinline{hv hv_caen_n1470_0:1 set vset 1} sets voltage on given module (specified by alias \lstinline{hv_caen_n1470_0}) and channel (number 1) to 1
+    \item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:1:VSET:OK;}
+    \item \textbf{Special case:} enabling/disabling a channel (no value, only parameter: \lstinline{ON} or \lstinline{OFF})
+    \item \textbf{Example:} \lstinline{hv hv_caen_n1470_0:1 set on}
+    \item One can use \lstinline{*} character to specify that command should be performed for all modules/channels
+\end{itemize}
+
+\dotfill
+
+\subsubsection*{SET Module Commands}
+\begin{itemize}
+    \item \textbf{Syntax:} \lstinline{hv <module_alias> set <param> <value>}
+    \item \textbf{Output format:} \lstinline{OK: <module_alias>:<param>:<result>;[...]}
+    \item \textbf{Supported parameters:} RAMP
+    \item One can use \lstinline{*} character to specify that command should be performed for all modules
+\end{itemize}
+
+\dotfill
+
+\subsubsection*{RAW Commands}
+\begin{itemize}
+    \item \textbf{Syntax:} \lstinline{hv <module_alias> raw <command_content>}
+    \item \textbf{Output format:} \lstinline{OK: <module_alias>:<output_from_hv>}
+    \item \textbf{Example:} \lstinline{hv hv_caen_n1470_0 raw $BD:00,CMD:MON,CH:0,PAR:IMON}
+    \item \textbf{Example output:} \lstinline{OK: hv_caen_n1470_0:#BD:00,CMD:OK,VAL:0000.00}
+    \item Module number in the command content must match ID of the module with given \lstinline{<module_alias>}
+\end{itemize}

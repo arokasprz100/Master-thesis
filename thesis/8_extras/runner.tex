@@ -1,0 +1,237 @@
+\clearpage
+\section{Using CERN Openstack and adding GitLab runner for GGSS project}
+This file describes how to use CERN Openstack to create and setup personal VM that can be used as GitLab Runner in GGSS CI/CD environment and contains steps needed.
+
+\subsubsection*{Create VM using CERN Openstack}
+\begin{itemize}
+    \item Go to CERN Openstack website (\href{https://openstack.cern.ch/}{\textbf{link}})
+    \item Choose \lstinline{Project > Compute > Instances > Launch Instance}
+    \item In \lstinline{Details} fill: \begin{itemize}
+        \item Instance Name (Hostname)
+        \item Description
+    \end{itemize}
+    \item In \lstinline{Source} choose \lstinline{CC7 - x86_64} image
+    \item In \lstinline{Flavor} choose \lstinline{m2.large}
+    \item Click \lstinline{LAUNCH INSTANCE} in the bottom-right corner
+    \item After few minutes new VM will be created and IP address will be visible in \lstinline{Project > Compute > Instances} panel.
+    \item To register the new VM as GitLab Runner follow proper guide.
+\end{itemize}
+
+\subsubsection*{GGSS project-specific notes}
+\begin{itemize}
+    \item \textit{IMPORTANT} Remember to install proper kernel version on your Virtual Machine (it should be the same as in production environment and the same as specified in Dockerfile)
+    \item Remember to use \lstinline{ggss-builder} tag while registering GitLab Runner
+    \item \textit{In case of CERN Openstack VM}: Remember to change path from afs to local VM: \lstinline{sudo mkdir /gitlab-runner && cd /gitlab-runner}
+\end{itemize}
+
+\subsubsection*{Set up Docker}
+
+\noindent
+Remove old docker versions:
+\begin{lstlisting}
+sudo yum remove docker \
+docker-client \
+docker-client-latest \
+docker-common \
+docker-latest \
+docker-latest-logrotate \
+docker-logrotate \
+docker-engine
+\end{lstlisting}
+
+\clearpage
+\subsubsection*{Install new docker engine and CLI using official repository}
+
+\noindent
+Install required packages:
+\begin{lstlisting}
+sudo yum install -y yum-utils \
+device-mapper-persistent-data \
+lvm2
+\end{lstlisting}
+
+\noindent
+Set up the repository:
+\begin{lstlisting}
+sudo yum-config-manager \
+--add-repo \
+https://download.docker.com/linux/centos/docker-ce.repo
+\end{lstlisting}
+
+\noindent
+Install Docker Engine and CLI:
+\begin{lstlisting}
+sudo yum install -y docker-ce docker-ce-cli containerd.io
+\end{lstlisting}
+
+\noindent
+Start Docker:
+\begin{lstlisting}
+sudo systemctl start docker
+\end{lstlisting}
+
+\noindent
+Verify if Docker works properly:
+\begin{lstlisting}
+sudo docker run hello-world
+\end{lstlisting}
+
+\subsubsection*{Register virtual machine as a GitLab CI/CD runner}
+
+\noindent
+Download appropriate packages:
+\begin{lstlisting}
+curl -LJO \
+https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_amd64.rpm
+\end{lstlisting}
+
+\noindent
+Install the packages:
+\begin{lstlisting}
+sudo yum install -y gitlab-runner_amd64.rpm
+\end{lstlisting}
+
+\noindent
+\textit{Note: If you want to update runner packages use following command instead:}
+\begin{lstlisting}
+rpm -Uvh gitlab-runner_amd64.rpm
+\end{lstlisting}
+
+\noindent
+Download gitlab-runner binary file:
+\begin{lstlisting}
+sudo curl -L --output /usr/local/bin/gitlab-runner \
+gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
+\end{lstlisting}
+
+\noindent
+Give proper permissions for the binary file:
+\begin{lstlisting}
+sudo chmod +x /usr/local/bin/gitlab-runner
+\end{lstlisting}
+
+\noindent
+Create a GitLab CI user:
+\begin{lstlisting}
+sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+\end{lstlisting}
+
+\noindent
+Install application and run as a service:
+\begin{lstlisting}
+sudo gitlab-runner install --user=gitlab-runner\
+--working-directory=/home/gitlab-runner
+sudo gitlab-runner start
+\end{lstlisting}
+
+\subsubsection*{Register the runner}
+
+\noindent
+Register using gitlab-runner:
+\begin{lstlisting}
+sudo gitlab-runner register
+\end{lstlisting}
+
+\noindent
+Enter proper GitLab instance URL:
+\begin{lstlisting}
+Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com )
+https://gitlab.cern.ch
+\end{lstlisting}
+
+\noindent
+Enter token obtained from your GitLab group page > settings > CI/CD > Runners (\href{https://gitlab.cern.ch/groups/atlas-trt-dcs-ggss/-/settings/ci_cd}{\textbf{link}} for GGSS project):
+\begin{lstlisting}
+Please enter the gitlab-ci token for this runner
+<your_token_here>
+\end{lstlisting}
+
+\noindent
+Enter a description for the runner (this can be changed later):
+\begin{lstlisting}
+Please enter the gitlab-ci description for this runner
+[hostname] my-runner
+\end{lstlisting}
+
+\noindent
+Enter proper tags (this can be changed later):
+\begin{lstlisting}
+Please enter the gitlab-ci tags for this runner (comma separated):
+ggss-builder
+\end{lstlisting}
+
+\noindent
+Enter runner executor:
+\begin{lstlisting}
+Please enter the executor: ssh, docker+machine, docker-ssh+machine,\
+kubernetes, docker, parallels, virtualbox, docker-ssh, shell:
+docker
+\end{lstlisting}
+
+\noindent
+Enter default image (if not defined in \lstinline{.gitlab-ci.yml}):
+\begin{lstlisting}
+Please enter the Docker image (eg. ruby:2.1):
+cern/cc7-base:latest
+\end{lstlisting}
+
+
+\clearpage
+\subsubsection*{Compact commands}
+
+\noindent
+Setup Docker:
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+(sudo yum remove docker \
+    docker-client \
+    docker-client-latest \
+    docker-common \
+    docker-latest \
+    docker-latest-logrotate \
+    docker-logrotate \
+    docker-engine \
+    &&
+sudo yum install -y yum-utils \
+    device-mapper-persistent-data \
+    lvm2 \
+    &&
+sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo \
+    &&
+sudo yum install -y docker-ce docker-ce-cli containerd.io \
+    &&
+sudo systemctl start docker \
+    &&
+sudo docker run hello-world)
+\end{lstlisting}
+
+\noindent
+Prepare VM as GitLab-Runner:
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+(sudo mkdir /gitlab-runner \
+&&
+cd /gitlab-runner \
+&&
+sudo curl -LJO \
+https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_amd64.rpm \
+&&
+sudo yum install -y gitlab-runner_amd64.rpm \
+&&
+sudo curl -L --output /usr/local/bin/gitlab-runner \
+gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64 \
+&&
+sudo chmod +x /usr/local/bin/gitlab-runner \
+&&
+sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash \
+&&
+sudo gitlab-runner install --user=gitlab-runner \
+--working-directory=/home/gitlab-runner \
+&&
+sudo gitlab-runner start \
+&&
+sudo rm -rf /gitlab-runner)
+\end{lstlisting}
+
+\noindent
+Register the runner: only available as interactive command.
