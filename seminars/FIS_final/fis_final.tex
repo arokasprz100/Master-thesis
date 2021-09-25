@@ -1,0 +1,211 @@
+\documentclass[10pt]{beamer}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\captionsetup[lstlisting]{ margin=0pt }
+
+\definecolor{lgray}{gray}{0.96}
+\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\lstset{
+    framesep=2pt,
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    breakatwhitespace=true,
+    aboveskip={0.75\baselineskip},
+    columns=fixed,
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{lgray},
+    showtabs=false,
+    showspaces=false,
+    showstringspaces=false,
+    backgroundcolor=\color{lgray},
+    identifierstyle=\ttfamily,
+    keywordstyle=\color[rgb]{0,0,1},
+    commentstyle=\color[rgb]{0.0,0.26,0.15},
+    stringstyle=\color[rgb]{0.627,0.126,0.941}
+}
+
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+
+\usetheme{AGH}
+\title{Rozbudowa i uaktualnienie systemu GGSS detektora ATLAS TRT}
+\author{\normalsize{Arkadiusz Kasprzak \newline \and 
+    Jarosław Cierpich \newline \newline \and 
+    Opiekun pracy: dr hab. inż. Bartosz Mindur, prof. AGH}}
+\date{}
+
+\begin{document}
+
+\titleframe[pl]
+
+\part{Prezentacja - Arkadiusz Kasprzak}
+
+\begin{frame}
+\frametitle{Plan prezentacji - Arkadiusz Kasprzak}
+\tableofcontents
+\end{frame}
+
+
+\section{Wprowadzenie do tematyki pracy}
+
+\begin{frame}
+\frametitle{Wprowadzenie do systemu GGSS}
+% domena (CERN, TRT, DCS)
+% architektura wysokopoziomowa
+% warstwa sprzetowa i oprogramowania
+% glowne technologie
+\end{frame}
+
+\begin{frame}
+\frametitle{Cele pracy}
+% kontyuacja pracy inz
+% zwrocic uwage na migracje i wyjazd, powiedziec ze prace zdalnie
+\end{frame}
+
+\section{Charakterystyka przeprowadzonych prac}
+
+\begin{frame}
+\frametitle{Środowisko docelowe i jego ograniczenia}
+% wersje kompilatorow i narzedzi
+% sposob wdrazania
+% itd
+\end{frame}
+
+\begin{frame}
+\frametitle{Dodatkowe wymagania}
+% niezawodnosc (+ stosowane praktyki, np. code review)
+% niski prog wejscia
+% latwosc i szybkosc wdrozenia zmian
+\end{frame}
+
+\section{Modyfikacja kodu źródłowego projektu}
+
+\begin{frame}
+\frametitle{Aplikacja \emph{ggss-runner}}
+% skrotowy opis dzialania
+% wersja pierwotna - charakterystyka
+\end{frame}
+
+\begin{frame}
+\frametitle{Modernizacja i poprawa jakości kodu źródłowego}
+% migracja do cpp11
+% poprawa błedów
+\end{frame}
+
+\begin{frame}
+\frametitle{Wprowadzone funkcjonalności}
+% hvcommands
+% fitlib
+% komendy
+% mca buffor
+% kolejnosc licznikow
+% pomniejsze zmiany
+\end{frame}
+
+\begin{frame}
+\frametitle{Przykład: nowe komendy dla zasilaczy}
+\end{frame}
+
+\begin{frame}
+\frametitle{Testy automatyczne}
+\end{frame}
+
+
+\section{Modyfikacja systemu budowania projektu}
+
+\begin{frame}
+\frametitle{Modyfikacja systemu budowania projektu}
+% cmake i czemu
+% co zostalo zmienione
+% wsparcie dla testow i dokumentacji
+\end{frame}
+
+\section{Podsumowanie}
+
+\begin{frame}
+\frametitle{Podsumowanie}
+% ile bibliotek zmienionych
+% jak praktyki typu testy automatyczne wplynely na prace
+% ze dziala od dluzszego czasu
+\end{frame}
+
+
+\part{Prezentacja - Jarosław Cierpich}
+
+\begin{frame}
+\frametitle{Plan prezentacji - Jarosław Cierpich}
+\tableofcontents
+\end{frame}
+
+\section{Modyfikacja architektury projektu}
+
+\begin{frame}
+\frametitle{Modyfikacja architektury projektu}
+% zmiany w strukturze submodułów
+% usunięcie/archiwizacja niektorzych modułów
+\end{frame}
+
+
+\section{Modyfikacja infrastruktury projektu}
+
+\begin{frame}
+\frametitle{Mechanizm ciągłej integracji i dostarczania}
+% co to jest
+% dodanie kroku test do wczesniejszych (build itd)
+% artefakty
+\end{frame}
+
+\begin{frame}
+\frametitle{Automatyzacja i centralizacja wersjonowania projektu}
+% semantic-versioning i semantic-release
+% zmiany w skryptach, cmake i ci/cd
+\end{frame}
+
+\begin{frame}
+\frametitle{Automatyzacja pracy z submodułami}
+% zarys problemu
+% rozwiazanie problemu
+\end{frame}
+
+\begin{frame}
+\frametitle{Pozostałe zmiany}
+% skrypty operacyjne
+% skrypt monitorujacy
+% uprzatniecie maszyny docelowej
+\end{frame}
+
+\section{Aplikacje do testów urządzeń}
+
+\begin{frame}
+\frametitle{Aplikacje do testów urządzeń}
+% motywacja + migracja na nowy komputer i hub
+% nowe rozwiazanie i jego interfejs (tryb scenariuszowy, brak koniecznosci znajomosci kodu)
+% przyklad scenariusza (?)
+\end{frame}
+
+\section{Testy projektu}
+
+\begin{frame}
+\frametitle{Testy projektu}
+% ze byly rozne (cyklicznie i na koniec)
+% testy zasobów
+% wspomniec o migracji
+\end{frame}
+
+\section{Podsumowanie}
+
+\begin{frame}
+\frametitle{Podsumowanie}
+% realizowane wszystkie wymagania
+\end{frame}
+
+
+\end{document}
