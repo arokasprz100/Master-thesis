@@ -1,0 +1,9 @@
+HighVoltageTestScenario:
+  - hv module1:3 set vset 10.0
+  - sleep 20000
+  - assert hv module1:3 mon vset 10.0
+  - assertTol hv module1:3 mon vmon 10.0 1.0
+  - hv module1:3 set vset 0
+  - sleep 20000
+  - assert hv module1:3 mon vset 0
+  - assert hv module1:3 mon vmon 0

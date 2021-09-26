@@ -253,8 +253,33 @@ ggss_build_static_library(
 
 \begin{frame}
 \frametitle{Modyfikacja architektury projektu}
+\framesubtitle{Poprzednia architektura projektu}
+\begin{figure}
+    \includegraphics[width=0.8\textwidth]{static/old_structure.pdf}
+    \caption{Architektura projektu na podstawie modułów oraz ich powiązań}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Modyfikacja architektury projektu}
+    \framesubtitle{Wprowadzone zmiany}
 % zmiany w strukturze submodułów
 % usunięcie/archiwizacja niektorzych modułów
+    \begin{itemize}
+        \item Zmniejszenie złożoności poprzez zmiejszenie ilości modułów
+        \item Pozbycie się modułów, które, w trakcie prac, okazały się niepotrzebne (na~przykład: \emph{ggss-misc})
+        \item Wydzielenie zduplikowanego kodu do nowych bibliotek zawartych w ramach repozutorium \emph{ggss-software-libs}
+        \item Pozostawienie możliwości szybkiego powrotu do początkowej architektury poprzez zastosowanie gałęzi \emph{legacy} oraz archiwizacji projektów
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Modyfikacja architektury projektu}
+\framesubtitle{Nowa architektura projektu}
+\begin{figure}
+    \includegraphics[width=0.6\textwidth]{static/new_architecture.pdf}
+    \caption{Architektura projektu na podstawie modułów oraz ich powiązań}
+\end{figure}
 \end{frame}
 
 
@@ -263,24 +288,67 @@ ggss_build_static_library(
 \begin{frame}
 \frametitle{Mechanizm ciągłej integracji i dostarczania}
 % co to jest
+    \begin{itemize}
+        \item Mechanizm pozwalający na automatyczne testowanie, budowanie oraz przygotowywanie kodu do dostarczania do środowiska docelowego
+        \item Pierwsza wersja została utworzona w ramach pracy inżynierskiej, następnie została ona rozwinięta w ramach pracy magisterskiej
+        \item Do mechanizmu zostało dodane tworzenie artefaktów, a wraz z~wprowadzeniem testów automatycznych został dodany krok \emph{test}
+        \item Automatyzacji poddane zostało również wersjonowanie projektu
+    \end{itemize}
 % dodanie kroku test do wczesniejszych (build itd)
 % artefakty
 \end{frame}
 
 \begin{frame}
 \frametitle{Automatyzacja i centralizacja wersjonowania projektu}
+    \begin{itemize}
+        \item Automatyzacja oparta o rozszerzenia:
+            \begin{itemize}
+                \item plików \emph{.cmake} w celu wsparcia parametru version
+                \item skryptu \emph{build.py}, który jest nakładką narzędzia \emph{cmake}
+                \item mechanizmu ciągłej integracji w celu automarycznego generowania wersji na podstawie wiadomości zawartych w ramach rewizji
+            \end{itemize}
+        \item Rozwiązanie oparte o standard \emph{semantic-versioning}, bibliotekę \emph{semantic-release} oraz konwencję oznaczania wiadomości zgodną z \emph{eslint-semantic-release}
+    \end{itemize}
+\begin{figure}
+    \includegraphics[width=0.7\textwidth]{static/commit}
+    \caption{Rewizja zgodna z konewncją \emph{eslint-semantic-release}}
+\end{figure}
 % semantic-versioning i semantic-release
 % zmiany w skryptach, cmake i ci/cd
 \end{frame}
 
 \begin{frame}
 \frametitle{Automatyzacja pracy z submodułami}
+\begin{figure}
+    \includegraphics[width=0.75\textwidth]{static/submodules_update}
+    \caption{Opis kroków jakie należy podjąć, aby wprowadzone zmiany były widoczne w całym projekcie.}
+\end{figure}
 % zarys problemu
+\end{frame}
+
+\begin{frame}
+    \frametitle{Automatyzacja pracy z submodułami}
+    \begin{itemize}
+        \item w celu automatyzacji wcześniej ukazanego procesu przygotowany został skrypt \emph{gitio} w języku \emph{Python} oparty o bibliotekę \emph{GitPython}
+        \item skrypt działa na zainicjalizowanym repozytorium wraz z jego submodułami:
+        \begin{itemize}
+            \item odtwarza w pamięci całą strukturę repozytoriów korzystając z metadanych \emph{git}
+            \item sprawdza, czy repozytoria nie zawierają zmian, które nie zostały opublikowane w ramach rewizji
+            \item aktualizuje wersje wskazywane przez submoduły, na najnowsze dostępne w ramach odpowiadających im repozytoriów
+            \item publikuje zmiany wskazywanych wersji poprzez utworzenie nowej rewizji oraz przekazanie jej na zdalne repozytorium
+        \end{itemize}
+    \end{itemize}
 % rozwiazanie problemu
 \end{frame}
 
 \begin{frame}
 \frametitle{Pozostałe zmiany}
+    \begin{itemize}
+        \item zaktualizowane zostały skrypty operacyjne, czyli skrypty obsługujące projekt \emph{GGSS} w środowisku docelowym
+        \item nowy skrypt monitorujący zasoby wykorzystywane przez główną aplikację projektu \empg{GGSS} został utworzony
+        \item przygotowana została aplikacja \emph{high-voltage-killer}, która zabezpiecza system poprzez wyłączenie zasilania na zasilaczu wysokiego napięcia
+        \item dokonano modyfikacji struktury katalogów oraz nazw w środowisku docelowym
+    \end{itemize}
 % skrypty operacyjne
 % skrypt monitorujacy
 % uprzatniecie maszyny docelowej
@@ -290,15 +358,34 @@ ggss_build_static_library(
 
 \begin{frame}
 \frametitle{Aplikacje do testów urządzeń}
+    \begin{itemize}
+        \item w ramach pracy magisterskiej przygotowane zostały aplikacji służące do testowania urządzeń ze względu na wysokie wymagania dotyczące niezawodności systemu oraz potrzebę sprawnych, poprawnie skonfigurowanych urządzeń w celu jego działania
+        \item w projekcie istniały rozwiązania pozwalające na testowanie urządzeń, natomiast ich możliwości były mocno ograniczone, a ich interfejs znacznie się między nimi różnił
+        \item przygotowane, w ramach pracy magisterskiej, rozwiązanie pozwala na dogłębne przetestowanie urządzeń z wykorzystaniem dwóch trybów: interaktywnego oraz scenariuszowego
+        \item w celu dokonania odpowiednich testów wymagana jest jedynie wiedza domenowa. Nie jest potrzebna wiedza nt. dokładnego działania aplikacji
+    \end{itemize}
 % motywacja + migracja na nowy komputer i hub
 % nowe rozwiazanie i jego interfejs (tryb scenariuszowy, brak koniecznosci znajomosci kodu)
 % przyklad scenariusza (?)
+\end{frame}
+
+\begin{frame}
+    \frametitle{Aplikacje do testów urządzeń}
+    \lstinputlisting[
+        language=yaml,
+        caption={Przykładowy scenariusz dla zasilacza wysokiego napięcia.},
+    ]{static/high-voltage-service-app-scenario.yml}
 \end{frame}
 
 \section{Testy projektu}
 
 \begin{frame}
 \frametitle{Testy projektu}
+    \begin{itemize}
+        \item podczas dokonywania zmian w systemie GGSS w ramach pracy magisterskiej cyklicznie dokonywano testy nowych funkcjonalności w środowisku docelowym
+        \item podczas pracy magisterskiej odbyła się migracja projektu \emph{GGSS} do nowego środowiska. Udział autorów w migracji ograniczył się do weryfikacji poprawności konfiguracji nowego środowiska, oraz do przeprowadzenia testów systemowych z wykorzystaniem ostatniej, stabilnej wersji aplikacji
+        \item udział autorów w projekcie GGSS został zwieńczony całościowymi testami zarówno wprowadzonych, jak i wcześniej używanych funkcjonalności. Monitorowaniu poddane zostały  również zasoby wykorzystywane przez główną aplikację z wykorzystaniem wcześniej wymienionego skryptu, czy też narzędzia \emph{valgrind}
+    \end{itemize}
 % ze byly rozne (cyklicznie i na koniec)
 % testy zasobów
 % wspomniec o migracji
@@ -309,6 +396,11 @@ ggss_build_static_library(
 \begin{frame}
 \frametitle{Podsumowanie}
 % realizowane wszystkie wymagania
+    \begin{itemize}
+        \item przygotowany system automatyzacyjny pozwala na łatwe oraz szybkie wprowadzanie nowych zmian w projekcie
+        \item wszystkie rozwiązania cechują się stosowaniem ogólnie przyjętych standardów co w połączeniu z dużym naciskiem na odpowiednią dokumentację znacząco zmniejsza próg wejścia
+        \item w celu zapewnienia poprawnego działania wszystkie zmiany zostały przetestowane w środowisku docelowym
+    \end{itemize}
 \end{frame}
 
 
