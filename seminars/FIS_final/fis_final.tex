@@ -169,6 +169,23 @@
 
 \begin{frame}
 \frametitle{Przykład: nowe komendy dla zasilaczy}
+\begin{itemize}
+    \item GGSS wykorzystuje 3 zasilacze wysokiego napięcia CAEN N1470
+    \item do tej pory użytkownik mógł przeprowadzić z nimi interakcję za pomocą systemu komend wspieranego przez producenta, np.: {\color{blue} \lstinline{$BD:00,CMD:SET,CH:0,PAR:VSET,VAL:1368.0}}
+    \item format niewygodny i nieintuicyjny z punktu widzenia użytkownika
+    \item ponadto nie pozwala na odczyt danych lub wprowadzenie zmian dla kilku zasilaczy jednocześnie
+    \item przygotowano więc nowy, przyjazny użytkownikowi format komend
+    \item implementacja jako biblioteka statyczna - możliwość wielokrotnego wykorzystania
+    \item przykład: {\color{blue} \lstinline{hv *:0 set vset 1368.0}}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Przykład: nowe komendy dla zasilaczy}
+\begin{figure}
+\includegraphics[width=\textwidth]{static/hv_psu_1.pdf}
+\caption{Schemat przybliżający sposób działania nowego formatu komend.}
+\end{figure}
 \end{frame}
 
 % TODO: moze jakis link do repo zeby pokazac 
