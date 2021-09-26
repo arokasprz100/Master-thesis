@@ -58,6 +58,14 @@
 
 \begin{frame}
 \frametitle{Wprowadzenie do systemu GGSS}
+\begin{itemize}
+    \item System Stabilizacji Wzmocnienia Gazowego (GGSS - \emph{Gas Gain Stabilization System})
+    \item projekt zintegrowany z systemem kontroli detektora ATLAS w CERN
+    \item umożliwia poprawne działanie detektora TRT (\emph{Transition Radiation Tracker}) będącego częścią ATLAS
+    \item składa się z warstwy oprogramowania (aplikacje oraz infrastruktura) oraz sprzętu (zasilacz wysokiego napięcia, multiplekser analogowy, wielokanałowy analizator amplitudy MCA)
+    \item warstwa oprogramowania koordynuje działanie urządzeń i umożliwia sterowanie nimi za pomocą specjalnych komend
+    \item aplikacje i biblioteki napisane z wykorzystaniem języka C++, infrastruktura: CMake, Bash oraz Python
+\end{itemize}
 % domena (CERN, TRT, DCS)
 % architektura wysokopoziomowa
 % warstwa sprzetowa i oprogramowania
@@ -65,64 +73,137 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Cele pracy}
-% kontyuacja pracy inz
-% zwrocic uwage na migracje i wyjazd, powiedziec ze prace zdalnie
+\frametitle{Wprowadzenie do systemu GGSS}
+\begin{figure}
+\includegraphics[width=0.85\textwidth]{static/high_level_architecture.pdf}
+\caption{Wysokopoziomowa architektura systemu GGSS}
+\end{figure}
+\begin{itemize}
+    \item WinCC OA - system system typu SCADA pozwalający na sterowanie i kontrolę działania podsystemów detektora
+    \item DIM - protokół komunikacyjny dla aplikacji rozproszonych
+\end{itemize}
 \end{frame}
 
-\section{Charakterystyka przeprowadzonych prac}
+\begin{frame}
+\frametitle{Cele pracy}
+\begin{itemize}
+    \item kontynuacja pracy inżynierskiej, skupiającej się na infrastrukturze projektu
+    \item rozbudowa przygotowanych w ramach wspomnianej pracy rozwiązań
+    \item główny nacisk na aplikację \emph{ggss-runner}, stanowiącą trzon systemu
+    \item poprawa jakości kodu źródłowego oraz wprowadzenie nowych funkcjonalności
+    \item rozbudowa infrastruktury pozwalającej na testowanie projektu
+    \item udokumentowanie projektu (dokumentacja kodu źródłowego oraz pliki instruktażowe)
+    \item migracja projektu - nowy komputer docelowy (początkowo planowany wyjazd do CERN, ostatecznie zrealizowana zdalnie)
+    \item konieczność zachowania wysokiej niezawodności systemu - stosowanie praktyk takich jak \emph{code review} i testy automatyczne
+\end{itemize}
+% kontyuacja pracy inz
+% zwrocic uwage na migracje i wyjazd, powiedziec ze prace zdalnie
+% wymagana niezawodnosc - praktyki (code review itd)
+\end{frame}
 
 \begin{frame}
-\frametitle{Środowisko docelowe i jego ograniczenia}
+\frametitle{Środowisko docelowe i ograniczenia}
+\begin{itemize}
+    \item projekt ściśle związany z infrastrukturą CERN
+    \item aplikacje wchodzące w skład systemu działają na dedykowanym komputerze z dostępem do wymaganych urządzeń
+    \item ograniczenia dotyczące wersji kompilatora języka C++ oraz narzędzia CMake
+    \item ograniczone uprawnienia w środowisku docelowym
+    \item konieczność zachowania kompatybilności wstecznej
+\end{itemize}
 % wersje kompilatorow i narzedzi
 % sposob wdrazania
 % itd
-\end{frame}
-
-\begin{frame}
-\frametitle{Dodatkowe wymagania}
-% niezawodnosc (+ stosowane praktyki, np. code review)
-% niski prog wejscia
-% latwosc i szybkosc wdrozenia zmian
 \end{frame}
 
 \section{Modyfikacja kodu źródłowego projektu}
 
 \begin{frame}
 \frametitle{Aplikacja \emph{ggss-runner}}
+\begin{itemize}
+    \item wielowątkowa aplikacja napisana z wykorzystaniem C++ i pakietu Boost
+    \item zadanie: cykliczne gromadzenie danych w postaci widma poprzez komunikacje z wielokanałowym analizatorem amplitudy oraz wyznaczanie na ich podstawie wartości napięcia, komunikacja z systemem WinCC OA
+\end{itemize}
+\begin{figure}
+\includegraphics[width=0.6\textwidth]{static/winccoa_panel.png}
+\caption{Panel dostępny w ramach systemu WinCC OA}
+\end{figure}
+% skrotowy opis dzialania
+% wersja pierwotna - charakterystyka
+\end{frame}
+
+\begin{frame}
+\frametitle{Aplikacja \emph{ggss-runner}}
+\begin{figure}
+\includegraphics[width=0.7\textwidth]{static/flow.pdf}
+\caption{Uproszczony schemat działania aplikacji}
+\end{figure}
 % skrotowy opis dzialania
 % wersja pierwotna - charakterystyka
 \end{frame}
 
 \begin{frame}
 \frametitle{Modernizacja i poprawa jakości kodu źródłowego}
+\begin{itemize}
+    \item pierwotnie kod wykorzystywał standard C++03 oraz elementy C++11
+    \item przeprowadzono migrację do standardu C++11 (pętle zakresowe, silne typy wyliczeniowe itd.)
+    \item migracja niepełna z uwagi na ograniczenia kompilatora
+    \item ujednolicono konwencje stosowane w kodzie (formatowanie, nazewnictwo)
+    \item zlikwidowano niewykorzystywane lub wykomentowane fragmenty kodu
+    \item usunięto nieliczne błędy (biblioteki \emph{xml-lib} oraz \emph{log-lib})
+    \item znaczne zmiany w 12 z 14 bibliotek wchodzących w skład systemu
+\end{itemize}
 % migracja do cpp11
 % poprawa błedów
 \end{frame}
 
 \begin{frame}
 \frametitle{Wprowadzone funkcjonalności}
-% hvcommands
-% fitlib
-% komendy
-% mca buffor
-% kolejnosc licznikow
-% pomniejsze zmiany
+\begin{itemize}
+    \item dodanie obsługi zaawansowanych komend dla zasilaczy wysokiego napięcia
+    \item rozbudowa biblioteki odpowiedzialnej za dopasowanie krzywej do zebranych danych
+    \item dodanie możliwości aktualizacji parametrów i zebranych danych na żądanie
+    \item dodanie zabezpieczenia przed przepełnieniem bufora urządzenia MCA
+    \item dodanie możliwości przywracania domyślnej kolejności liczników słomkowych
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Przykład: nowe komendy dla zasilaczy}
 \end{frame}
 
+% TODO: moze jakis link do repo zeby pokazac 
 \begin{frame}
 \frametitle{Testy automatyczne}
+\begin{itemize}
+    \item w celu zapewnienia niezawodności i szybkiego wykrywanie błędów wykorzystano testy automatyczne i metodykę TDD (\emph{Test Driven Development})
+    \item testy przygotowane z wykorzystaniem biblioteki Boost.Test
+    \item uruchamiane automatycznie po wdrożeniu zmian do repozytoriów projektu
+\end{itemize}
+\begin{figure}
+\includegraphics[width=0.65\textwidth]{static/pipeline.png}
+\caption{\emph{Pipeline CI/CD} wykonujący testy automatyczne po wdrożeniu zmian}
+\end{figure}
 \end{frame}
 
 
 \section{Modyfikacja systemu budowania projektu}
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Modyfikacja systemu budowania projektu}
+\begin{itemize}
+    \item system oparty o narzędzie CMake, przygotowany w ramach pracy inżynierskiej
+    \item jego zadaniem jest obsługa projektu o hierarchicznej strukturze
+    \item wsparcie dla testów automatycznych oraz generowania dokumentacji za pomocą narzędzia Doxygen
+    \item system oparty o tzw. szablony - pliki \emph{.cmake} zawierające często wykorzystywane fragmenty kodu
+    \item zmiana sposobu implementacji szablonów - wykorzystanie funkcji i makr
+\end{itemize}
+\begin{lstlisting}[caption={}]
+ggss_build_static_library(
+    TARGET_NAME "thread"
+    DEPENDENCY_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    DEPENDENCIES "sigslot" "ggss-util-libs/log"
+)
+\end{lstlisting}
 % cmake i czemu
 % co zostalo zmienione
 % wsparcie dla testow i dokumentacji
@@ -132,6 +213,12 @@
 
 \begin{frame}
 \frametitle{Podsumowanie}
+\begin{itemize}
+    \item wszystkie podstawione wymagania zostały spełnione
+    \item stosowanie nowoczesnych praktyk takich jak testy automatyczne pozytywnie wpłynęło na proces rozwoju oprogramowania
+    \item liczne testy w środowisku docelowym potwierdzają poprawność wprowadzonych zmian
+    \item możliwy dalszy rozwój projektu - modernizacja kodu, zmiany na poziomie architektonicznym
+\end{itemize}
 % ile bibliotek zmienionych
 % jak praktyki typu testy automatyczne wplynely na prace
 % ze dziala od dluzszego czasu
