@@ -44,6 +44,8 @@
 
 \begin{document}
 
+\renewcommand{\figurename}{Rysunek}
+
 \titleframe[pl]
 
 \part{Prezentacja - Arkadiusz Kasprzak}
@@ -266,10 +268,10 @@ ggss_build_static_library(
 % zmiany w strukturze submodułów
 % usunięcie/archiwizacja niektorzych modułów
     \begin{itemize}
-        \item Zmniejszenie złożoności poprzez zmiejszenie ilości modułów
+        \item Zmniejszenie złożoności poprzez zmniejszenie ilości modułów
         \item Pozbycie się modułów, które, w trakcie prac, okazały się niepotrzebne (na~przykład: \emph{ggss-misc})
-        \item Wydzielenie zduplikowanego kodu do nowych bibliotek zawartych w ramach repozutorium \emph{ggss-software-libs}
-        \item Pozostawienie możliwości szybkiego powrotu do początkowej architektury poprzez zastosowanie gałęzi \emph{legacy} oraz archiwizacji projektów
+        \item Wydzielenie powielonego kodu do nowej biblioteki zawartej w ramach repozytorium \emph{ggss-hardware-libs}
+        \item Pozostawienie możliwości szybkiego powrotu do początkowej architektury oraz wersji kodu źródłowego poprzez zastosowanie gałęzi \emph{legacy} oraz archiwizacji projektów
     \end{itemize}
 \end{frame}
 
@@ -304,14 +306,14 @@ ggss_build_static_library(
         \item Automatyzacja oparta o rozszerzenia:
             \begin{itemize}
                 \item plików \emph{.cmake} w celu wsparcia parametru version
-                \item skryptu \emph{build.py}, który jest nakładką narzędzia \emph{cmake}
-                \item mechanizmu ciągłej integracji w celu automarycznego generowania wersji na podstawie wiadomości zawartych w ramach rewizji
+                \item skryptu \emph{build.py}, który jest nakładką narzędzia CMake
+                \item mechanizmu ciągłej integracji w celu automatycznego generowania wersji na podstawie wiadomości zawartych w ramach rewizji
             \end{itemize}
         \item Rozwiązanie oparte o standard \emph{semantic-versioning}, bibliotekę \emph{semantic-release} oraz konwencję oznaczania wiadomości zgodną z \emph{eslint-semantic-release}
     \end{itemize}
 \begin{figure}
     \includegraphics[width=0.7\textwidth]{static/commit}
-    \caption{Rewizja zgodna z konewncją \emph{eslint-semantic-release}}
+    \caption{Rewizja zgodna z konwencją \emph{eslint-semantic-release}}
 \end{figure}
 % semantic-versioning i semantic-release
 % zmiany w skryptach, cmake i ci/cd
@@ -343,12 +345,12 @@ ggss_build_static_library(
 
 \begin{frame}
 \frametitle{Pozostałe zmiany}
-    \begin{itemize}
-        \item zaktualizowane zostały skrypty operacyjne, czyli skrypty obsługujące projekt \emph{GGSS} w środowisku docelowym
-        \item nowy skrypt monitorujący zasoby wykorzystywane przez główną aplikację projektu \empg{GGSS} został utworzony
-        \item przygotowana została aplikacja \emph{high-voltage-killer}, która zabezpiecza system poprzez wyłączenie zasilania na zasilaczu wysokiego napięcia
-        \item dokonano modyfikacji struktury katalogów oraz nazw w środowisku docelowym
-    \end{itemize}
+\begin{itemize}
+    \item zaktualizowane zostały skrypty operacyjne, czyli skrypty obsługujące projekt GGSS w środowisku docelowym
+    \item nowy skrypt monitorujący zasoby wykorzystywane przez główną aplikację projektu GGSS został utworzony
+    \item przygotowana została aplikacja \emph{high-voltage-killer}, która zabezpiecza system poprzez wyłączenie zasilania na zasilaczu wysokiego napięcia
+    \item dokonano modyfikacji struktury katalogów oraz nazw w środowisku docelowym
+\end{itemize}
 % skrypty operacyjne
 % skrypt monitorujacy
 % uprzatniecie maszyny docelowej
@@ -362,7 +364,7 @@ ggss_build_static_library(
         \item w ramach pracy magisterskiej przygotowane zostały aplikacji służące do testowania urządzeń ze względu na wysokie wymagania dotyczące niezawodności systemu oraz potrzebę sprawnych, poprawnie skonfigurowanych urządzeń w celu jego działania
         \item w projekcie istniały rozwiązania pozwalające na testowanie urządzeń, natomiast ich możliwości były mocno ograniczone, a ich interfejs znacznie się między nimi różnił
         \item przygotowane, w ramach pracy magisterskiej, rozwiązanie pozwala na dogłębne przetestowanie urządzeń z wykorzystaniem dwóch trybów: interaktywnego oraz scenariuszowego
-        \item w celu dokonania odpowiednich testów wymagana jest jedynie wiedza domenowa. Nie jest potrzebna wiedza nt. dokładnego działania aplikacji
+        \item w celu dokonania odpowiednich testów wymagana jest jedynie wiedza domenowa. Nie jest potrzebna wiedza na temat dokładnego działania aplikacji
     \end{itemize}
 % motywacja + migracja na nowy komputer i hub
 % nowe rozwiazanie i jego interfejs (tryb scenariuszowy, brak koniecznosci znajomosci kodu)
@@ -372,7 +374,6 @@ ggss_build_static_library(
 \begin{frame}
     \frametitle{Aplikacje do testów urządzeń}
     \lstinputlisting[
-        language=yaml,
         caption={Przykładowy scenariusz dla zasilacza wysokiego napięcia.},
     ]{static/high-voltage-service-app-scenario.yml}
 \end{frame}
@@ -383,8 +384,8 @@ ggss_build_static_library(
 \frametitle{Testy projektu}
     \begin{itemize}
         \item podczas dokonywania zmian w systemie GGSS w ramach pracy magisterskiej cyklicznie dokonywano testy nowych funkcjonalności w środowisku docelowym
-        \item podczas pracy magisterskiej odbyła się migracja projektu \emph{GGSS} do nowego środowiska. Udział autorów w migracji ograniczył się do weryfikacji poprawności konfiguracji nowego środowiska, oraz do przeprowadzenia testów systemowych z wykorzystaniem ostatniej, stabilnej wersji aplikacji
-        \item udział autorów w projekcie GGSS został zwieńczony całościowymi testami zarówno wprowadzonych, jak i wcześniej używanych funkcjonalności. Monitorowaniu poddane zostały  również zasoby wykorzystywane przez główną aplikację z wykorzystaniem wcześniej wymienionego skryptu, czy też narzędzia \emph{valgrind}
+        \item podczas pracy magisterskiej odbyła się migracja projektu GGSS do nowego środowiska. Udział autorów w migracji ograniczył się do weryfikacji poprawności konfiguracji nowego środowiska, oraz do przeprowadzenia testów systemowych z wykorzystaniem ostatniej, stabilnej wersji aplikacji
+        \item udział autorów w projekcie GGSS został zwieńczony całościowymi testami zarówno wprowadzonych, jak i wcześniej używanych funkcjonalności. Monitorowaniu poddane zostały  również zasoby wykorzystywane przez główną aplikację z wykorzystaniem wcześniej wymienionego skryptu, czy też narzędzia Valgrind
     \end{itemize}
 % ze byly rozne (cyklicznie i na koniec)
 % testy zasobów
